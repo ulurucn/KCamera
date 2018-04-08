@@ -93,6 +93,11 @@ public class FragmentMain extends BaseFragment implements View.OnClickListener {
         mPic.setImageBitmap(resizeBmp);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPictureHelper.onDestroy();
+    }
 
     public interface IRouter {
         void onRouteTo(int id, Bundle args);
