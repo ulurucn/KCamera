@@ -26,18 +26,12 @@ public class TextObject extends ImageObject {
 	/**
 	 * 构造方法
 	 * 
-	 * @param context
-	 *            上下文
-	 * @param text
-	 *            输入的文字
-	 * @param x
-	 *            位置x坐标
-	 * @param y
-	 *            位置y坐标
-	 * @param rotateBm
-	 *            旋转按钮的图片
-	 * @param deleteBm
-	 *            删除按钮的图片
+	 * @param context 上下文
+	 * @param text 输入的文字
+	 * @param x 位置x坐标
+	 * @param y 位置y坐标
+	 * @param rotateBm 旋转按钮的图片
+	 * @param deleteBm 删除按钮的图片
 	 */
 	public TextObject(Context context, String text, int x, int y,
 			Bitmap rotateBm, Bitmap deleteBm) {

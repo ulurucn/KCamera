@@ -6,12 +6,16 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by frendy on 2018/4/8.
  */
 
 public class Common {
+
+    public static String DCIM_CAMERA_PATH = Environment.getExternalStorageDirectory() + "/DCIM/Camera/";
 
     //将生成的图片保存到内存中
     public static String saveBitmap(Bitmap bitmap, String path, String name) {
@@ -33,5 +37,12 @@ public class Common {
             }
         }
         return null;
+    }
+
+    public static String getNewFileName() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date curDate = new Date(System.currentTimeMillis());
+
+        return formatter.format(curDate);
     }
 }

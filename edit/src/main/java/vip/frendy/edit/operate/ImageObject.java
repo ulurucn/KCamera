@@ -48,8 +48,7 @@ public class ImageObject {
 	 * @param deleteBm	删除图片
 	 */
 	public ImageObject(Bitmap srcBm, Bitmap rotateBm, Bitmap deleteBm) {
-		this.srcBm = Bitmap.createBitmap(srcBm.getWidth(), srcBm.getHeight(),
-				Config.ARGB_8888);
+		this.srcBm = Bitmap.createBitmap(srcBm.getWidth(), srcBm.getHeight(), Config.ARGB_8888);
 		canvas = new Canvas(this.srcBm);
 		canvas.drawBitmap(srcBm, 0, 0, paint);
 		this.rotateBm = rotateBm;

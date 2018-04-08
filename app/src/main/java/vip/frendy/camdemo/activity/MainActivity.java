@@ -1,4 +1,4 @@
-package vip.frendy.camdemo;
+package vip.frendy.camdemo.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import vip.frendy.camdemo.activity.BaseFragmentActivity;
+import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.picture.PictureHelper;
 
 /**
@@ -30,6 +30,7 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         mPic = findViewById(R.id.pic);
 
         findViewById(R.id.photo).setOnClickListener(this);
+        findViewById(R.id.camera).setOnClickListener(this);
 
         //图片处理
         mPictureHelper = new PictureHelper(this);
@@ -39,6 +40,8 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
     public void onClick(View view) {
         if(view.getId() == R.id.photo) {
             mPictureHelper.getPictureFromPhoto();
+        } else if(view.getId() == R.id.camera) {
+            mPictureHelper.getPictureFormCamera();
         }
     }
 

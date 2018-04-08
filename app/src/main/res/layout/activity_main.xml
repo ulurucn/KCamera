@@ -22,10 +22,21 @@
         android:layout_height="match_parent">
     </FrameLayout>
 
-    <Button
-        android:id="@+id/photo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:text="photo"/>
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="photo"/>
+
+        <Button
+            android:id="@+id/camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="camera"/>
+    </LinearLayout>
 </FrameLayout>

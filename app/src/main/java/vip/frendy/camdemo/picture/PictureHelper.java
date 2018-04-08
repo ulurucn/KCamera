@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.View;
 
+import java.io.File;
+import java.io.IOException;
+
 import vip.frendy.camdemo.model.Constants;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.operate.OperateUtils;
@@ -22,6 +25,10 @@ public class PictureHelper {
 
     /* 用来标识请求gallery的activity */
     private static final int PHOTO_PICKED_WITH_DATA = 3021;
+    /* 用来标识请求照相功能的activity */
+    private static final int CAMERA_WITH_DATA = 3023;
+
+    private String tempPhotoPath;
 
     public PictureHelper(Activity activity) {
         mActivity= activity;
@@ -43,6 +50,25 @@ public class PictureHelper {
         mActivity.startActivityForResult(openphotoIntent, PHOTO_PICKED_WITH_DATA);
     }
 
+    //从相机中获取照片
+    public void getPictureFormCamera() {
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+
+        tempPhotoPath = Common.DCIM_CAMERA_PATH + Common.getNewFileName() + ".jpg";
+        File currentFile = new File(tempPhotoPath);
+
+        if (!currentFile.exists()) {
+            try {
+                currentFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(currentFile));
+        mActivity.startActivityForResult(intent, CAMERA_WITH_DATA);
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data, IResultListener listener) {
         switch(requestCode) {
             case PHOTO_PICKED_WITH_DATA:
@@ -55,6 +81,11 @@ public class PictureHelper {
                 String photoPath = cursor.getString(columnIndex);
                 cursor.close();
 
+                //回调结果
+                listener.onResult(photoPath);
+                break;
+            case CAMERA_WITH_DATA:
+                photoPath = tempPhotoPath;
                 //回调结果
                 listener.onResult(photoPath);
                 break;

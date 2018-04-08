@@ -17,9 +17,6 @@ public class Lasso {
 
 	/**
 	 * 构造方法
-	 * 
-	 * @param
-	 *            
 	 */
 	public Lasso(List<PointF> pointFs) {
 		this.mPolySize = pointFs.size();
@@ -46,10 +43,8 @@ public class Lasso {
 		boolean result = false;
 
 		for (int i = 0, j = mPolySize - 1; i < mPolySize; j = i++) {
-			if ((mPolyY[i] < y && mPolyY[j] >= y)
-					|| (mPolyY[j] < y && mPolyY[i] >= y)) {
-				if (mPolyX[i] + (y - mPolyY[i]) / (mPolyY[j] - mPolyY[i])
-						* (mPolyX[j] - mPolyX[i]) < x) {
+			if ((mPolyY[i] < y && mPolyY[j] >= y) || (mPolyY[j] < y && mPolyY[i] >= y)) {
+				if (mPolyX[i] + (y - mPolyY[i]) / (mPolyY[j] - mPolyY[i]) * (mPolyX[j] - mPolyX[i]) < x) {
 					result = !result;
 				}
 			}
