@@ -1,47 +1,36 @@
 package vip.frendy.camdemo.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import vip.frendy.camdemo.R;
-import vip.frendy.camdemo.picture.PictureHelper;
+import vip.frendy.camdemo.fragment.FragmentEnhance;
+import vip.frendy.camdemo.fragment.FragmentMain;
+import vip.frendy.edit.interfaces.IPictureEditListener;
 
 /**
  * Created by frendy on 2018/4/8.
  */
 
-public class MainActivity extends BaseFragmentActivity implements View.OnClickListener {
-    private PictureHelper mPictureHelper;
-
-    private LinearLayout mPicContent;
-    private ImageView mPic;
+public class MainActivity extends BaseFragmentActivity implements FragmentMain.IRouter, IPictureEditListener {
+    private FragmentMain mMainFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPicContent = findViewById(R.id.content_pic);
-        mPic = findViewById(R.id.pic);
-
-        findViewById(R.id.photo).setOnClickListener(this);
-        findViewById(R.id.camera).setOnClickListener(this);
-
-        //图片处理
-        mPictureHelper = new PictureHelper(this);
+        mMainFragment = FragmentMain.getInstance(this);
+        setCurrentFragment(R.id.content_fragment, mMainFragment);
     }
 
     @Override
-    public void onClick(View view) {
-        if(view.getId() == R.id.photo) {
-            mPictureHelper.getPictureFromPhoto();
-        } else if(view.getId() == R.id.camera) {
-            mPictureHelper.getPictureFormCamera();
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -50,17 +39,30 @@ public class MainActivity extends BaseFragmentActivity implements View.OnClickLi
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode != RESULT_OK) return;
 
-        mPictureHelper.onActivityResult(requestCode, resultCode, data, new PictureHelper.IResultListener() {
-            @Override
-            public void onResult(String path) {
-                //压缩并显示
-                compressedAndShow(path);
-            }
-        });
+        if(mMainFragment != null)
+            mMainFragment.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void compressedAndShow(String path) {
-        Bitmap resizeBmp = mPictureHelper.compressionFiller(path, mPicContent);
-        mPic.setImageBitmap(resizeBmp);
+    @Override
+    public void onRouteTo(int id, Bundle args) {
+        if(id == R.id.enhance) {
+            switchFragment(R.id.content_fragment, FragmentEnhance.getInstance(args, this));
+        }
+    }
+
+    @Override
+    public void onPictureEditApply(int id, String path) {
+        //退出编辑页
+        getSupportFragmentManager().popBackStack();
+        //更新首页
+        if(id == 0) {
+           mMainFragment.show(path);
+        }
+    }
+
+    @Override
+    public void onPictureEditCancel(int id) {
+        //退出编辑页
+        getSupportFragmentManager().popBackStack();
     }
 }

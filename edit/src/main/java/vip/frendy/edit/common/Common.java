@@ -45,4 +45,48 @@ public class Common {
 
         return formatter.format(curDate);
     }
+
+    public static void writeImage(Bitmap bitmap, String destPath, int quality) {
+        try {
+            deleteFile(destPath);
+            if (createFile(destPath)) {
+                FileOutputStream out = new FileOutputStream(destPath);
+                if (bitmap.compress(Bitmap.CompressFormat.JPEG, quality, out)) {
+                    out.flush();
+                    out.close();
+                    out = null;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static boolean createFile(String filePath) {
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
+                }
+                return file.createNewFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public static boolean deleteFile(String filePath) {
+        try {
+            File file = new File(filePath);
+            if (file.exists()) {
+                return file.delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
