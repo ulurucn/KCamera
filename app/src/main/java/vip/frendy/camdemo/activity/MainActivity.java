@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.fragment.FragmentEnhance;
+import vip.frendy.camdemo.fragment.FragmentFilter;
 import vip.frendy.camdemo.fragment.FragmentMain;
 import vip.frendy.edit.interfaces.IPictureEditListener;
 
@@ -47,6 +48,8 @@ public class MainActivity extends BaseFragmentActivity implements FragmentMain.I
     public void onRouteTo(int id, Bundle args) {
         if(id == R.id.enhance) {
             switchFragment(R.id.content_fragment, FragmentEnhance.getInstance(args, this));
+        } else if(id == R.id.filter) {
+            switchFragment(R.id.content_fragment, FragmentFilter.getInstance(args, this));
         }
     }
 

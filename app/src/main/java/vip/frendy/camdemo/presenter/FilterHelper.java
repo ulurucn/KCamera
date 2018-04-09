@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 
 import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageTwoInputFilter;
-import vip.frendy.camdemo.R;
 
 /**
  * Created by frendy on 2018/4/9.

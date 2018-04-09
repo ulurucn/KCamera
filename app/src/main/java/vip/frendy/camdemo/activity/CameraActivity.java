@@ -198,6 +198,6 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mFilterHelper.onDestroy();
+        if(mFilterHelper != null) mFilterHelper.onDestroy();
     }
 }

@@ -38,5 +38,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="enhance"/>
+
+        <Button
+            android:id="@+id/filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="filter"/>
     </LinearLayout>
 </FrameLayout>
