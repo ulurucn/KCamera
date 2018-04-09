@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import vip.frendy.camdemo.R;
-import vip.frendy.camdemo.picture.PictureHelper;
+import vip.frendy.camdemo.presenter.PictureHelper;
 
 /**
  * Created by frendy on 2018/4/8.

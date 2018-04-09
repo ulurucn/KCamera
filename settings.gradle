@@ -1,1 +1,1 @@
-include ':app', ':edit'
+include ':app', ':edit', ':camera'

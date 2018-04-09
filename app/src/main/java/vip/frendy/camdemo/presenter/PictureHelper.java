@@ -1,4 +1,4 @@
-package vip.frendy.camdemo.picture;
+package vip.frendy.camdemo.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
