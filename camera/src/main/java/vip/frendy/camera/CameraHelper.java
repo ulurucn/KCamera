@@ -9,6 +9,7 @@ import android.view.Surface;
 import vip.frendy.camera.entity.CameraInfo2;
 import vip.frendy.camera.settings.SettingFocusMode;
 import vip.frendy.camera.settings.SettingISO;
+import vip.frendy.camera.settings.SettingSceneMode;
 
 public class CameraHelper {
     private final CameraHelperImpl mImpl;
@@ -96,5 +97,9 @@ public class CameraHelper {
 
     public void setFocusMode(Camera camera, int type) {
         SettingFocusMode.setFocusMode(camera, type);
+    }
+
+    public void setSceneMode(Camera camera, int type) {
+        SettingSceneMode.setSceneMode(camera, type);
     }
 }

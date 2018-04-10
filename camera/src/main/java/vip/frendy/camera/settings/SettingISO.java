@@ -17,21 +17,21 @@ public class SettingISO {
     public static int[] DEFAULT_VALUES = {-1, 100, 200, 400, 800, 1600};
 
     public static void setISO(Camera camera, int preferredISO) {
-        Camera.Parameters parameters = camera.getParameters();
-        Pair<String, String> iso = getISO(parameters, preferredISO);
-        parameters.set(iso.first, iso.second);
-        camera.setParameters(parameters);
+        Camera.Parameters params = camera.getParameters();
+        Pair<String, String> iso = getISO(params, preferredISO);
+        params.set(iso.first, iso.second);
+        camera.setParameters(params);
 
         Log.i(TAG, "** Set ISO values as " + iso.first + " - " + iso.second);
     }
 
 
-    private static Pair<String, String> getISO(Camera.Parameters parameters, int preferredISO) {
-        String keyISO = getISOKey(parameters);
+    private static Pair<String, String> getISO(Camera.Parameters params, int preferredISO) {
+        String keyISO = getISOKey(params);
 
         if(preferredISO < 0) return Pair.create(keyISO, "auto");
 
-        List<Integer> isoValues = getSupportedISOValues(parameters);
+        List<Integer> isoValues = getSupportedISOValues(params);
 
         if(isoValues == null) return Pair.create(keyISO, "auto");
         Log.i(TAG, "** Supported ISO values: " + isoValues);
@@ -62,11 +62,11 @@ public class SettingISO {
         return Pair.create(keyISO, Integer.toString(iso));
     }
 
-    private static List<Integer> getSupportedISOValues(Camera.Parameters parameters) {
+    private static List<Integer> getSupportedISOValues(Camera.Parameters params) {
         List<Integer> isoValues = new ArrayList<Integer>();
         String[] isoValuesStrArray = null;
-        String flat = parameters.flatten();
-        String keySupportedISOValues = getSupportedISOValuesKey(parameters);
+        String flat = params.flatten();
+        String keySupportedISOValues = getSupportedISOValuesKey(params);
 
         if(keySupportedISOValues != null) {
             String isoValuesStr = flat.substring(flat.indexOf(keySupportedISOValues));
@@ -102,8 +102,8 @@ public class SettingISO {
         return isoValues;
     }
 
-    private static String getISOKey(Camera.Parameters parameters) {
-        String flattenParams = parameters.flatten();
+    private static String getISOKey(Camera.Parameters params) {
+        String flattenParams = params.flatten();
 
         if(flattenParams.contains("iso-values")) {
             //most used keywords
@@ -121,8 +121,8 @@ public class SettingISO {
         return null;
     }
 
-    private static String getSupportedISOValuesKey(Camera.Parameters parameters) {
-        String flattenParams = parameters.flatten();
+    private static String getSupportedISOValuesKey(Camera.Parameters params) {
+        String flattenParams = params.flatten();
 
         if(flattenParams.contains("iso-values")) {
             return "iso-values";

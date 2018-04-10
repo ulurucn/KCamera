@@ -19,38 +19,38 @@ public class SettingFocusMode {
 
     public static void setFocusMode(Camera camera, int type) {
         Camera.Parameters params = camera.getParameters();
-        List<String> FocusModes = params.getSupportedFocusModes();
+        List<String> focusModes = params.getSupportedFocusModes();
 
         switch(type){
             case 0:
-                if(FocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+                if(focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
                     params.setAutoExposureLock(false);
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                 }
                 break;
             case 1:
-                if(FocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                if(focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
                 }
                 break;
             case 2:
-                if(FocusModes.contains(Camera.Parameters.FOCUS_MODE_EDOF)) {
+                if(focusModes.contains(Camera.Parameters.FOCUS_MODE_EDOF)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_EDOF);
                 }
                 break;
             case 3:
-                if(FocusModes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
+                if(focusModes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
                     params.setAutoExposureLock(true);
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
                 }
                 break;
             case 4:
-                if(FocusModes.contains(Camera.Parameters.FOCUS_MODE_INFINITY)) {
+                if(focusModes.contains(Camera.Parameters.FOCUS_MODE_INFINITY)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY);
                 }
                 break;
             case 5:
-                if(FocusModes.contains(Camera.Parameters.FOCUS_MODE_MACRO)) {
+                if(focusModes.contains(Camera.Parameters.FOCUS_MODE_MACRO)) {
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
                 }
                 break;

@@ -92,8 +92,14 @@ public class CameraLoader {
         mCameraHelper.setISO(mCameraInstance, value);
     }
 
+    //EDOF, MACRO, AUTO and etc
     public void setFocusMode(int type) {
         mCameraHelper.setFocusMode(mCameraInstance, type);
+    }
+
+    //HDR, NIGHT, AUTO and etc
+    public void setSceneMode(int type) {
+        mCameraHelper.setSceneMode(mCameraInstance, type);
     }
 
 
