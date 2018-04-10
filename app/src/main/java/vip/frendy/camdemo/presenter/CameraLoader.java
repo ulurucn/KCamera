@@ -92,6 +92,10 @@ public class CameraLoader {
         mCameraHelper.setISO(mCameraInstance, value);
     }
 
+    public void setFocusMode(int type) {
+        mCameraHelper.setFocusMode(mCameraInstance, type);
+    }
+
 
     //A safe way to get an instance of the Camera object.
     private Camera getCameraInstance(final int id) {
