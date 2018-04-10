@@ -14,10 +14,6 @@ import android.widget.SeekBar;
 
 import java.io.File;
 
-import jp.co.cyberagent.android.gpuimage.GPUImage;
-import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
-import jp.co.cyberagent.android.gpuimage.GPUImageOverlayBlendFilter;
-import jp.co.cyberagent.android.gpuimage.GPUImageTwoInputFilter;
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.extension.HandlerExt;
 import vip.frendy.camdemo.presenter.CameraLoader;
@@ -25,6 +21,10 @@ import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.camera.Permission;
 import vip.frendy.camera.settings.SettingFlashMode;
 import vip.frendy.camera.settings.SettingISO;
+import vip.frendy.fliter.GPUImage;
+import vip.frendy.fliter.GPUImageFilter;
+import vip.frendy.fliter.filters.GPUImageOverlayBlendFilter;
+import vip.frendy.fliter.filters.GPUImageTwoInputFilter;
 
 /**
  * Created by frendy on 2018/4/8.

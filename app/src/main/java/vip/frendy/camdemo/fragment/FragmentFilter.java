@@ -6,12 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
-import jp.co.cyberagent.android.gpuimage.GPUImageOverlayBlendFilter;
-import jp.co.cyberagent.android.gpuimage.GPUImageView;
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
+import vip.frendy.fliter.GPUImageView;
+import vip.frendy.fliter.filters.GPUImageOverlayBlendFilter;
 
 /**
  * Created by frendy on 2018/4/9.
@@ -22,7 +22,6 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
 
     private String imgPath;
     private Bitmap bitmapSrc;
-    private Bitmap bit = null;
 
     private GPUImageView mPic;
     private FilterHelper mFilterHelper;
