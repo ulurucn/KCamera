@@ -11,6 +11,7 @@ import vip.frendy.camera.settings.SettingFlashMode;
 import vip.frendy.camera.settings.SettingFocusMode;
 import vip.frendy.camera.settings.SettingISO;
 import vip.frendy.camera.settings.SettingSceneMode;
+import vip.frendy.camera.settings.SettingWhiteBalance;
 
 public class CameraHelper {
     private final CameraHelperImpl mImpl;
@@ -106,5 +107,9 @@ public class CameraHelper {
 
     public void setFlashMode(Camera camera, int type) {
         SettingFlashMode.setFlashMode(camera, type);
+    }
+
+    public void setWhiteBalance(Camera camera, int type) {
+        SettingWhiteBalance.setWhiteBalance(camera, type);
     }
 }

@@ -106,6 +106,10 @@ public class CameraLoader {
         mCameraHelper.setFlashMode(mCameraInstance, type);
     }
 
+    public void setWhiteBalance(int type) {
+        mCameraHelper.setWhiteBalance(mCameraInstance, type);
+    }
+
 
     //A safe way to get an instance of the Camera object.
     private Camera getCameraInstance(final int id) {
