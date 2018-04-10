@@ -2,12 +2,14 @@ package vip.frendy.camdemo.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.fragment.FragmentEnhance;
 import vip.frendy.camdemo.fragment.FragmentFilter;
 import vip.frendy.camdemo.fragment.FragmentMain;
+import vip.frendy.camera.Permission;
 import vip.frendy.edit.interfaces.IPictureEditListener;
 
 /**
@@ -16,6 +18,7 @@ import vip.frendy.edit.interfaces.IPictureEditListener;
 
 public class MainActivity extends BaseFragmentActivity implements FragmentMain.IRouter, IPictureEditListener {
     private FragmentMain mMainFragment;
+    private Permission mPermission;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,6 +27,22 @@ public class MainActivity extends BaseFragmentActivity implements FragmentMain.I
 
         mMainFragment = FragmentMain.getInstance(this);
         setCurrentFragment(R.id.content_fragment, mMainFragment);
+
+        //权限申请
+        mPermission = new Permission(this);
+        mPermission.requestPermissions();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(mPermission != null)
+            mPermission.onRequestPermissionsResult(requestCode, permissions, grantResults, new Permission.IPermissionsListener() {
+                @Override
+                public void onPermissionsGranted() {}
+                @Override
+                public void onPermissionsDenied() {}
+            });
     }
 
     @Override

@@ -2,8 +2,17 @@ package vip.frendy.camdemo.presenter;
 
 import android.app.Activity;
 import android.hardware.Camera;
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import vip.frendy.camera.CameraHelper;
+import vip.frendy.camera.Common;
+
+import static vip.frendy.camera.Common.MEDIA_TYPE_IMAGE;
 
 /**
  * Created by frendy on 2018/4/9.
@@ -15,11 +24,13 @@ public class CameraLoader {
     private Camera mCameraInstance;
     private CameraHelper mCameraHelper;
     private ILoaderListener mListener;
+    private ICameraListener mCameraListener;
 
-    public CameraLoader(Activity activity, ILoaderListener listener) {
+    public CameraLoader(Activity activity, ILoaderListener listener, ICameraListener cameraListener) {
         mActivity = activity;
         mCameraHelper = new CameraHelper(mActivity);
         mListener = listener;
+        mCameraListener = cameraListener;
     }
 
     public void onResume() {
@@ -57,15 +68,17 @@ public class CameraLoader {
     }
 
     private void releaseCamera() {
-        mCameraInstance.setPreviewCallback(null);
-        mCameraInstance.release();
-        mCameraInstance = null;
+        if(mCameraInstance != null) {
+            mCameraInstance.setPreviewCallback(null);
+            mCameraInstance.release();
+            mCameraInstance = null;
+        }
     }
 
     private void setUpCamera(final int id) {
         mCameraInstance = getCameraInstance(id);
         Camera.Parameters parameters = mCameraInstance.getParameters();
-        // TODO adjust by getting supportedPreviewSizes and then choosing
+
         // the best one for screen size (best fill screen)
         if (parameters.getSupportedFocusModes().contains(
                 Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
@@ -80,8 +93,43 @@ public class CameraLoader {
         if(mListener != null) mListener.onCameraSetUp(mCameraInstance, orientation, flipHorizontal, false);
     }
 
+    public void takePicture() {
+        Camera.Parameters params = mCameraInstance.getParameters();
+        params.setRotation(90);
+        mCameraInstance.setParameters(params);
+        for(Camera.Size size : params.getSupportedPictureSizes()) {
+            Log.i("cam", "Supported: " + size.width + "x" + size.height);
+        }
+        mCameraInstance.takePicture(null, null, new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, final Camera camera) {
+                final File pictureFile = Common.getOutputMediaFile(MEDIA_TYPE_IMAGE, "tmp");
+                if (pictureFile == null) {
+                    Log.d("cam", "Error creating media file, check storage permissions");
+                    return;
+                }
+
+                try {
+                    FileOutputStream fos = new FileOutputStream(pictureFile);
+                    fos.write(data);
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    Log.d("cam", "File not found: " + e.getMessage());
+                } catch (IOException e) {
+                    Log.d("cam", "Error accessing file: " + e.getMessage());
+                }
+                data = null;
+
+                if(mCameraListener != null) mCameraListener.onTakePicture(camera, pictureFile);
+            }
+        });
+    }
+
 
     public interface ILoaderListener {
         void onCameraSetUp(Camera camera, int orientation, boolean flipHorizontal, boolean flipVertical);
+    }
+    public interface ICameraListener {
+        void onTakePicture(Camera camera, File file);
     }
 }

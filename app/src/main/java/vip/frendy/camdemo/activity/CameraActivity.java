@@ -7,15 +7,12 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageFilter;
@@ -25,16 +22,16 @@ import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.extension.HandlerExt;
 import vip.frendy.camdemo.presenter.CameraLoader;
 import vip.frendy.camdemo.presenter.FilterHelper;
-import vip.frendy.camera.Common;
-
-import static vip.frendy.camera.Common.MEDIA_TYPE_IMAGE;
+import vip.frendy.camera.Permission;
 
 /**
  * Created by frendy on 2018/4/8.
  */
 
-public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener, CameraLoader.ILoaderListener {
+public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener,
+        CameraLoader.ILoaderListener, CameraLoader.ICameraListener {
     private Context mContext = this;
+    private Permission mPermission;
 
     private GPUImage mGPUImage;
 
@@ -60,19 +57,36 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
         mGPUImage.setGLSurfaceView((GLSurfaceView) findViewById(R.id.surfaceView));
 
         mFilterHelper = new FilterHelper(this);
-        mCamera = new CameraLoader(this, this);
+        mCamera = new CameraLoader(this, this, this);
 
         View cameraSwitchView = findViewById(R.id.img_switch_camera);
         cameraSwitchView.setOnClickListener(this);
         if (!mCamera.getCameraHelper().hasFrontCamera() || !mCamera.getCameraHelper().hasBackCamera()) {
             cameraSwitchView.setVisibility(View.GONE);
         }
+
+        //权限申请
+        mPermission = new Permission(this);
+        mPermission.requestPermissions();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(mPermission != null)
+            mPermission.onRequestPermissionsResult(requestCode, permissions, grantResults, new Permission.IPermissionsListener() {
+                @Override
+                public void onPermissionsGranted() {
+                    mCamera.onResume();
+                }
+                @Override
+                public void onPermissionsDenied() {}
+            });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mCamera.onResume();
     }
 
     @Override
@@ -87,6 +101,23 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
     }
 
     @Override
+    public void onTakePicture(final Camera camera, final File file) {
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        //mGPUImage.setImage(bitmap);
+        final GLSurfaceView view = findViewById(R.id.surfaceView);
+        view.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        mGPUImage.saveToPictures(bitmap, "GPUImage", System.currentTimeMillis() + ".jpg", new GPUImage.OnPictureSavedListener() {
+                    @Override
+                    public void onPictureSaved(final Uri uri) {
+                        file.delete();
+                        camera.startPreview();
+                        view.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+                    }
+                });
+    }
+
+    @Override
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.button_anim_filter:
@@ -95,14 +126,13 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
                 switchFilterTo(mFilterHelper.createBlendFilter(GPUImageOverlayBlendFilter.class, R.mipmap.fliter));
                 break;
             case R.id.button_capture:
-                if (mCamera.getCameraInstance().getParameters().getFocusMode()
-                        .equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                    takePicture();
+                if (mCamera.getCameraInstance().getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                    mCamera.takePicture();
                 } else {
                     mCamera.getCameraInstance().autoFocus(new Camera.AutoFocusCallback() {
                         @Override
                         public void onAutoFocus(final boolean success, final Camera camera) {
-                            takePicture();
+                            mCamera.takePicture();
                         }
                     });
                 }
@@ -112,51 +142,6 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
                 break;
         }
     }
-
-    private void takePicture() {
-        Camera.Parameters params = mCamera.getCameraInstance().getParameters();
-        params.setRotation(90);
-        mCamera.getCameraInstance().setParameters(params);
-        for (Camera.Size size : params.getSupportedPictureSizes()) {
-            Log.i("cam", "Supported: " + size.width + "x" + size.height);
-        }
-        mCamera.getCameraInstance().takePicture(null, null, new Camera.PictureCallback() {
-                    @Override
-                    public void onPictureTaken(byte[] data, final Camera camera) {
-                        final File pictureFile = Common.getOutputMediaFile(MEDIA_TYPE_IMAGE, "tmp");
-                        if (pictureFile == null) {
-                            Log.d("cam", "Error creating media file, check storage permissions");
-                            return;
-                        }
-
-                        try {
-                            FileOutputStream fos = new FileOutputStream(pictureFile);
-                            fos.write(data);
-                            fos.close();
-                        } catch (FileNotFoundException e) {
-                            Log.d("cam", "File not found: " + e.getMessage());
-                        } catch (IOException e) {
-                            Log.d("cam", "Error accessing file: " + e.getMessage());
-                        }
-                        data = null;
-
-                        Bitmap bitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath());
-                        // mGPUImage.setImage(bitmap);
-                        final GLSurfaceView view = (GLSurfaceView) findViewById(R.id.surfaceView);
-                        view.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-                        mGPUImage.saveToPictures(bitmap, "GPUImage", System.currentTimeMillis() + ".jpg",
-                                new GPUImage.OnPictureSavedListener() {
-                                    @Override
-                                    public void onPictureSaved(final Uri uri) {
-                                        pictureFile.delete();
-                                        camera.startPreview();
-                                        view.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-                                    }
-                                });
-                    }
-                });
-    }
-
 
     private void switchFilterTo(final GPUImageFilter filter) {
         if(filter != null && mFilter != null && !mFilter.getClass().equals(filter.getClass())) {
