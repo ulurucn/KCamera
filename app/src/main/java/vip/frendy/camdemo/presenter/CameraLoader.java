@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import vip.frendy.camera.CameraHelper;
 import vip.frendy.camera.Common;
+import vip.frendy.camera.entity.CameraInfo2;
 
 import static vip.frendy.camera.Common.MEDIA_TYPE_IMAGE;
 
@@ -55,6 +56,42 @@ public class CameraLoader {
         return mCameraInstance;
     }
 
+    public void takePicture() {
+        Camera.Parameters params = mCameraInstance.getParameters();
+        params.setRotation(90);
+        mCameraInstance.setParameters(params);
+        for(Camera.Size size : params.getSupportedPictureSizes()) {
+            Log.i("cam", "Supported: " + size.width + "x" + size.height);
+        }
+        mCameraInstance.takePicture(null, null, new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, final Camera camera) {
+                final File pictureFile = Common.getOutputMediaFile(MEDIA_TYPE_IMAGE, "tmp");
+                if (pictureFile == null) {
+                    Log.d("cam", "Error creating media file, check storage permissions");
+                    return;
+                }
+
+                try {
+                    FileOutputStream fos = new FileOutputStream(pictureFile);
+                    fos.write(data);
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    Log.d("cam", "File not found: " + e.getMessage());
+                } catch (IOException e) {
+                    Log.d("cam", "Error accessing file: " + e.getMessage());
+                }
+                data = null;
+
+                if(mCameraListener != null) mCameraListener.onTakePicture(camera, pictureFile);
+            }
+        });
+    }
+
+    public void setISO(int value) {
+        mCameraHelper.setISO(mCameraInstance, value);
+    }
+
 
     //A safe way to get an instance of the Camera object.
     private Camera getCameraInstance(final int id) {
@@ -87,42 +124,10 @@ public class CameraLoader {
         mCameraInstance.setParameters(parameters);
 
         int orientation = mCameraHelper.getCameraDisplayOrientation(mActivity, mCurrentCameraId);
-        CameraHelper.CameraInfo2 cameraInfo = new CameraHelper.CameraInfo2();
+        CameraInfo2 cameraInfo = new CameraInfo2();
         mCameraHelper.getCameraInfo(mCurrentCameraId, cameraInfo);
         boolean flipHorizontal = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT;
         if(mListener != null) mListener.onCameraSetUp(mCameraInstance, orientation, flipHorizontal, false);
-    }
-
-    public void takePicture() {
-        Camera.Parameters params = mCameraInstance.getParameters();
-        params.setRotation(90);
-        mCameraInstance.setParameters(params);
-        for(Camera.Size size : params.getSupportedPictureSizes()) {
-            Log.i("cam", "Supported: " + size.width + "x" + size.height);
-        }
-        mCameraInstance.takePicture(null, null, new Camera.PictureCallback() {
-            @Override
-            public void onPictureTaken(byte[] data, final Camera camera) {
-                final File pictureFile = Common.getOutputMediaFile(MEDIA_TYPE_IMAGE, "tmp");
-                if (pictureFile == null) {
-                    Log.d("cam", "Error creating media file, check storage permissions");
-                    return;
-                }
-
-                try {
-                    FileOutputStream fos = new FileOutputStream(pictureFile);
-                    fos.write(data);
-                    fos.close();
-                } catch (FileNotFoundException e) {
-                    Log.d("cam", "File not found: " + e.getMessage());
-                } catch (IOException e) {
-                    Log.d("cam", "Error accessing file: " + e.getMessage());
-                }
-                data = null;
-
-                if(mCameraListener != null) mCameraListener.onTakePicture(camera, pictureFile);
-            }
-        });
     }
 
 

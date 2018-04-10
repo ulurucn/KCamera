@@ -5,6 +5,8 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 
+import vip.frendy.camera.entity.CameraInfo2;
+
 public class CameraHelperBase implements CameraHelperImpl {
 
     private final Context mContext;
@@ -45,7 +47,7 @@ public class CameraHelperBase implements CameraHelperImpl {
     }
 
     @Override
-    public void getCameraInfo(final int cameraId, final CameraHelper.CameraInfo2 cameraInfo) {
+    public void getCameraInfo(final int cameraId, final CameraInfo2 cameraInfo) {
         cameraInfo.facing = Camera.CameraInfo.CAMERA_FACING_BACK;
         cameraInfo.orientation = 90;
     }

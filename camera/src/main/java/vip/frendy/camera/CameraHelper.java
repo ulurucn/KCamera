@@ -6,6 +6,9 @@ import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.view.Surface;
 
+import vip.frendy.camera.entity.CameraInfo2;
+import vip.frendy.camera.settings.SettingISO;
+
 public class CameraHelper {
     private final CameraHelperImpl mImpl;
 
@@ -45,15 +48,14 @@ public class CameraHelper {
         mImpl.getCameraInfo(cameraId, cameraInfo);
     }
 
-    public void setCameraDisplayOrientation(final Activity activity,
-            final int cameraId, final Camera camera) {
+
+    public void setCameraDisplayOrientation(final Activity activity, final int cameraId, final Camera camera) {
         int result = getCameraDisplayOrientation(activity, cameraId);
         camera.setDisplayOrientation(result);
     }
 
     public int getCameraDisplayOrientation(final Activity activity, final int cameraId) {
-        int rotation = activity.getWindowManager().getDefaultDisplay()
-                .getRotation();
+        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         int degrees = 0;
         switch (rotation) {
             case Surface.ROTATION_0:
@@ -82,8 +84,12 @@ public class CameraHelper {
         return result;
     }
 
-    public static class CameraInfo2 {
-        public int facing;
-        public int orientation;
+
+    /**************************************
+     * Operation of Camera
+     *************************************/
+
+    public void setISO(Camera camera, int value) {
+        SettingISO.setISO(camera, value);
     }
 }

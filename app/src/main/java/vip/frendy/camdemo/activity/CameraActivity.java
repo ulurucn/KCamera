@@ -23,6 +23,7 @@ import vip.frendy.camdemo.extension.HandlerExt;
 import vip.frendy.camdemo.presenter.CameraLoader;
 import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.camera.Permission;
+import vip.frendy.camera.settings.SettingISO;
 
 /**
  * Created by frendy on 2018/4/8.
@@ -178,7 +179,9 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
     public void onStartTrackingTouch(final SeekBar seekBar) {}
 
     @Override
-    public void onStopTrackingTouch(final SeekBar seekBar) {}
+    public void onStopTrackingTouch(final SeekBar seekBar) {
+        if(mCamera != null) mCamera.setISO(SettingISO.DEFAULT_VALUES[seekBar.getProgress() % 6]);
+    }
 
     @Override
     protected void onDestroy() {
