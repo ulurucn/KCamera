@@ -23,6 +23,7 @@ import vip.frendy.camdemo.extension.HandlerExt;
 import vip.frendy.camdemo.presenter.CameraLoader;
 import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.camera.Permission;
+import vip.frendy.camera.settings.SettingFlashMode;
 import vip.frendy.camera.settings.SettingISO;
 
 /**
@@ -53,6 +54,7 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
         findViewById(R.id.button_choose_filter).setOnClickListener(this);
         findViewById(R.id.button_anim_filter).setOnClickListener(this);
         findViewById(R.id.button_capture).setOnClickListener(this);
+        findViewById(R.id.button_flashlight).setOnClickListener(this);
 
         mGPUImage = new GPUImage(this);
         mGPUImage.setGLSurfaceView((GLSurfaceView) findViewById(R.id.surfaceView));
@@ -140,6 +142,9 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
                 break;
             case R.id.img_switch_camera:
                 mCamera.switchCamera();
+                break;
+            case R.id.button_flashlight:
+                mCamera.setFlashMode(SettingFlashMode.FLASH_MODE_ON);
                 break;
         }
     }

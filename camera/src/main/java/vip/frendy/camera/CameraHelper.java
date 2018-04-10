@@ -7,6 +7,7 @@ import android.hardware.Camera.CameraInfo;
 import android.view.Surface;
 
 import vip.frendy.camera.entity.CameraInfo2;
+import vip.frendy.camera.settings.SettingFlashMode;
 import vip.frendy.camera.settings.SettingFocusMode;
 import vip.frendy.camera.settings.SettingISO;
 import vip.frendy.camera.settings.SettingSceneMode;
@@ -101,5 +102,9 @@ public class CameraHelper {
 
     public void setSceneMode(Camera camera, int type) {
         SettingSceneMode.setSceneMode(camera, type);
+    }
+
+    public void setFlashMode(Camera camera, int type) {
+        SettingFlashMode.setFlashMode(camera, type);
     }
 }

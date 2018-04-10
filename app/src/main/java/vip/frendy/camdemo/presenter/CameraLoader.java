@@ -102,6 +102,10 @@ public class CameraLoader {
         mCameraHelper.setSceneMode(mCameraInstance, type);
     }
 
+    public void setFlashMode(int type) {
+        mCameraHelper.setFlashMode(mCameraInstance, type);
+    }
+
 
     //A safe way to get an instance of the Camera object.
     private Camera getCameraInstance(final int id) {

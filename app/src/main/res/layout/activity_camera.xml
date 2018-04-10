@@ -17,6 +17,12 @@
         android:padding="10dp"
         android:src="@mipmap/ic_switch_camera" />
 
+    <Button
+        android:id="@+id/button_flashlight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="flashlight"/>
+
     <LinearLayout
         android:id="@+id/bar"
         android:layout_width="match_parent"
