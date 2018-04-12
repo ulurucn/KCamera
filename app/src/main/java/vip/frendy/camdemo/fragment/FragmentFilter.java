@@ -5,19 +5,23 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.SeekBar;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
+import vip.frendy.fliter.FilterType;
+import vip.frendy.fliter.GPUImageFilter;
 import vip.frendy.fliter.GPUImageView;
 import vip.frendy.fliter.filters.GPUImageOverlayBlendFilter;
+import vip.frendy.fliter.utils.FilterAdjuster;
 
 /**
  * Created by frendy on 2018/4/9.
  */
 
-public class FragmentFilter extends BaseFragment implements View.OnClickListener {
+public class FragmentFilter extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     public static String PIC_PATH = "pic_path";
 
     private String imgPath;
@@ -26,6 +30,9 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
     private GPUImageView mPic;
     private FilterHelper mFilterHelper;
     private IPictureEditListener mListener;
+
+    private GPUImageFilter mFilter;
+    private FilterAdjuster mFilterAdjuster;
 
     public static FragmentFilter getInstance(Bundle args, IPictureEditListener listener) {
         FragmentFilter fragment = new FragmentFilter();
@@ -50,9 +57,11 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
 
     @Override
     protected void initAction() {
+        ((SeekBar) mRootView.findViewById(R.id.seekBar)).setOnSeekBarChangeListener(this);
         mRootView.findViewById(R.id.ok).setOnClickListener(this);
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
         mRootView.findViewById(R.id.filter).setOnClickListener(this);
+        mRootView.findViewById(R.id.edge).setOnClickListener(this);
 
         imgPath = getArguments().getString(PIC_PATH);
         bitmapSrc = BitmapFactory.decodeFile(imgPath);
@@ -76,6 +85,16 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.filter) {
             mPic.setFilter(mFilterHelper.createBlendFilter(GPUImageOverlayBlendFilter.class, R.mipmap.fliter));
+            //隐藏seekbar
+            mRootView.findViewById(R.id.seekBar).setVisibility(View.GONE);
+        } else if(view.getId() == R.id.edge) {
+            //暗角
+            mFilter = mFilterHelper.createFilter(FilterType.VIGNETTE);
+            mPic.setFilter(mFilter);
+            mFilterAdjuster = new FilterAdjuster(mFilter);
+            //显示seekbar
+            mRootView.findViewById(R.id.seekBar).setVisibility(
+                    mFilterAdjuster.canAdjust() ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -84,4 +103,16 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
         super.onDestroy();
         if(mFilterHelper != null) mFilterHelper.onDestroy();
     }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if(mFilterAdjuster != null) {
+            mFilterAdjuster.adjust(progress);
+            mPic.requestRender();
+        }
+    }
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {}
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {}
 }
