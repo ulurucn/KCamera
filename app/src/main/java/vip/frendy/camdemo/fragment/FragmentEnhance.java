@@ -23,7 +23,7 @@ public class FragmentEnhance extends BaseFragment implements View.OnClickListene
     private Bitmap bitmapSrc;
 
     private int pregress = 0;
-    private Bitmap bit = null;
+    private Bitmap bitmap = null;
 
     private PhotoEnhance mPhotoEnhance;
     private IPictureEditListener mListener;
@@ -84,7 +84,7 @@ public class FragmentEnhance extends BaseFragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.ok) {
-            Common.writeImage(bit, imgPath, 100);
+            Common.writeImage(bitmap, imgPath, 100);
             if(mListener != null) mListener.onPictureEditApply(0, imgPath);
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
@@ -119,8 +119,8 @@ public class FragmentEnhance extends BaseFragment implements View.OnClickListene
             default :
                 break;
         }
-        bit = mPhotoEnhance.handleImage(type);
-        mPic.setImageBitmap(bit);
+        bitmap = mPhotoEnhance.handleImage(type);
+        mPic.setImageBitmap(bitmap);
     }
 
 
@@ -135,9 +135,9 @@ public class FragmentEnhance extends BaseFragment implements View.OnClickListene
             bitmapSrc.recycle();
             bitmapSrc = null;
         }
-        if(bit != null) {
-            bit.recycle();
-            bit = null;
+        if(bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
         }
     }
 }
