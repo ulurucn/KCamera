@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import vip.frendy.camdemo.R;
+import vip.frendy.camdemo.fragment.FragmentCrop;
 import vip.frendy.camdemo.fragment.FragmentEnhance;
 import vip.frendy.camdemo.fragment.FragmentFilter;
 import vip.frendy.camdemo.fragment.FragmentMain;
@@ -72,6 +73,8 @@ public class MainActivity extends BaseFragmentActivity implements FragmentMain.I
             switchFragment(R.id.content_fragment, FragmentFilter.getInstance(args, this));
         } else if(id == R.id.rotate) {
             switchFragment(R.id.content_fragment, FragmentRotate.getInstance(args, this));
+        } else if(id == R.id.crop) {
+            switchFragment(R.id.content_fragment, FragmentCrop.getInstance(args, this));
         }
     }
 

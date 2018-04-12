@@ -53,6 +53,7 @@ public class FragmentMain extends BaseFragment implements View.OnClickListener {
         mRootView.findViewById(R.id.filter).setOnClickListener(this);
         mRootView.findViewById(R.id.rotate).setOnClickListener(this);
         mRootView.findViewById(R.id.puzzle).setOnClickListener(this);
+        mRootView.findViewById(R.id.crop).setOnClickListener(this);
 
         //图片处理
         mPictureHelper = new PictureHelper(getActivity());
@@ -64,7 +65,7 @@ public class FragmentMain extends BaseFragment implements View.OnClickListener {
             mPictureHelper.getPictureFromPhoto();
         } else if(view.getId() == R.id.camera) {
             mPictureHelper.getPictureFormCamera();
-        } else if(view.getId() == R.id.enhance || view.getId() == R.id.filter || view.getId() == R.id.rotate) {
+        } else if(view.getId() == R.id.enhance || view.getId() == R.id.filter || view.getId() == R.id.rotate || view.getId() == R.id.crop) {
             Bundle args = new Bundle();
             args.putString(FragmentEnhance.PIC_PATH, mPicturePath);
             if(mRouter != null) mRouter.onRouteTo(view.getId(), args);

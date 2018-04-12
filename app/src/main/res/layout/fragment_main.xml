@@ -41,26 +41,42 @@
 
         <Button
             android:id="@+id/enhance"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="2dp"
             android:text="enhance"/>
 
         <Button
             android:id="@+id/filter"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="2dp"
             android:text="filter"/>
 
         <Button
             android:id="@+id/rotate"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="2dp"
             android:text="rotate"/>
 
         <Button
             android:id="@+id/puzzle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="2dp"
             android:text="puzzle"/>
+
+        <Button
+            android:id="@+id/crop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="2dp"
+            android:text="crop"/>
     </LinearLayout>
 </FrameLayout>
