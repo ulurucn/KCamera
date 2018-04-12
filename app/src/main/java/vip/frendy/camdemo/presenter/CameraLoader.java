@@ -9,11 +9,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import vip.frendy.base.Common;
 import vip.frendy.camera.CameraHelper;
-import vip.frendy.camera.Common;
 import vip.frendy.camera.entity.CameraInfo2;
 
-import static vip.frendy.camera.Common.MEDIA_TYPE_IMAGE;
+import static vip.frendy.base.Common.MEDIA_TYPE_IMAGE;
+
 
 /**
  * Created by frendy on 2018/4/9.
@@ -66,7 +67,7 @@ public class CameraLoader {
         mCameraInstance.takePicture(null, null, new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, final Camera camera) {
-                final File pictureFile = Common.getOutputMediaFile(MEDIA_TYPE_IMAGE, "tmp");
+                final File pictureFile = Common.getOutputMediaFile(MEDIA_TYPE_IMAGE);
                 if (pictureFile == null) {
                     Log.d("cam", "Error creating media file, check storage permissions");
                     return;

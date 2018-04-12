@@ -75,7 +75,7 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
     public void onClick(View view) {
         if(view.getId() == R.id.ok) {
             String fileName = System.currentTimeMillis() + ".jpg";
-            mPic.saveToPictures("GPUImage", fileName, new GPUImageView.OnPictureSavedListener() {
+            mPic.saveToPictures(vip.frendy.base.Common.DEFAULT_DIR, fileName, new GPUImageView.OnPictureSavedListener() {
                 @Override
                 public void onPictureSaved(Uri uri) {
                     if(mListener != null) mListener.onPictureEditApply(0, Common.getRealFilePath(getContext(), uri));

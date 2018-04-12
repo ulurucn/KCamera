@@ -3,6 +3,8 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 26
 
+
+
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 26
@@ -11,23 +13,6 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-//        ndk {
-//            moduleName "gpuimage-library"
-//            stl "gnustl_shared"
-//            abiFilters "all"
-//            ldLibs "log"
-//        }
-    }
-
-    sourceSets {
-        main {
-            jniLibs.srcDirs 'src/main/libs'
-            jni.srcDirs = [] //disable automatic ndk-build call
-        }
-    }
-
-    lintOptions {
-        abortOnError false
     }
 
     buildTypes {
@@ -46,8 +31,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
-    compile project(':media')
-
-//    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1@aar'
 }

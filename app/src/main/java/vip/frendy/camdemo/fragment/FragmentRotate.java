@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
-import vip.frendy.edit.extension.BitmapExt;
+import vip.frendy.base.BitmapExt;
 import vip.frendy.edit.interfaces.IPictureEditListener;
 
 /**

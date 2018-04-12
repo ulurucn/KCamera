@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/edit/edit.iml" filepath="$PROJECT_DIR$/edit/edit.iml" />
       <module fileurl="file://$PROJECT_DIR$/filter/filter.iml" filepath="$PROJECT_DIR$/filter/filter.iml" />
       <module fileurl="file://$PROJECT_DIR$/filter/fliter.iml" filepath="$PROJECT_DIR$/filter/fliter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/media/base.iml" filepath="$PROJECT_DIR$/media/base.iml" />
       <module fileurl="file://$PROJECT_DIR$/puzzle/puzzle.iml" filepath="$PROJECT_DIR$/puzzle/puzzle.iml" />
     </modules>
   </component>

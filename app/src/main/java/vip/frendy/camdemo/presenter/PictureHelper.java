@@ -17,9 +17,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import vip.frendy.camdemo.model.Constants;
-import vip.frendy.edit.common.Common;
+import vip.frendy.base.BitmapExt;
+import vip.frendy.base.Common;
 import vip.frendy.edit.operate.OperateUtils;
+
+import static vip.frendy.base.Common.MEDIA_TYPE_IMAGE;
 
 /**
  * Created by frendy on 2018/4/8.
@@ -50,7 +52,7 @@ public class PictureHelper {
     }
 
     public String saveBitmap(Bitmap bitmap, String name) {
-        return Common.saveBitmap(bitmap, Constants.DEFAULT_FILE_PATH, name);
+        return BitmapExt.saveBitmap(bitmap, Common.getOutputMediaDir(), name);
     }
 
     //从相册中获取照片
@@ -64,11 +66,10 @@ public class PictureHelper {
     public void getPictureFormCamera() {
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 
-        tempPhotoPath = Common.DCIM_CAMERA_PATH + Common.getNewFileName() + ".jpg";
-        File currentFile = new File(tempPhotoPath);
-
-        if (!currentFile.exists()) {
+        File currentFile = Common.getOutputMediaFile(MEDIA_TYPE_IMAGE);
+        if(currentFile != null && !currentFile.exists()) {
             try {
+                tempPhotoPath = currentFile.getAbsolutePath();
                 currentFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -118,8 +119,8 @@ public class PictureHelper {
                 selectedPhotoList.clear();
                 selectedPhotoList.addAll(resultPhotos);
 
-                EasyPhotos.startPuzzleWithPhotos(mActivity, selectedPhotoList, Environment.getExternalStorageDirectory().getAbsolutePath(),
-                        "AlbumBuilder", PUZZLE_WITH_DATA, false, GlideEngine.getInstance());
+                EasyPhotos.startPuzzleWithPhotos(mActivity, selectedPhotoList, Common.getOutputMediaDir(),
+                        "Puzzle_", PUZZLE_WITH_DATA, false, GlideEngine.getInstance());
                 break;
             case PUZZLE_WITH_DATA:
 //                Photo puzzlePhoto = data.getParcelableExtra(EasyPhotos.RESULT_PHOTOS);
