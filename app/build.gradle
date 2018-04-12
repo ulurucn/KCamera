@@ -33,4 +33,5 @@ dependencies {
     compile project(':edit')
     compile project(':camera')
     compile project(':filter')
+    compile project(':puzzle')
 }

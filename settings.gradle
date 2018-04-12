@@ -1,1 +1,1 @@
-include ':app', ':edit', ':camera', ':filter'
+include ':app', ':edit', ':camera', ':filter', ':puzzle'

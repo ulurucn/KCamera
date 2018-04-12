@@ -56,5 +56,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="rotate"/>
+
+        <Button
+            android:id="@+id/puzzle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="puzzle"/>
     </LinearLayout>
 </FrameLayout>
