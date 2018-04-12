@@ -1,4 +1,4 @@
-package vip.frendy.fliter;
+package vip.frendy.fliter.filters;
 
 /**
  * Created by frendy on 2018/4/12.

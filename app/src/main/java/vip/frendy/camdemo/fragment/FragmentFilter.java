@@ -11,7 +11,7 @@ import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
-import vip.frendy.fliter.FilterType;
+import vip.frendy.fliter.filters.FilterType;
 import vip.frendy.fliter.GPUImageFilter;
 import vip.frendy.fliter.GPUImageView;
 import vip.frendy.fliter.filters.GPUImageOverlayBlendFilter;

@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
-import vip.frendy.fliter.FilterType;
+import vip.frendy.fliter.filters.FilterType;
 import vip.frendy.fliter.GPUImageFilter;
 import vip.frendy.fliter.filters.GPUImageTwoInputFilter;
 import vip.frendy.fliter.filters.GPUImageVignetteFilter;
