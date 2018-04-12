@@ -139,7 +139,7 @@ public class CameraLoader {
                 Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
-        mCameraInstance.setParameters(parameters);
+        //mCameraInstance.setParameters(parameters);
 
         int orientation = mCameraHelper.getCameraDisplayOrientation(mActivity, mCurrentCameraId);
         CameraInfo2 cameraInfo = new CameraInfo2();
