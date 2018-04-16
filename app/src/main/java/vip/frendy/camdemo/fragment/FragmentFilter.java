@@ -11,10 +11,10 @@ import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
-import vip.frendy.fliter.filters.FilterType;
+import vip.frendy.fliter.FilterType;
 import vip.frendy.fliter.GPUImageFilter;
 import vip.frendy.fliter.GPUImageView;
-import vip.frendy.fliter.filters.GPUImageOverlayBlendFilter;
+import vip.frendy.fliter.gpufilters.GPUImageOverlayBlendFilter;
 import vip.frendy.fliter.utils.FilterAdjuster;
 
 /**
@@ -62,6 +62,7 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
         mRootView.findViewById(R.id.filter).setOnClickListener(this);
         mRootView.findViewById(R.id.edge).setOnClickListener(this);
+        mRootView.findViewById(R.id.watermark).setOnClickListener(this);
 
         imgPath = getArguments().getString(PIC_PATH);
         bitmapSrc = BitmapFactory.decodeFile(imgPath);
@@ -95,6 +96,13 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
             //显示seekbar
             mRootView.findViewById(R.id.seekBar).setVisibility(
                     mFilterAdjuster.canAdjust() ? View.VISIBLE : View.GONE);
+        } else if(view.getId() == R.id.watermark) {
+            //水印
+            mFilter = mFilterHelper.createFilter(FilterType.WATER_MARK);
+            mPic.setFilter(mFilter);
+            mFilterAdjuster = new FilterAdjuster(mFilter);
+            //隐藏seekbar
+            mRootView.findViewById(R.id.seekBar).setVisibility(View.GONE);
         }
     }
 

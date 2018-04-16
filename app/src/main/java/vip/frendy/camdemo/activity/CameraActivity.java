@@ -23,8 +23,8 @@ import vip.frendy.camera.settings.SettingFlashMode;
 import vip.frendy.camera.settings.SettingISO;
 import vip.frendy.fliter.GPUImage;
 import vip.frendy.fliter.GPUImageFilter;
-import vip.frendy.fliter.filters.GPUImageOverlayBlendFilter;
-import vip.frendy.fliter.filters.GPUImageTwoInputFilter;
+import vip.frendy.fliter.gpufilters.GPUImageOverlayBlendFilter;
+import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
 
 /**
  * Created by frendy on 2018/4/8.

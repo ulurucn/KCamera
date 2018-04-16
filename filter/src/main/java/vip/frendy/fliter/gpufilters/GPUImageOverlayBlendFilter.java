@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vip.frendy.fliter.filters;
+package vip.frendy.fliter.gpufilters;
 
 public class GPUImageOverlayBlendFilter extends GPUImageTwoInputFilter {
     public static final String OVERLAY_BLEND_FRAGMENT_SHADER = "varying highp vec2 textureCoordinate;\n" +

@@ -28,6 +28,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:text="暗角"/>
+
+        <Button
+            android:id="@+id/watermark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="水印"/>
     </LinearLayout>
 
     <LinearLayout

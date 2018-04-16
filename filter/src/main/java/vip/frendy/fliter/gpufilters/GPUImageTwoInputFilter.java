@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vip.frendy.fliter.filters;
+package vip.frendy.fliter.gpufilters;
 
 import android.graphics.Bitmap;
 import android.opengl.GLES20;

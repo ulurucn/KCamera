@@ -1,9 +1,10 @@
-package vip.frendy.fliter.filters;
+package vip.frendy.fliter;
 
 /**
  * Created by frendy on 2018/4/12.
  */
 
 public enum FilterType {
-    VIGNETTE
+    VIGNETTE,
+    WATER_MARK
 }

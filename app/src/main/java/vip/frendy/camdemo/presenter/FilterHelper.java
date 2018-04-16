@@ -7,10 +7,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
-import vip.frendy.fliter.filters.FilterType;
+import vip.frendy.camdemo.R;
+import vip.frendy.fliter.aiyafilters.GPUImageFilterCompat;
+import vip.frendy.fliter.aiyafilters.WaterMarkFilter;
+import vip.frendy.fliter.FilterType;
 import vip.frendy.fliter.GPUImageFilter;
-import vip.frendy.fliter.filters.GPUImageTwoInputFilter;
-import vip.frendy.fliter.filters.GPUImageVignetteFilter;
+import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
+import vip.frendy.fliter.gpufilters.GPUImageVignetteFilter;
 
 /**
  * Created by frendy on 2018/4/9.
@@ -46,6 +49,11 @@ public class FilterHelper {
                 centerPoint.x = 0.5f;
                 centerPoint.y = 0.5f;
                 return new GPUImageVignetteFilter(centerPoint, new float[] {0.0f, 0.0f, 0.0f}, 0.3f, 0.75f);
+            case WATER_MARK:
+                WaterMarkFilter water =  new WaterMarkFilter(mContext.getResources());
+                water.setWaterMark(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher_round));
+                water.setPosition(200, 600, 400, 400);
+                return new GPUImageFilterCompat(water);
             default:
                 throw new IllegalStateException("No filter of that type!");
         }
