@@ -52,7 +52,7 @@ public class FilterHelper {
             case WATER_MARK:
                 WaterMarkFilter water =  new WaterMarkFilter(mContext.getResources());
                 water.setWaterMark(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher_round));
-                water.setPosition(200, 600, 400, 400);
+                water.setPosition(200, 200, 200, 200);
                 return new GPUImageFilterCompat(water);
             default:
                 throw new IllegalStateException("No filter of that type!");
