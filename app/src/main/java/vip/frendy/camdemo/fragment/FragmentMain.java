@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.presenter.PictureHelper;
@@ -19,7 +19,7 @@ public class FragmentMain extends BaseFragment implements View.OnClickListener {
     private PictureHelper mPictureHelper;
     private String mPicturePath;
 
-    private LinearLayout mPicContent;
+    private FrameLayout mPicContent;
     private ImageView mPic;
 
     private IRouter mRouter;

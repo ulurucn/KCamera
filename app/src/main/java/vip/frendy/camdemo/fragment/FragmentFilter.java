@@ -13,6 +13,7 @@ import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
 import vip.frendy.fliter.FilterType;
 import vip.frendy.fliter.base.GPUImageFilter;
+import vip.frendy.fliter.widget.GPUImage;
 import vip.frendy.fliter.widget.GPUImageView;
 import vip.frendy.fliter.gpufilters.GPUImageOverlayBlendFilter;
 import vip.frendy.fliter.utils.FilterAdjuster;
@@ -53,6 +54,7 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
     @Override
     protected void initWidgets() {
         mPic = mRootView.findViewById(R.id.gpu_image);
+        mPic.setScaleType(GPUImage.ScaleType.CENTER_INSIDE);
     }
 
     @Override
