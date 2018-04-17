@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import vip.frendy.fliter.GPUImageFilter;
+import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.utils.OpenGlUtils;
 import vip.frendy.fliter.utils.Rotation;
 import vip.frendy.fliter.utils.TextureRotationUtil;

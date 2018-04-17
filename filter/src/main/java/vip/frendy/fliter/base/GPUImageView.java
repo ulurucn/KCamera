@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vip.frendy.fliter;
+package vip.frendy.fliter.base;
 
 import android.content.Context;
 import android.graphics.Bitmap;

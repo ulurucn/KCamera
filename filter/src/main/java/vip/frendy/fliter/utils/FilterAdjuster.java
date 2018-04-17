@@ -1,6 +1,6 @@
 package vip.frendy.fliter.utils;
 
-import vip.frendy.fliter.GPUImageFilter;
+import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.gpufilters.GPUImageVignetteFilter;
 
 public class FilterAdjuster {

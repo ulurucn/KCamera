@@ -11,7 +11,7 @@ import vip.frendy.camdemo.R;
 import vip.frendy.fliter.aiyafilters.GPUImageFilterCompat;
 import vip.frendy.fliter.aiyafilters.WaterMarkFilter;
 import vip.frendy.fliter.FilterType;
-import vip.frendy.fliter.GPUImageFilter;
+import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
 import vip.frendy.fliter.gpufilters.GPUImageVignetteFilter;
 

@@ -21,8 +21,8 @@ import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.camera.Permission;
 import vip.frendy.camera.settings.SettingFlashMode;
 import vip.frendy.camera.settings.SettingISO;
-import vip.frendy.fliter.GPUImage;
-import vip.frendy.fliter.GPUImageFilter;
+import vip.frendy.fliter.base.GPUImage;
+import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.gpufilters.GPUImageOverlayBlendFilter;
 import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
 

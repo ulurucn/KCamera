@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vip.frendy.fliter;
+package vip.frendy.fliter.base;
 
 import android.annotation.SuppressLint;
 import android.opengl.GLES20;
@@ -28,7 +28,7 @@ import java.util.List;
 import vip.frendy.fliter.utils.Rotation;
 import vip.frendy.fliter.utils.TextureRotationUtil;
 
-import static vip.frendy.fliter.GPUImageRenderer.CUBE;
+import static vip.frendy.fliter.base.GPUImageRenderer.CUBE;
 import static vip.frendy.fliter.utils.TextureRotationUtil.TEXTURE_NO_ROTATION;
 
 /**

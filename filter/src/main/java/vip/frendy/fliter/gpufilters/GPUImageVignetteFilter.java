@@ -19,7 +19,7 @@ package vip.frendy.fliter.gpufilters;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 
-import vip.frendy.fliter.GPUImageFilter;
+import vip.frendy.fliter.base.GPUImageFilter;
 
 /**
  * Performs a vignetting effect, fading out the image at the edges

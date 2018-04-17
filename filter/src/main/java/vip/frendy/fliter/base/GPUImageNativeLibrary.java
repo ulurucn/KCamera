@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vip.frendy.fliter;
+package vip.frendy.fliter.base;
 
 public class GPUImageNativeLibrary {
     static {
