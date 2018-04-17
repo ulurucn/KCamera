@@ -20,6 +20,8 @@ import java.nio.IntBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import vip.frendy.fliter.FilterManager;
+
 public class OpenGlUtils {
 	public static final int NO_TEXTURE = -1;
 	public static final int NOT_INIT = -1;	
@@ -235,7 +237,8 @@ public class OpenGlUtils {
 		return texture[0];
 	}
 	
-	public static String readShaderFromRawResource(Resources resources, final int resourceId){
+	public static String readShaderFromRawResource(final int resourceId){
+		Resources resources = FilterManager.getInstance().getResources();
 		final InputStream inputStream = resources.openRawResource(
 				resourceId);
 		final InputStreamReader inputStreamReader = new InputStreamReader(

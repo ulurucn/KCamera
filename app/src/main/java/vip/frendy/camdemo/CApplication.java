@@ -4,6 +4,8 @@ import android.app.Application;
 import android.os.Build;
 import android.os.StrictMode;
 
+import vip.frendy.fliter.FilterManager;
+
 /**
  * Created by frendy on 2018/4/8.
  */
@@ -19,5 +21,8 @@ public class CApplication extends Application {
             StrictMode.setVmPolicy(builder.build());
             builder.detectFileUriExposure();
         }
+
+        //滤镜
+        FilterManager.getInstance().init(this);
     }
 }

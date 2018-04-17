@@ -21,6 +21,7 @@ import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.camera.Permission;
 import vip.frendy.camera.settings.SettingFlashMode;
 import vip.frendy.camera.settings.SettingISO;
+import vip.frendy.fliter.FilterType;
 import vip.frendy.fliter.base.GPUImage;
 import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.gpufilters.GPUImageOverlayBlendFilter;
@@ -53,6 +54,7 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
         ((SeekBar) findViewById(R.id.seekBar)).setOnSeekBarChangeListener(this);
         findViewById(R.id.button_choose_filter).setOnClickListener(this);
         findViewById(R.id.button_anim_filter).setOnClickListener(this);
+        findViewById(R.id.button_beauty_filter).setOnClickListener(this);
         findViewById(R.id.button_capture).setOnClickListener(this);
         findViewById(R.id.button_flashlight).setOnClickListener(this);
 
@@ -127,6 +129,9 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
                 isAnimFilter = !isAnimFilter;
             case R.id.button_choose_filter:
                 switchFilterTo(mFilterHelper.createBlendFilter(GPUImageOverlayBlendFilter.class, R.mipmap.fliter));
+                break;
+            case R.id.button_beauty_filter:
+                switchFilterTo(mFilterHelper.createFilter(FilterType.BEAUTY));
                 break;
             case R.id.button_capture:
                 if (mCamera.getCameraInstance().getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {

@@ -15,6 +15,7 @@ import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.gpufilters.GPUImageSharpenFilter;
 import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
 import vip.frendy.fliter.gpufilters.GPUImageVignetteFilter;
+import vip.frendy.fliter.magicfilters.MagicBeautyFilter;
 
 /**
  * Created by frendy on 2018/4/9.
@@ -59,6 +60,8 @@ public class FilterHelper {
                 GPUImageSharpenFilter sharpness = new GPUImageSharpenFilter();
                 sharpness.setSharpness(2.0f);
                 return sharpness;
+            case BEAUTY:
+                return new MagicBeautyFilter();
             default:
                 throw new IllegalStateException("No filter of that type!");
         }

@@ -7,5 +7,6 @@ package vip.frendy.fliter;
 public enum FilterType {
     VIGNETTE,
     WATER_MARK,
-    SHARPEN
+    SHARPEN,
+    BEAUTY
 }
