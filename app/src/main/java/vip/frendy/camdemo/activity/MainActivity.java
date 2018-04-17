@@ -11,7 +11,7 @@ import vip.frendy.camdemo.fragment.FragmentEnhance;
 import vip.frendy.camdemo.fragment.FragmentFilter;
 import vip.frendy.camdemo.fragment.FragmentMain;
 import vip.frendy.camdemo.fragment.FragmentRotate;
-import vip.frendy.base.Permission;
+import vip.frendy.camera.Permission;
 import vip.frendy.edit.interfaces.IPictureEditListener;
 
 /**

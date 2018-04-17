@@ -3,38 +3,26 @@ package vip.frendy.camdemo.activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.SeekBar;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.extension.HandlerExt;
 import vip.frendy.camdemo.presenter.CameraLoader;
 import vip.frendy.camdemo.presenter.FilterHelper;
-import vip.frendy.base.Permission;
+import vip.frendy.camera.Permission;
 import vip.frendy.camera.settings.SettingFlashMode;
 import vip.frendy.camera.settings.SettingISO;
-import vip.frendy.camera.view.FrameCallback;
-import vip.frendy.camera.view.Renderer;
-import vip.frendy.camera.view.TextureController;
-import vip.frendy.fliter.FilterType;
 import vip.frendy.fliter.GPUImage;
 import vip.frendy.fliter.GPUImageFilter;
-import vip.frendy.fliter.aiyafilters.WaterMarkFilter;
 import vip.frendy.fliter.gpufilters.GPUImageOverlayBlendFilter;
 import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
 
@@ -43,12 +31,11 @@ import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
  */
 
 public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener,
-        CameraLoader.ILoaderListener, CameraLoader.ICameraListener, FrameCallback {
+        CameraLoader.ILoaderListener, CameraLoader.ICameraListener {
     private Context mContext = this;
     private Permission mPermission;
 
     private GPUImage mGPUImage;
-    private GLSurfaceView mSurfaceView;
 
     private CameraLoader mCamera;
     private GPUImageFilter mFilter;
@@ -66,13 +53,11 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
         ((SeekBar) findViewById(R.id.seekBar)).setOnSeekBarChangeListener(this);
         findViewById(R.id.button_choose_filter).setOnClickListener(this);
         findViewById(R.id.button_anim_filter).setOnClickListener(this);
-        findViewById(R.id.button_water_mark).setOnClickListener(this);
         findViewById(R.id.button_capture).setOnClickListener(this);
         findViewById(R.id.button_flashlight).setOnClickListener(this);
 
-        mSurfaceView = findViewById(R.id.surfaceView);
         mGPUImage = new GPUImage(this);
-        mGPUImage.setGLSurfaceView(mSurfaceView);
+        mGPUImage.setGLSurfaceView((GLSurfaceView) findViewById(R.id.surfaceView));
 
         mFilterHelper = new FilterHelper(this);
         mCamera = new CameraLoader(this, this, this);
@@ -96,35 +81,6 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
                 @Override
                 public void onPermissionsGranted() {
                     mCamera.onResume();
-                    mRenderer = new Camera1Renderer();
-                    mGPUImage.setRenderer(mRenderer);
-
-                    mController = new TextureController(CameraActivity.this);
-                    WaterMarkFilter filter=new WaterMarkFilter(getResources());
-                    filter.setWaterMark(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher_round));
-                    filter.setPosition(800,500,300,150);
-                    mController.addFilter(filter);
-                    mController.setFrameCallback(720, 1280, CameraActivity.this);
-                    mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-                        @Override
-                        public void surfaceCreated(SurfaceHolder holder) {
-                            mController.surfaceCreated(holder);
-                            mController.setRenderer(mRenderer);
-                        }
-
-                        @Override
-                        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                            mController.surfaceChanged(width, height);
-                        }
-
-                        @Override
-                        public void surfaceDestroyed(SurfaceHolder holder) {
-                            mController.surfaceDestroyed();
-                        }
-                    });
-                    if (mController != null) {
-                        mController.onResume();
-                    }
                 }
                 @Override
                 public void onPermissionsDenied() {}
@@ -140,9 +96,6 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
     protected void onPause() {
         mCamera.onPause();
         super.onPause();
-        if (mController != null) {
-            mController.onPause();
-        }
     }
 
     @Override
@@ -174,8 +127,6 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
                 isAnimFilter = !isAnimFilter;
             case R.id.button_choose_filter:
                 switchFilterTo(mFilterHelper.createBlendFilter(GPUImageOverlayBlendFilter.class, R.mipmap.fliter));
-                break;
-            case R.id.button_water_mark:
                 break;
             case R.id.button_capture:
                 if (mCamera.getCameraInstance().getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
@@ -241,55 +192,5 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
     protected void onDestroy() {
         super.onDestroy();
         if(mFilterHelper != null) mFilterHelper.onDestroy();
-    }
-
-
-    private TextureController mController;
-    private Renderer mRenderer;
-    private int cameraId = 1;
-
-    @Override
-    public void onFrame(byte[] bytes, long time) {
-
-    }
-
-    private class Camera1Renderer implements Renderer {
-
-        @Override
-        public void onDestroy() {
-            if (mCamera != null) {
-                mCamera = null;
-            }
-        }
-
-        @Override
-        public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            mController.setImageDirection(cameraId);
-            Camera.Size size = mCamera.getCameraInstance().getParameters().getPreviewSize();
-            mController.setDataSize(size.height, size.width);
-            try {
-                mCamera.getCameraInstance().setPreviewTexture(mController.getTexture());
-                mController.getTexture().setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
-                    @Override
-                    public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                        mController.requestRender();
-                    }
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mCamera.getCameraInstance().startPreview();
-        }
-
-        @Override
-        public void onSurfaceChanged(GL10 gl, int width, int height) {
-
-        }
-
-        @Override
-        public void onDrawFrame(GL10 gl) {
-
-        }
-
     }
 }

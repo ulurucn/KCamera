@@ -1,4 +1,4 @@
-package vip.frendy.base;
+package vip.frendy.camera;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;

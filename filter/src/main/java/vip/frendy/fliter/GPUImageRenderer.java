@@ -17,7 +17,6 @@
 package vip.frendy.fliter;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.SurfaceTexture;
@@ -81,8 +80,6 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
     private float mBackgroundGreen = 0;
     private float mBackgroundBlue = 0;
 
-    private Renderer mRenderer;
-
     public GPUImageRenderer(final GPUImageFilter filter) {
         mFilter = filter;
         mRunOnDraw = new LinkedList<Runnable>();
@@ -100,13 +97,10 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
     }
 
     @Override
-    public void onSurfaceCreated(final GL10 gl, final EGLConfig config) {
+    public void onSurfaceCreated(final GL10 unused, final EGLConfig config) {
         GLES20.glClearColor(mBackgroundRed, mBackgroundGreen, mBackgroundBlue, 1);
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         mFilter.init();
-        if(mRenderer!=null) {
-            mRenderer.onSurfaceCreated(gl, config);
-        }
     }
 
     @Override
@@ -120,9 +114,6 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         synchronized (mSurfaceChangedWaiter) {
             mSurfaceChangedWaiter.notifyAll();
         }
-        if(mRenderer!=null) {
-            mRenderer.onSurfaceChanged(gl, width, height);
-        }
     }
 
     @Override
@@ -133,9 +124,6 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         runAll(mRunOnDrawEnd);
         if (mSurfaceTexture != null) {
             mSurfaceTexture.updateTexImage();
-        }
-        if(mRenderer!=null) {
-            mRenderer.onDrawFrame(gl);
         }
     }
 
@@ -201,10 +189,6 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
                 }
             }
         });
-    }
-
-    public void setRenderer(Renderer renderer){
-        mRenderer=renderer;
     }
 
     public void setFilter(final GPUImageFilter filter) {

@@ -43,19 +43,13 @@
             android:id="@+id/button_choose_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="blend" />
+            android:text="Choose Filter" />
 
         <Button
             android:id="@+id/button_anim_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="anim" />
-
-        <Button
-            android:id="@+id/button_water_mark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="水印" />
+            android:text="Anim Filter" />
 
         <ImageButton
             android:id="@+id/button_capture"
