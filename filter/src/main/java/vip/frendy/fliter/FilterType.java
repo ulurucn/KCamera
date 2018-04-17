@@ -8,5 +8,6 @@ public enum FilterType {
     VIGNETTE,
     WATER_MARK,
     SHARPEN,
-    BEAUTY
+    BEAUTY,
+    FAIRYTALE
 }

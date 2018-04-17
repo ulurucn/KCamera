@@ -24,6 +24,10 @@ public class FilterManager {
         mContext = context;
     }
 
+    public Context getContext() {
+        return mContext;
+    }
+
     public Resources getResources() {
         return mContext.getResources();
     }
