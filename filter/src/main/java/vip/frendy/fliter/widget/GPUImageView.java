@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vip.frendy.fliter.base;
+package vip.frendy.fliter.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -40,6 +40,7 @@ import java.io.FileOutputStream;
 import java.nio.IntBuffer;
 import java.util.concurrent.Semaphore;
 
+import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.utils.Rotation;
 
 public class GPUImageView extends FrameLayout {

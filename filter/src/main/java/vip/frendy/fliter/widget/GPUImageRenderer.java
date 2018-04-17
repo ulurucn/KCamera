@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vip.frendy.fliter.base;
+package vip.frendy.fliter.widget;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
@@ -37,21 +37,18 @@ import java.util.Queue;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import vip.frendy.fliter.base.GPUImageFilter;
+import vip.frendy.fliter.base.GPUImageNativeLibrary;
 import vip.frendy.fliter.utils.OpenGlUtils;
 import vip.frendy.fliter.utils.Rotation;
 import vip.frendy.fliter.utils.TextureRotationUtil;
 
+import static vip.frendy.fliter.utils.TextureRotationUtil.CUBE;
 import static vip.frendy.fliter.utils.TextureRotationUtil.TEXTURE_NO_ROTATION;
 
 @TargetApi(11)
 public class GPUImageRenderer implements Renderer, PreviewCallback {
     public static final int NO_IMAGE = -1;
-    static final float CUBE[] = {
-            -1.0f, -1.0f,
-            1.0f, -1.0f,
-            -1.0f, 1.0f,
-            1.0f, 1.0f,
-    };
 
     private GPUImageFilter mFilter;
 

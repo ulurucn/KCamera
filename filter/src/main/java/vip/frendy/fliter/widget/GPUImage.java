@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vip.frendy.fliter.base;
+package vip.frendy.fliter.widget;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -43,6 +43,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.List;
 
+import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.utils.PixelBuffer;
 import vip.frendy.fliter.utils.Rotation;
 

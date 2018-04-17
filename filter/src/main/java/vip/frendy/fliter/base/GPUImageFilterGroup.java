@@ -29,7 +29,7 @@ import vip.frendy.fliter.utils.OpenGlUtils;
 import vip.frendy.fliter.utils.Rotation;
 import vip.frendy.fliter.utils.TextureRotationUtil;
 
-import static vip.frendy.fliter.base.GPUImageRenderer.CUBE;
+import static vip.frendy.fliter.utils.TextureRotationUtil.CUBE;
 import static vip.frendy.fliter.utils.TextureRotationUtil.TEXTURE_NO_ROTATION;
 
 /**
