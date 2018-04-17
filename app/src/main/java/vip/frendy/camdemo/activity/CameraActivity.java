@@ -7,10 +7,8 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.SeekBar;
 
 import java.io.File;
 
@@ -18,9 +16,7 @@ import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.extension.HandlerExt;
 import vip.frendy.camdemo.presenter.CameraLoader;
 import vip.frendy.camdemo.presenter.FilterHelper;
-import vip.frendy.camera.Permission;
 import vip.frendy.camera.settings.SettingFlashMode;
-import vip.frendy.camera.settings.SettingISO;
 import vip.frendy.fliter.FilterType;
 import vip.frendy.fliter.widget.GPUImage;
 import vip.frendy.fliter.base.GPUImageFilter;
@@ -33,7 +29,6 @@ import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
 
 public class CameraActivity extends BaseActivity implements View.OnClickListener, CameraLoader.ILoaderListener, CameraLoader.ICameraListener {
     private Context mContext = this;
-    private Permission mPermission;
 
     private GPUImage mGPUImage;
 
@@ -47,6 +42,7 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        shouldRequestPermission = true;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
@@ -67,24 +63,12 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
         if (!mCamera.getCameraHelper().hasFrontCamera() || !mCamera.getCameraHelper().hasBackCamera()) {
             cameraSwitchView.setVisibility(View.GONE);
         }
-
-        //权限申请
-        mPermission = new Permission(this);
-        mPermission.requestPermissions();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(mPermission != null)
-            mPermission.onRequestPermissionsResult(requestCode, permissions, grantResults, new Permission.IPermissionsListener() {
-                @Override
-                public void onPermissionsGranted() {
-                    mCamera.onResume();
-                }
-                @Override
-                public void onPermissionsDenied() {}
-            });
+    public void onPermissionsGranted() {
+        super.onPermissionsGranted();
+        mCamera.onResume();
     }
 
     @Override
