@@ -3,6 +3,7 @@ package vip.frendy.fliter.aiyafilters;
 import java.nio.FloatBuffer;
 
 import vip.frendy.fliter.base.GPUImageFilter;
+import vip.frendy.fliter.utils.OpenGlUtils;
 
 /**
  * Created by frendy on 2018/4/9.
@@ -22,11 +23,12 @@ public class GPUImageFilterCompat<T extends AFilter> extends GPUImageFilter {
     }
 
     @Override
-    public void onDraw(int textureId, FloatBuffer cubeBuffer, FloatBuffer textureBuffer) {
-        super.onDraw(textureId, cubeBuffer, textureBuffer);
+    public int onDrawFrame(int textureId, FloatBuffer cubeBuffer, FloatBuffer textureBuffer) {
+        super.onDrawFrame(textureId, cubeBuffer, textureBuffer);
 
         innerFilter.setTextureId(textureId);
         innerFilter.draw();
+        return OpenGlUtils.ON_DRAWN;
     }
 
     @Override

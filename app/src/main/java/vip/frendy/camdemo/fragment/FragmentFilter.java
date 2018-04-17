@@ -63,6 +63,7 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
         mRootView.findViewById(R.id.filter).setOnClickListener(this);
         mRootView.findViewById(R.id.edge).setOnClickListener(this);
         mRootView.findViewById(R.id.watermark).setOnClickListener(this);
+        mRootView.findViewById(R.id.sharpen).setOnClickListener(this);
 
         imgPath = getArguments().getString(PIC_PATH);
         bitmapSrc = BitmapFactory.decodeFile(imgPath);
@@ -103,6 +104,14 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
             mFilterAdjuster = new FilterAdjuster(mFilter);
             //隐藏seekbar
             mRootView.findViewById(R.id.seekBar).setVisibility(View.GONE);
+        } else if(view.getId() == R.id.sharpen) {
+            //锐利
+            mFilter = mFilterHelper.createFilter(FilterType.SHARPEN);
+            mPic.setFilter(mFilter);
+            mFilterAdjuster = new FilterAdjuster(mFilter);
+            //显示seekbar
+            mRootView.findViewById(R.id.seekBar).setVisibility(
+                    mFilterAdjuster.canAdjust() ? View.VISIBLE : View.GONE);
         }
     }
 

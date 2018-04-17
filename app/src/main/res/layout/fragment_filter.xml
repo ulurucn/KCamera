@@ -35,6 +35,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:text="水印"/>
+
+        <Button
+            android:id="@+id/sharpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="锐利"/>
+
     </LinearLayout>
 
     <LinearLayout

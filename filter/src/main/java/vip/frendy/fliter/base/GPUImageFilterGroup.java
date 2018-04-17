@@ -25,6 +25,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import vip.frendy.fliter.utils.OpenGlUtils;
 import vip.frendy.fliter.utils.Rotation;
 import vip.frendy.fliter.utils.TextureRotationUtil;
 
@@ -182,11 +183,11 @@ public class GPUImageFilterGroup extends GPUImageFilter {
      */
     @SuppressLint("WrongCall")
     @Override
-    public void onDraw(final int textureId, final FloatBuffer cubeBuffer,
+    public int onDrawFrame(final int textureId, final FloatBuffer cubeBuffer,
                        final FloatBuffer textureBuffer) {
         runPendingOnDrawTasks();
         if (!isInitialized() || mFrameBuffers == null || mFrameBufferTextures == null) {
-            return;
+            return OpenGlUtils.NOT_INIT;
         }
         if (mMergedFilters != null) {
             int size = mMergedFilters.size();
@@ -200,11 +201,11 @@ public class GPUImageFilterGroup extends GPUImageFilter {
                 }
 
                 if (i == 0) {
-                    filter.onDraw(previousTexture, cubeBuffer, textureBuffer);
+                    filter.onDrawFrame(previousTexture, cubeBuffer, textureBuffer);
                 } else if (i == size - 1) {
-                    filter.onDraw(previousTexture, mGLCubeBuffer, (size % 2 == 0) ? mGLTextureFlipBuffer : mGLTextureBuffer);
+                    filter.onDrawFrame(previousTexture, mGLCubeBuffer, (size % 2 == 0) ? mGLTextureFlipBuffer : mGLTextureBuffer);
                 } else {
-                    filter.onDraw(previousTexture, mGLCubeBuffer, mGLTextureBuffer);
+                    filter.onDrawFrame(previousTexture, mGLCubeBuffer, mGLTextureBuffer);
                 }
 
                 if (isNotLast) {
@@ -212,7 +213,9 @@ public class GPUImageFilterGroup extends GPUImageFilter {
                     previousTexture = mFrameBufferTextures[i];
                 }
             }
+            return OpenGlUtils.ON_DRAWN;
         }
+        return OpenGlUtils.NOT_INIT;
      }
 
     /**

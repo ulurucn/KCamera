@@ -12,6 +12,7 @@ import vip.frendy.fliter.aiyafilters.GPUImageFilterCompat;
 import vip.frendy.fliter.aiyafilters.WaterMarkFilter;
 import vip.frendy.fliter.FilterType;
 import vip.frendy.fliter.base.GPUImageFilter;
+import vip.frendy.fliter.gpufilters.GPUImageSharpenFilter;
 import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
 import vip.frendy.fliter.gpufilters.GPUImageVignetteFilter;
 
@@ -54,6 +55,10 @@ public class FilterHelper {
                 water.setWaterMark(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher_round));
                 water.setPosition(200, 200, 200, 200);
                 return new GPUImageFilterCompat(water);
+            case SHARPEN:
+                GPUImageSharpenFilter sharpness = new GPUImageSharpenFilter();
+                sharpness.setSharpness(2.0f);
+                return sharpness;
             default:
                 throw new IllegalStateException("No filter of that type!");
         }

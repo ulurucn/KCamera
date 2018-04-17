@@ -1,31 +1,16 @@
-/*
- * Copyright (C) 2012 CyberAgent
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package vip.frendy.fliter.base;
 
-import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 
-import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 
 import vip.frendy.fliter.utils.OpenGlUtils;
+import vip.frendy.fliter.utils.Rotation;
+import vip.frendy.fliter.utils.TextureRotationUtil;
 
 public class GPUImageFilter {
     public static final String NO_FILTER_VERTEX_SHADER = "" +
@@ -60,23 +45,36 @@ public class GPUImageFilter {
     protected int mOutputHeight;
     private boolean mIsInitialized;
 
+    protected FloatBuffer mGLCubeBuffer;
+    protected FloatBuffer mGLTextureBuffer;
+    
     public GPUImageFilter() {
         this(NO_FILTER_VERTEX_SHADER, NO_FILTER_FRAGMENT_SHADER);
     }
 
     public GPUImageFilter(final String vertexShader, final String fragmentShader) {
-        mRunOnDraw = new LinkedList<Runnable>();
+        mRunOnDraw = new LinkedList<>();
         mVertexShader = vertexShader;
         mFragmentShader = fragmentShader;
+        
+        mGLCubeBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.CUBE.length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        mGLCubeBuffer.put(TextureRotationUtil.CUBE).position(0);
+
+        mGLTextureBuffer = ByteBuffer.allocateDirect(TextureRotationUtil.TEXTURE_NO_ROTATION.length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        mGLTextureBuffer.put(TextureRotationUtil.getRotation(Rotation.NORMAL, false, true)).position(0);
     }
 
-    public final void init() {
+    public void init() {
         onInit();
         mIsInitialized = true;
         onInitialized();
     }
 
-    public void onInit() {
+    protected void onInit() {
         mGLProgId = OpenGlUtils.loadProgram(mVertexShader, mFragmentShader);
         mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
@@ -85,7 +83,8 @@ public class GPUImageFilter {
         mIsInitialized = true;
     }
 
-    public void onInitialized() {
+    protected void onInitialized() {
+
     }
 
     public final void destroy() {
@@ -94,7 +93,7 @@ public class GPUImageFilter {
         onDestroy();
     }
 
-    public void onDestroy() {
+    protected void onDestroy() {
     }
 
     public void onOutputSizeChanged(final int width, final int height) {
@@ -102,12 +101,12 @@ public class GPUImageFilter {
         mOutputHeight = height;
     }
 
-    public void onDraw(final int textureId, final FloatBuffer cubeBuffer,
+    public int onDrawFrame(final int textureId, final FloatBuffer cubeBuffer,
                        final FloatBuffer textureBuffer) {
         GLES20.glUseProgram(mGLProgId);
         runPendingOnDrawTasks();
         if (!mIsInitialized) {
-            return;
+            return OpenGlUtils.NOT_INIT;
         }
 
         cubeBuffer.position(0);
@@ -126,11 +125,42 @@ public class GPUImageFilter {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glDisableVertexAttribArray(mGLAttribPosition);
         GLES20.glDisableVertexAttribArray(mGLAttribTextureCoordinate);
+        onDrawArraysAfter();
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+        return OpenGlUtils.ON_DRAWN;
     }
+    
+    public int onDrawFrame(final int textureId) {
+		GLES20.glUseProgram(mGLProgId);
+		runPendingOnDrawTasks();
+		if (!mIsInitialized) 
+			return OpenGlUtils.NOT_INIT;
+		
+		mGLCubeBuffer.position(0);
+		GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, mGLCubeBuffer);
+		GLES20.glEnableVertexAttribArray(mGLAttribPosition);
+		mGLTextureBuffer.position(0);
+		GLES20.glVertexAttribPointer(mGLAttribTextureCoordinate, 2, GLES20.GL_FLOAT, false, 0,
+		     mGLTextureBuffer);
+		GLES20.glEnableVertexAttribArray(mGLAttribTextureCoordinate);
 
+		if (textureId != OpenGlUtils.NO_TEXTURE) {
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+		    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+		    GLES20.glUniform1i(mGLUniformTexture, 0);
+		}
+		onDrawArraysPre();
+		GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+		GLES20.glDisableVertexAttribArray(mGLAttribPosition);
+		GLES20.glDisableVertexAttribArray(mGLAttribTextureCoordinate);
+		onDrawArraysAfter();
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+		return OpenGlUtils.ON_DRAWN;
+	}
+    
     protected void onDrawArraysPre() {}
-
+    protected void onDrawArraysAfter() {}
+    
     protected void runPendingOnDrawTasks() {
         while (!mRunOnDraw.isEmpty()) {
             mRunOnDraw.removeFirst().run();
@@ -256,25 +286,5 @@ public class GPUImageFilter {
         synchronized (mRunOnDraw) {
             mRunOnDraw.addLast(runnable);
         }
-    }
-
-    public static String loadShader(String file, Context context) {
-        try {
-            AssetManager assetManager = context.getAssets();
-            InputStream ims = assetManager.open(file);
-
-            String re = convertStreamToString(ims);
-            ims.close();
-            return re;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return "";
-    }
-
-    public static String convertStreamToString(java.io.InputStream is) {
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
     }
 }

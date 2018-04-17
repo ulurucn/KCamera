@@ -1,6 +1,7 @@
 package vip.frendy.fliter.utils;
 
 import vip.frendy.fliter.base.GPUImageFilter;
+import vip.frendy.fliter.gpufilters.GPUImageSharpenFilter;
 import vip.frendy.fliter.gpufilters.GPUImageVignetteFilter;
 
 public class FilterAdjuster {
@@ -9,6 +10,8 @@ public class FilterAdjuster {
     public FilterAdjuster(final GPUImageFilter filter) {
         if (filter instanceof GPUImageVignetteFilter) {
             adjuster = new VignetteAdjuster().filter(filter);
+        } else if (filter instanceof GPUImageSharpenFilter) {
+            adjuster = new SharpnessAdjuster().filter(filter);
         } else {
             adjuster = null;
         }
@@ -55,4 +58,10 @@ public class FilterAdjuster {
         }
     }
 
+    private class SharpnessAdjuster extends Adjuster<GPUImageSharpenFilter> {
+        @Override
+        public void adjust(final int percentage) {
+            getFilter().setSharpness(range(percentage, -4.0f, 4.0f));
+        }
+    }
 }
