@@ -14,9 +14,10 @@ public class WaterMarkFilter extends NoFilter {
 
     private Bitmap mBitmap;
     private NoFilter mFilter;
-    private int width,height;
+    private int width, height;
+    private int x, y, w, h;
 
-    private int x,y,w,h;
+    public boolean isCamera = false;
 
     public WaterMarkFilter(Resources mRes) {
         super(mRes);
@@ -29,8 +30,14 @@ public class WaterMarkFilter extends NoFilter {
     @Override
     protected void onCreate() {
         super.onCreate();
+        //修正屏幕方向，TODO：仅适用前摄像头，后摄像头待适配
+        if(isCamera) {
+            MatrixUtils.flip(getMatrix(), true, false);
+            MatrixUtils.rotate(getMatrix(), 90);
+        }
+        //水印滤镜
         mFilter.create();
-        createTexture();
+        createWaterMarkTexture();
     }
 
     @Override
@@ -52,9 +59,9 @@ public class WaterMarkFilter extends NoFilter {
 
     @Override
     protected void onSizeChanged(int width, int height) {
-        this.width=width;
-        this.height=height;
-        mFilter.setSize(width,height);
+        this.width = width;
+        this.height = height;
+        mFilter.setSize(width, height);
     }
 
     public void setWaterMark(Bitmap bitmap){
@@ -65,7 +72,7 @@ public class WaterMarkFilter extends NoFilter {
     }
 
     private int[] textures=new int[1];
-    private void createTexture(){
+    private void createWaterMarkTexture(){
         if(mBitmap!=null){
             //生成纹理
             GLES20.glGenTextures(1,textures,0);
@@ -89,10 +96,10 @@ public class WaterMarkFilter extends NoFilter {
     }
 
     public void setPosition(int x,int y,int width,int height){
-        this.x=x;
-        this.y=y;
-        this.w=width;
-        this.h=height;
+        this.x = x;
+        this.y = y;
+        this.w = width;
+        this.h = height;
     }
 
 }

@@ -28,6 +28,7 @@ public class GPUImageFilterCompat<T extends AFilter> extends GPUImageFilter {
 
         innerFilter.setTextureId(textureId);
         innerFilter.draw();
+
         return OpenGlUtils.ON_DRAWN;
     }
 

@@ -56,6 +56,7 @@ public class FilterHelper {
                 WaterMarkFilter water =  new WaterMarkFilter(mContext.getResources());
                 water.setWaterMark(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher_round));
                 water.setPosition(200, 200, 200, 200);
+                water.isCamera = false;
                 return new GPUImageFilterCompat(water);
             case SHARPEN:
                 GPUImageSharpenFilter sharpness = new GPUImageSharpenFilter();
