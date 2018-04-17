@@ -31,8 +31,7 @@ import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
  * Created by frendy on 2018/4/8.
  */
 
-public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener,
-        CameraLoader.ILoaderListener, CameraLoader.ICameraListener {
+public class CameraActivity extends BaseActivity implements View.OnClickListener, CameraLoader.ILoaderListener, CameraLoader.ICameraListener {
     private Context mContext = this;
     private Permission mPermission;
 
@@ -51,7 +50,6 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        ((SeekBar) findViewById(R.id.seekBar)).setOnSeekBarChangeListener(this);
         findViewById(R.id.button_choose_filter).setOnClickListener(this);
         findViewById(R.id.button_anim_filter).setOnClickListener(this);
         findViewById(R.id.button_beauty_filter).setOnClickListener(this);
@@ -180,17 +178,6 @@ public class CameraActivity extends BaseActivity implements SeekBar.OnSeekBarCha
                 }
             }
         }, 300L);
-    }
-
-    @Override
-    public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {}
-
-    @Override
-    public void onStartTrackingTouch(final SeekBar seekBar) {}
-
-    @Override
-    public void onStopTrackingTouch(final SeekBar seekBar) {
-        if(mCamera != null) mCamera.setISO(SettingISO.DEFAULT_VALUES[seekBar.getProgress() % 6]);
     }
 
     @Override
