@@ -43,6 +43,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.List;
 
+import vip.frendy.fliter.aiyafilters.AFilter;
 import vip.frendy.fliter.utils.PixelBuffer;
 import vip.frendy.fliter.utils.Rotation;
 
@@ -71,6 +72,10 @@ public class GPUImage {
         mContext = context;
         mFilter = new GPUImageFilter();
         mRenderer = new GPUImageRenderer(mFilter);
+    }
+
+    public void setRenderer(GLSurfaceView.Renderer renderer) {
+        mRenderer.setRenderer(renderer);
     }
 
     /**
