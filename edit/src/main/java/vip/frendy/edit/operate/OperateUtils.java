@@ -40,10 +40,8 @@ public class OperateUtils {
 	/**
 	 * 根据路径获取图片并且压缩，适应view
 	 * 
-	 * @param filePath
-	 *            图片路径
-	 * @param contentView
-	 *            适应的view
+	 * @param filePath 图片路径
+	 * @param contentView 适应的view
 	 * @return Bitmap 压缩后的图片
 	 */
 	public Bitmap compressionFiller(String filePath, View contentView) {
@@ -65,8 +63,7 @@ public class OperateUtils {
 			int bitmapwidth = bitmap.getWidth();
 			Matrix matrix = new Matrix();
 			matrix.postScale(scale, scale); // 长和宽放大缩小的比例
-			resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmapwidth,
-					bitmapheight, matrix, true);
+			resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmapwidth, bitmapheight, matrix, true);
 		} else {
 			resizeBmp = bitmap;
 		}
@@ -76,10 +73,8 @@ public class OperateUtils {
 	/**
 	 * 根据压缩图片并且适应view
 	 * 
-	 * @param bitmap
-	 *            压缩图片
-	 * @param contentView
-	 *            适应的view
+	 * @param bitmap 压缩图片
+	 * @param contentView 适应的view
 	 * @return 压缩后的图片
 	 */
 	public Bitmap compressionFiller(Bitmap bitmap, View contentView) {
@@ -96,8 +91,7 @@ public class OperateUtils {
 			int bitmapwidth = bitmap.getWidth();
 			Matrix matrix = new Matrix();
 			matrix.postScale(scale, scale); // 长和宽放大缩小的比例
-			resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmapwidth,
-					bitmapheight, matrix, true);
+			resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmapwidth, bitmapheight, matrix, true);
 		} else {
 			resizeBmp = bitmap;
 		}
@@ -107,8 +101,7 @@ public class OperateUtils {
 	/**
 	 * 添加文字方法
 	 * 
-	 * @param text
-	 *            所添加的文字
+	 * @param text 所添加的文字
 	 * @return TextObject 返回的字体图片对象
 	 */
 	public TextObject getTextObject(String text) {
@@ -136,8 +129,7 @@ public class OperateUtils {
 	 * @param y 离边界y坐标
 	 * @return
 	 */
-	public TextObject getTextObject(String text, OperateView operateView,
-			int quadrant, int x, int y) {
+	public TextObject getTextObject(String text, OperateView operateView, int quadrant, int x, int y) {
 		TextObject textObj = null;
 		if (TextUtils.isEmpty(text)) {
 			Toast.makeText(activity, "请添加文字", Toast.LENGTH_SHORT).show();
@@ -165,10 +157,8 @@ public class OperateUtils {
 			default :
 				break;
 		}
-		Bitmap rotateBm = BitmapFactory.decodeResource(activity.getResources(),
-				R.drawable.rotate);
-		Bitmap deleteBm = BitmapFactory.decodeResource(activity.getResources(),
-				R.drawable.delete);
+		Bitmap rotateBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.rotate);
+		Bitmap deleteBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.delete);
 		textObj = new TextObject(activity, text, x, y, rotateBm, deleteBm);
 		textObj.setTextObject(true);
 		return textObj;
@@ -199,12 +189,9 @@ public class OperateUtils {
 	 * @param y 离边界y坐标
 	 * @return
 	 */
-	public ImageObject getImageObject(Bitmap srcBmp, OperateView operateView,
-			int quadrant, int x, int y) {
-		Bitmap rotateBm = BitmapFactory.decodeResource(activity.getResources(),
-				R.drawable.rotate);
-		Bitmap deleteBm = BitmapFactory.decodeResource(activity.getResources(),
-				R.drawable.delete);
+	public ImageObject getImageObject(Bitmap srcBmp, OperateView operateView, int quadrant, int x, int y) {
+		Bitmap rotateBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.rotate);
+		Bitmap deleteBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.delete);
 		int width = operateView.getWidth();
 		int height = operateView.getHeight();
 //		int srcWidth = srcBmp.getWidth();
@@ -246,8 +233,7 @@ public class OperateUtils {
 			default :
 				break;
 		}
-		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm,
-				deleteBm);
+		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm);
 		Point point = new Point(20, 20);
 		imgObject.setPoint(point);
 		return imgObject;
