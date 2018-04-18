@@ -9,6 +9,7 @@ import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.fragment.FragmentCrop;
 import vip.frendy.camdemo.fragment.FragmentEnhance;
 import vip.frendy.camdemo.fragment.FragmentFilter;
+import vip.frendy.camdemo.fragment.FragmentFrame;
 import vip.frendy.camdemo.fragment.FragmentMain;
 import vip.frendy.camdemo.fragment.FragmentRotate;
 import vip.frendy.base.Permission;
@@ -78,6 +79,8 @@ public class MainActivity extends BaseFragmentActivity implements FragmentMain.I
             switchFragment(R.id.content_fragment, FragmentCrop.getInstance(args, this));
         } else if(id == R.id.sticker) {
             switchFragment(R.id.content_fragment, FragmentSticker.getInstance(args, this));
+        } else if(id == R.id.frame) {
+            switchFragment(R.id.content_fragment, FragmentFrame.getInstance(args, this));
         }
     }
 

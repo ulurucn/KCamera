@@ -96,6 +96,14 @@
                 android:layout_weight="1"
                 android:padding="2dp"
                 android:text="sticker"/>
+
+            <Button
+                android:id="@+id/frame"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="frame"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
