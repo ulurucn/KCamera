@@ -21,9 +21,10 @@ public class OperateView extends View {
 	private Rect mCanvasLimits;
 	private Bitmap bgBmp;
 	private Paint paint = new Paint();
-//	private Context mContext;
-	private boolean isMultiAdd;// true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
+	// true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
+	private boolean isMultiAdd;
 	private float picScale = 0.4f;
+
 	/**
 	 * 设置水印图片初始化大小
 	 * @param picScale
@@ -31,18 +32,18 @@ public class OperateView extends View {
 	public void setPicScale(float picScale) {
 		this.picScale = picScale;
 	}
+
 	/**
 	 * 设置是否可以添加多个图片或者文字对象
 	 * 
-	 * @param isMultiAdd
-	 *            true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
+	 * @param isMultiAdd true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
 	 */
 	public void setMultiAdd(boolean isMultiAdd) {
 		this.isMultiAdd = isMultiAdd;
 	}
+
 	public OperateView(Context context, Bitmap resizeBmp) {
 		super(context);
-//		this.mContext = context;
 		bgBmp = resizeBmp;
 		int width = bgBmp.getWidth();
 		int height = bgBmp.getHeight();
@@ -74,6 +75,7 @@ public class OperateView extends View {
 		imgLists.add(imgObj);
 		invalidate();
 	}
+
 	/**
 	 * 画出容器内所有的图像
 	 */
@@ -297,7 +299,6 @@ public class OperateView extends View {
 				break;
 
 			case MotionEvent.ACTION_MOVE :
-				// Log.i("jarlen"," 移动了");
 				// 移动
 				if (mMovedSinceDown) {
 					int curX = (int) event.getX();
@@ -342,8 +343,8 @@ public class OperateView extends View {
 		}
 
 		cancelLongPress();
-
 	}
+
 	/**
 	 * 循环画图像
 	 * 

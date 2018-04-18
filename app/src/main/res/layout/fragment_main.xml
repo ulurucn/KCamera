@@ -37,46 +37,65 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/enhance"
-            android:layout_width="0dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="2dp"
-            android:text="enhance"/>
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/filter"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="2dp"
-            android:text="filter"/>
+            <Button
+                android:id="@+id/enhance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="enhance"/>
 
-        <Button
-            android:id="@+id/rotate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="2dp"
-            android:text="rotate"/>
+            <Button
+                android:id="@+id/filter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="filter"/>
 
-        <Button
-            android:id="@+id/puzzle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="2dp"
-            android:text="puzzle"/>
+            <Button
+                android:id="@+id/rotate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="rotate"/>
 
-        <Button
-            android:id="@+id/crop"
-            android:layout_width="0dp"
+            <Button
+                android:id="@+id/puzzle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="puzzle"/>
+
+            <Button
+                android:id="@+id/crop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="crop"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="2dp"
-            android:text="crop"/>
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/sticker"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="sticker"/>
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

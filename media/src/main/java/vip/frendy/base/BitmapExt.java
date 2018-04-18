@@ -1,8 +1,10 @@
 package vip.frendy.base;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Environment;
+import android.view.View;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,7 +41,6 @@ public class BitmapExt {
      * 说明:
      * (1,-1)上下翻转
      * (-1,1)左右翻转
-     *
      */
     public static Bitmap reverseImage(Bitmap bit,int x,int y) {
         Matrix matrix = new Matrix();
@@ -76,5 +77,19 @@ public class BitmapExt {
             }
         }
         return null;
+    }
+
+
+    /**
+     * 将模板View的图片转化为Bitmap
+     *
+     * @param view
+     * @return
+     */
+    public static Bitmap getBitmapByView(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
     }
 }
