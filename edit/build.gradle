@@ -3,8 +3,6 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 26
 
-
-
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 26
@@ -13,6 +11,22 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+//        ndk {
+//            moduleName "picwarp"
+//            abiFilters "all"
+//            ldLibs "log"
+//        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs 'src/main/libs'
+            jni.srcDirs = [] //disable automatic ndk-build call
+        }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
     buildTypes {
