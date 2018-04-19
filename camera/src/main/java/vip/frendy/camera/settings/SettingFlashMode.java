@@ -15,8 +15,7 @@ public class SettingFlashMode {
     public static final int FLASH_MODE_ON = 2;
     public static final int FLASH_MODE_RED_EYE = 3;
 
-    public static void setFlashMode(Camera camera, int type) {
-        Camera.Parameters params = camera.getParameters();
+    public static void setFlashMode(Camera.Parameters params, int type) {
         List<String> flashModes = params.getSupportedFlashModes();
 
         switch(type){
@@ -41,6 +40,5 @@ public class SettingFlashMode {
                 }
                 break;
         }
-        camera.setParameters(params);
     }
 }

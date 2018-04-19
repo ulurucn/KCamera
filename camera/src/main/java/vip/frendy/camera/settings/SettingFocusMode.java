@@ -17,8 +17,7 @@ public class SettingFocusMode {
     public static final int FOCUS_MODE_INFINITY = 4;
     public static final int FOCUS_MODE_MACRO = 5;
 
-    public static void setFocusMode(Camera camera, int type) {
-        Camera.Parameters params = camera.getParameters();
+    public static void setFocusMode(Camera.Parameters params, int type) {
         List<String> focusModes = params.getSupportedFocusModes();
 
         switch(type){
@@ -55,6 +54,5 @@ public class SettingFocusMode {
                 }
                 break;
         }
-        camera.setParameters(params);
     }
 }

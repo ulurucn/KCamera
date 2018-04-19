@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
-import android.view.Surface;
+import android.util.Log;
+
+import java.util.List;
 
 import vip.frendy.camera.entity.CameraInfo2;
 import vip.frendy.camera.settings.SettingFlashMode;
@@ -14,6 +16,8 @@ import vip.frendy.camera.settings.SettingSceneMode;
 import vip.frendy.camera.settings.SettingWhiteBalance;
 
 public class CameraHelper {
+    private static final String TAG = "cam";
+
     private final CameraHelperImpl mImpl;
 
     public CameraHelper(final Context context) {
@@ -54,38 +58,11 @@ public class CameraHelper {
 
 
     public void setCameraDisplayOrientation(final Activity activity, final int cameraId, final Camera camera) {
-        int result = getCameraDisplayOrientation(activity, cameraId);
-        camera.setDisplayOrientation(result);
+        mImpl.setCameraDisplayOrientation(activity, cameraId, camera);
     }
 
-    public int getCameraDisplayOrientation(final Activity activity, final int cameraId) {
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
-        int degrees = 0;
-        switch (rotation) {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-
-        int result;
-        CameraInfo2 info = new CameraInfo2();
-        getCameraInfo(cameraId, info);
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
-        } else {
-            //back-facing
-            result = (info.orientation - degrees + 360) % 360;
-        }
-        return result;
+    public int getCameraDisplayOrientation(final int cameraId) {
+        return mImpl.getCameraOrientation(cameraId);
     }
 
 
@@ -93,23 +70,80 @@ public class CameraHelper {
      * Operation of Camera
      *************************************/
 
-    public void setISO(Camera camera, int value) {
-        SettingISO.setISO(camera, value);
+    public void setISO(Camera.Parameters params, int value) {
+        SettingISO.setISO(params, value);
     }
 
-    public void setFocusMode(Camera camera, int type) {
-        SettingFocusMode.setFocusMode(camera, type);
+    /**
+     * 设置对焦，会影响camera吞吐速率
+     */
+    public void setFocusMode(Camera.Parameters params, int type) {
+        SettingFocusMode.setFocusMode(params, type);
     }
 
-    public void setSceneMode(Camera camera, int type) {
-        SettingSceneMode.setSceneMode(camera, type);
+    public void setSceneMode(Camera.Parameters params, int type) {
+        SettingSceneMode.setSceneMode(params, type);
     }
 
-    public void setFlashMode(Camera camera, int type) {
-        SettingFlashMode.setFlashMode(camera, type);
+    public void setFlashMode(Camera.Parameters params, int type) {
+        SettingFlashMode.setFlashMode(params, type);
     }
 
-    public void setWhiteBalance(Camera camera, int type) {
-        SettingWhiteBalance.setWhiteBalance(camera, type);
+    public void setWhiteBalance(Camera.Parameters params, int type) {
+        SettingWhiteBalance.setWhiteBalance(params, type);
+    }
+
+    /**
+     * 设置fps
+     */
+    public void chooseFramerate(Camera.Parameters params, float frameRate) {
+        int framerate = (int) (frameRate * 1000);
+        List<int[]> rates = params.getSupportedPreviewFpsRange();
+        int[] bestFramerate = rates.get(0);
+        for (int i = 0; i < rates.size(); i++) {
+            int[] rate = rates.get(i);
+            Log.i(TAG, "supported preview pfs min " + rate[0] + " max " + rate[1]);
+            int curDelta = Math.abs(rate[1] - framerate);
+            int bestDelta = Math.abs(bestFramerate[1] - framerate);
+            if (curDelta < bestDelta) {
+                bestFramerate = rate;
+            } else if (curDelta == bestDelta) {
+                bestFramerate = bestFramerate[0] < rate[0] ? rate : bestFramerate;
+            }
+        }
+        Log.i(TAG, "closet framerate min " + bestFramerate[0] + " max " + bestFramerate[1]);
+        params.setPreviewFpsRange(bestFramerate[0], bestFramerate[1]);
+    }
+
+    /**
+     * Attempts to find a preview size that matches the provided width and height (which
+     * specify the dimensions of the encoded video).  If it fails to find a match it just
+     * uses the default preview size for video.
+     */
+    public static int[] choosePreviewSize(Camera.Parameters params, int width, int height) {
+        // We should make sure that the requested MPEG size is less than the preferred
+        // size, and has the same aspect ratio.
+        Camera.Size ppsfv = params.getPreferredPreviewSizeForVideo();
+        if (ppsfv != null) {
+            Log.e(TAG, "Camera preferred preview size for video is " + ppsfv.width + "x" + ppsfv.height);
+        }
+        for (Camera.Size size : params.getSupportedPreviewSizes()) {
+            Log.i(TAG, "supported: " + size.width + "x" + size.height);
+        }
+
+        for (Camera.Size size : params.getSupportedPreviewSizes()) {
+            if (size.width == width && size.height == height) {
+                params.setPreviewSize(width, height);
+                return new int[]{width, height};
+            }
+        }
+
+        Log.i(TAG, "Unable to set preview size to " + width + "x" + height);
+        if (ppsfv != null) {
+            params.setPreviewSize(ppsfv.width, ppsfv.height);
+            return new int[]{ppsfv.width, ppsfv.height};
+        }
+        // else use whatever the default size is
+        return new int[]{0, 0};
     }
 }

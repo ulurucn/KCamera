@@ -16,11 +16,9 @@ public class SettingISO {
     //参考值
     public static int[] DEFAULT_VALUES = {-1, 100, 200, 400, 800, 1600};
 
-    public static void setISO(Camera camera, int preferredISO) {
-        Camera.Parameters params = camera.getParameters();
+    public static void setISO(Camera.Parameters params, int preferredISO) {
         Pair<String, String> iso = getISO(params, preferredISO);
         params.set(iso.first, iso.second);
-        camera.setParameters(params);
 
         Log.i(TAG, "** Set ISO values as " + iso.first + " - " + iso.second);
     }

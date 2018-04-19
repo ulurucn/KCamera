@@ -19,8 +19,7 @@ public class SettingWhiteBalance {
     public static final int WHITE_BALANCE_TWILIGHT = 6;
     public static final int WHITE_BALANCE_WARM_FLUORESCENT = 7;
 
-    public static void setWhiteBalance(Camera camera, int type) {
-        Camera.Parameters params = camera.getParameters();
+    public static void setWhiteBalance(Camera.Parameters params, int type) {
         List<String> whiteBalanceModes = params.getSupportedWhiteBalance();
 
         switch(type){
@@ -65,6 +64,5 @@ public class SettingWhiteBalance {
                 }
                 break;
         }
-        camera.setParameters(params);
     }
 }

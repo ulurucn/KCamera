@@ -12,6 +12,7 @@ import java.io.IOException;
 import vip.frendy.base.Common;
 import vip.frendy.camera.CameraHelper;
 import vip.frendy.camera.entity.CameraInfo2;
+import vip.frendy.camera.settings.SettingFocusMode;
 
 import static vip.frendy.base.Common.MEDIA_TYPE_IMAGE;
 
@@ -89,26 +90,41 @@ public class CameraLoader {
         });
     }
 
+    //应用设置参数
+    public void apply(Camera.Parameters params) {
+        mCameraInstance.setParameters(params);
+    }
+
     public void setISO(int value) {
-        mCameraHelper.setISO(mCameraInstance, value);
+        Camera.Parameters params = mCameraInstance.getParameters();
+        mCameraHelper.setISO(params, value);
+        apply(params);
     }
 
     //EDOF, MACRO, AUTO and etc
     public void setFocusMode(int type) {
-        mCameraHelper.setFocusMode(mCameraInstance, type);
+        Camera.Parameters params = mCameraInstance.getParameters();
+        mCameraHelper.setFocusMode(params, type);
+        apply(params);
     }
 
     //HDR, NIGHT, AUTO and etc
     public void setSceneMode(int type) {
-        mCameraHelper.setSceneMode(mCameraInstance, type);
+        Camera.Parameters params = mCameraInstance.getParameters();
+        mCameraHelper.setSceneMode(params, type);
+        apply(params);
     }
 
     public void setFlashMode(int type) {
-        mCameraHelper.setFlashMode(mCameraInstance, type);
+        Camera.Parameters params = mCameraInstance.getParameters();
+        mCameraHelper.setFlashMode(params, type);
+        apply(params);
     }
 
     public void setWhiteBalance(int type) {
-        mCameraHelper.setWhiteBalance(mCameraInstance, type);
+        Camera.Parameters params = mCameraInstance.getParameters();
+        mCameraHelper.setWhiteBalance(params, type);
+        apply(params);
     }
 
 
@@ -133,16 +149,10 @@ public class CameraLoader {
 
     private void setUpCamera(final int id) {
         mCameraInstance = getCameraInstance(id);
-        Camera.Parameters parameters = mCameraInstance.getParameters();
 
-        // the best one for screen size (best fill screen)
-        if (parameters.getSupportedFocusModes().contains(
-                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-        }
-        //mCameraInstance.setParameters(parameters);
+        setFocusMode(SettingFocusMode.FOCUS_MODE_CONTINUOUS_VIDEO);
 
-        int orientation = mCameraHelper.getCameraDisplayOrientation(mActivity, mCurrentCameraId);
+        int orientation = mCameraHelper.getCameraDisplayOrientation(mCurrentCameraId);
         CameraInfo2 cameraInfo = new CameraInfo2();
         mCameraHelper.getCameraInfo(mCurrentCameraId, cameraInfo);
         boolean flipHorizontal = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT;

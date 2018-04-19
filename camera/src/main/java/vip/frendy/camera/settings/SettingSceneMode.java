@@ -17,8 +17,7 @@ public class SettingSceneMode {
     public static final int SCENE_MODE_HDR = 3;
     public static final int SCENE_MODE_NIGHT = 4;
 
-    public static void setSceneMode(Camera camera, int type) {
-        Camera.Parameters params = camera.getParameters();
+    public static void setSceneMode(Camera.Parameters params, int type) {
         List<String> sceneModes = params.getSupportedSceneModes();
 
         switch(type){
@@ -48,6 +47,5 @@ public class SettingSceneMode {
                 }
                 break;
         }
-        camera.setParameters(params);
     }
 }
