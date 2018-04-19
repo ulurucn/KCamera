@@ -94,7 +94,7 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
             mRootView.findViewById(R.id.seekBar).setVisibility(View.GONE);
         } else if(view.getId() == R.id.edge) {
             //暗角
-            mFilter = mFilterHelper.createFilter(FilterType.VIGNETTE);
+            mFilter = mFilterHelper.createFilter(FilterType.VIGNETTE, false);
             mPic.setFilter(mFilter);
             mFilterAdjuster = new FilterAdjuster(mFilter);
             //显示seekbar
@@ -102,14 +102,14 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
                     mFilterAdjuster.canAdjust() ? View.VISIBLE : View.GONE);
         } else if(view.getId() == R.id.watermark) {
             //水印
-            mFilter = mFilterHelper.createFilter(FilterType.WATER_MARK);
+            mFilter = mFilterHelper.createFilter(FilterType.WATER_MARK, false);
             mPic.setFilter(mFilter);
             mFilterAdjuster = new FilterAdjuster(mFilter);
             //隐藏seekbar
             mRootView.findViewById(R.id.seekBar).setVisibility(View.GONE);
         } else if(view.getId() == R.id.sharpen) {
             //锐利
-            mFilter = mFilterHelper.createFilter(FilterType.SHARPEN);
+            mFilter = mFilterHelper.createFilter(FilterType.SHARPEN, false);
             mPic.setFilter(mFilter);
             mFilterAdjuster = new FilterAdjuster(mFilter);
             //显示seekbar
@@ -117,7 +117,7 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
                     mFilterAdjuster.canAdjust() ? View.VISIBLE : View.GONE);
         } else if(view.getId() == R.id.fairytale) {
             //童话
-            mFilter = mFilterHelper.createFilter(FilterType.FAIRYTALE);
+            mFilter = mFilterHelper.createFilter(FilterType.FAIRYTALE, false);
             mPic.setFilter(mFilter);
             mFilterAdjuster = new FilterAdjuster(mFilter);
             //显示seekbar

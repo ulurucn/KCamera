@@ -46,11 +46,12 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        findViewById(R.id.button_choose_filter).setOnClickListener(this);
-        findViewById(R.id.button_anim_filter).setOnClickListener(this);
-        findViewById(R.id.button_beauty_filter).setOnClickListener(this);
-        findViewById(R.id.button_capture).setOnClickListener(this);
-        findViewById(R.id.button_flashlight).setOnClickListener(this);
+        findViewById(R.id.capture).setOnClickListener(this);
+        findViewById(R.id.flashlight).setOnClickListener(this);
+        findViewById(R.id.blend).setOnClickListener(this);
+        findViewById(R.id.anim).setOnClickListener(this);
+        findViewById(R.id.beauty).setOnClickListener(this);
+        findViewById(R.id.watermark).setOnClickListener(this);
 
         mGPUImage = new GPUImage(this);
         mGPUImage.setGLSurfaceView((GLSurfaceView) findViewById(R.id.surfaceView));
@@ -58,7 +59,7 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
         mFilterHelper = new FilterHelper(this);
         mCamera = new CameraLoader(this, this, this);
 
-        View cameraSwitchView = findViewById(R.id.img_switch_camera);
+        View cameraSwitchView = findViewById(R.id.switch_camera);
         cameraSwitchView.setOnClickListener(this);
         if (!mCamera.getCameraHelper().hasFrontCamera() || !mCamera.getCameraHelper().hasBackCamera()) {
             cameraSwitchView.setVisibility(View.GONE);
@@ -107,15 +108,7 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(final View v) {
         switch (v.getId()) {
-            case R.id.button_anim_filter:
-                isAnimFilter = !isAnimFilter;
-            case R.id.button_choose_filter:
-                switchFilterTo(mFilterHelper.createBlendFilter(GPUImageOverlayBlendFilter.class, R.mipmap.fliter));
-                break;
-            case R.id.button_beauty_filter:
-                switchFilterTo(mFilterHelper.createFilter(FilterType.BEAUTY));
-                break;
-            case R.id.button_capture:
+            case R.id.capture:
                 if (mCamera.getCameraInstance().getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
                     mCamera.takePicture();
                 } else {
@@ -127,11 +120,23 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
                     });
                 }
                 break;
-            case R.id.img_switch_camera:
+            case R.id.switch_camera:
                 mCamera.switchCamera();
                 break;
-            case R.id.button_flashlight:
+            case R.id.flashlight:
                 mCamera.setFlashMode(SettingFlashMode.FLASH_MODE_ON);
+                break;
+
+            case R.id.anim:
+                isAnimFilter = !isAnimFilter;
+            case R.id.blend:
+                switchFilterTo(mFilterHelper.createBlendFilter(GPUImageOverlayBlendFilter.class, R.mipmap.fliter));
+                break;
+            case R.id.beauty:
+                switchFilterTo(mFilterHelper.createFilter(FilterType.BEAUTY, true));
+                break;
+            case R.id.watermark:
+                switchFilterTo(mFilterHelper.createFilter(FilterType.WATER_MARK, true));
                 break;
         }
     }

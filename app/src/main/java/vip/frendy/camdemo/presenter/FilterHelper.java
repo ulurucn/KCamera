@@ -45,7 +45,7 @@ public class FilterHelper {
         }
     }
 
-    public GPUImageFilter createFilter(FilterType type) {
+    public GPUImageFilter createFilter(FilterType type, boolean isCamera) {
         switch (type) {
             case VIGNETTE:
                 PointF centerPoint = new PointF();
@@ -56,7 +56,7 @@ public class FilterHelper {
                 WaterMarkFilter water =  new WaterMarkFilter(mContext.getResources());
                 water.setWaterMark(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher_round));
                 water.setPosition(200, 200, 200, 200);
-                water.isCamera = false;
+                water.isCamera = isCamera;
                 return new GPUImageFilterCompat(water);
             case SHARPEN:
                 GPUImageSharpenFilter sharpness = new GPUImageSharpenFilter();
