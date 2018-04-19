@@ -11,6 +11,7 @@ import vip.frendy.camdemo.fragment.FragmentEnhance;
 import vip.frendy.camdemo.fragment.FragmentFilter;
 import vip.frendy.camdemo.fragment.FragmentFrame;
 import vip.frendy.camdemo.fragment.FragmentMain;
+import vip.frendy.camdemo.fragment.FragmentMosaic;
 import vip.frendy.camdemo.fragment.FragmentRotate;
 import vip.frendy.base.Permission;
 import vip.frendy.camdemo.fragment.FragmentSticker;
@@ -81,6 +82,8 @@ public class MainActivity extends BaseFragmentActivity implements FragmentMain.I
             switchFragment(R.id.content_fragment, FragmentSticker.getInstance(args, this));
         } else if(id == R.id.frame) {
             switchFragment(R.id.content_fragment, FragmentFrame.getInstance(args, this));
+        } else if(id == R.id.mosaic) {
+            switchFragment(R.id.content_fragment, FragmentMosaic.getInstance(args, this));
         }
     }
 
