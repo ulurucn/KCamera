@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -35,4 +33,5 @@ dependencies {
     compile project(':filter')
     compile project(':puzzle')
     compile project(':folder')
+    compile project(':opencv')
 }

@@ -11,6 +11,8 @@
       <module fileurl="file://$PROJECT_DIR$/filter/fliter.iml" filepath="$PROJECT_DIR$/filter/fliter.iml" />
       <module fileurl="file://$PROJECT_DIR$/folder/folder.iml" filepath="$PROJECT_DIR$/folder/folder.iml" />
       <module fileurl="file://$PROJECT_DIR$/media/media.iml" filepath="$PROJECT_DIR$/media/media.iml" />
+      <module fileurl="file://$PROJECT_DIR$/openCVLibrary330/openCVLibrary330.iml" filepath="$PROJECT_DIR$/openCVLibrary330/openCVLibrary330.iml" />
+      <module fileurl="file://$PROJECT_DIR$/opencv/opencv.iml" filepath="$PROJECT_DIR$/opencv/opencv.iml" />
       <module fileurl="file://$PROJECT_DIR$/puzzle/puzzle.iml" filepath="$PROJECT_DIR$/puzzle/puzzle.iml" />
     </modules>
   </component>

@@ -66,33 +66,33 @@ public class GetFilesUtils {
             if(files!=null) {
   
                 for(int i=0;i<files.length;i++){  
-                    Map<String, Object> fileInfo=new HashMap<String, Object>();  
-                    fileInfo.put(FILE_INFO_NAME, files[i].getName());  
-                    if(files[i].isDirectory()){  
-                        fileInfo.put(FILE_INFO_ISFOLDER, true);  
-                        File[] bFiles=files[i].listFiles();  
-                        if(bFiles==null){  
-                            fileInfo.put(FILE_INFO_NUM_SONDIRS, 0);  
-                            fileInfo.put(FILE_INFO_NUM_SONFILES, 0);  
-                        }else{  
-                            int getNumOfDir=0;  
-                            for(int j=0;j<bFiles.length;j++){  
-                                if(bFiles[j].isDirectory()){  
-                                    getNumOfDir++;  
-                                }  
-                            }  
-                            fileInfo.put(FILE_INFO_NUM_SONDIRS, getNumOfDir);  
-                            fileInfo.put(FILE_INFO_NUM_SONFILES, bFiles.length-getNumOfDir);  
-                        }  
-                        fileInfo.put(FILE_INFO_TYPE, FILE_TYPE_FOLDER);  
+                    Map<String, Object> fileInfo=new HashMap<String, Object>();
+                    fileInfo.put(FILE_INFO_NAME, files[i].getName());
+                    if(files[i].isDirectory()){
+                        fileInfo.put(FILE_INFO_ISFOLDER, true);
+                        File[] bFiles=files[i].listFiles();
+                        if(bFiles==null){
+                            fileInfo.put(FILE_INFO_NUM_SONDIRS, 0);
+                            fileInfo.put(FILE_INFO_NUM_SONFILES, 0);
+                        }else{
+                            int getNumOfDir=0;
+                            for(int j=0;j<bFiles.length;j++){
+                                if(bFiles[j].isDirectory()){
+                                    getNumOfDir++;
+                                }
+                            }
+                            fileInfo.put(FILE_INFO_NUM_SONDIRS, getNumOfDir);
+                            fileInfo.put(FILE_INFO_NUM_SONFILES, bFiles.length-getNumOfDir);
+                        }
+                        fileInfo.put(FILE_INFO_TYPE, FILE_TYPE_FOLDER);
                     }else{  
-                        fileInfo.put(FILE_INFO_ISFOLDER, false);  
-                        fileInfo.put(FILE_INFO_NUM_SONDIRS, 0);  
-                        fileInfo.put(FILE_INFO_NUM_SONFILES, 0);  
-                        fileInfo.put(FILE_INFO_TYPE, getFileType(files[i].getName()));  
-                    }  
-                    fileInfo.put(FILE_INFO_PATH, files[i].getAbsoluteFile());  
-                    list.add(fileInfo);  
+                        fileInfo.put(FILE_INFO_ISFOLDER, false);
+                        fileInfo.put(FILE_INFO_NUM_SONDIRS, 0);
+                        fileInfo.put(FILE_INFO_NUM_SONFILES, 0);
+                        fileInfo.put(FILE_INFO_TYPE, getFileType(files[i].getName()));
+                    }
+                    fileInfo.put(FILE_INFO_PATH, files[i].getAbsoluteFile());
+                    list.add(fileInfo);
                 }
                 return list;
             } else {

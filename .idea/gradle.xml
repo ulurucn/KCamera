@@ -14,6 +14,8 @@
             <option value="$PROJECT_DIR$/filter" />
             <option value="$PROJECT_DIR$/folder" />
             <option value="$PROJECT_DIR$/media" />
+            <option value="$PROJECT_DIR$/openCVLibrary330" />
+            <option value="$PROJECT_DIR$/opencv" />
             <option value="$PROJECT_DIR$/puzzle" />
           </set>
         </option>
