@@ -16,6 +16,7 @@ import vip.frendy.edit.interfaces.IPictureEditListener;
 import vip.frendy.edit.operate.ImageObject;
 import vip.frendy.edit.operate.OperateUtils;
 import vip.frendy.edit.operate.OperateView;
+import vip.frendy.edit.operate.TextObject;
 
 /**
  * Created by frendy on 2018/4/12.
@@ -59,6 +60,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         mRootView.findViewById(R.id.ok).setOnClickListener(this);
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
         mRootView.findViewById(R.id.sitcker).setOnClickListener(this);
+        mRootView.findViewById(R.id.text).setOnClickListener(this);
 
         mOperateUtils = new OperateUtils(getActivity());
         imgPath = getArguments().getString(PIC_PATH);
@@ -97,11 +99,20 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.sitcker) {
             addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.wanhuaile));
+        } else if(view.getId() == R.id.text) {
+            addText("写死的测试文本");
         }
     }
 
     private void addSticker(Bitmap bitmap) {
         ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, 5, 150, 100);
+        mOperateView.addItem(sticker);
+    }
+
+    private void addText(String text) {
+        TextObject sticker = mOperateUtils.getTextObject(text, mOperateView, 5, 150, 100);
+        sticker.setText(text);
+        sticker.commit();
         mOperateView.addItem(sticker);
     }
 

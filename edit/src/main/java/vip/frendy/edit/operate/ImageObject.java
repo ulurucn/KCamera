@@ -22,7 +22,7 @@ public class ImageObject {
 	protected boolean mSelected;
 	protected boolean flipVertical;
 	protected boolean flipHorizontal;
-	protected final int resizeBoxSize = 50;
+	protected final int resizeBoxSize = 100;
 	protected boolean isTextObject;
 	protected Bitmap srcBm;
 	protected Bitmap rotateBm;
@@ -270,7 +270,7 @@ public class ImageObject {
 		if (OperateConstants.LEFTTOP == type) {
 			point = getPointLeftTop();
 			delX = x - (point.x - deleteBm.getWidth() / 2);
-            		delY = y - (point.y - deleteBm.getHeight() / 2);
+			delY = y - (point.y - deleteBm.getHeight() / 2);
 		} else if (OperateConstants.RIGHTBOTTOM == type) {
 			point = getPointRightBottom();
 			delX = x - (point.x + rotateBm.getWidth() / 2);

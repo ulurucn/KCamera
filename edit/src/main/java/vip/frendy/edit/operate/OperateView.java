@@ -222,10 +222,8 @@ public class OperateView extends View {
 				for (int i = imgLists.size() - 1; i >= 0; --i) {
 					ImageObject io = imgLists.get(i);
 					if (io.contains(event.getX(), event.getY())
-							|| io.pointOnCorner(event.getX(), event.getY(),
-									OperateConstants.RIGHTBOTTOM)
-							|| io.pointOnCorner(event.getX(), event.getY(),
-									OperateConstants.LEFTTOP)) {
+							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)
+							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)) {
 						io.setSelected(true);
 						imgLists.remove(i);
 						imgLists.add(io);
@@ -246,10 +244,8 @@ public class OperateView extends View {
 					for (int i = imgLists.size() - 1; i >= 0; --i) {
 						ImageObject io = imgLists.get(i);
 						if (io.contains(event.getX(), event.getY())
-								|| io.pointOnCorner(event.getX(), event.getY(),
-										OperateConstants.RIGHTBOTTOM)
-								|| io.pointOnCorner(event.getX(), event.getY(),
-										OperateConstants.LEFTTOP)) {
+								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)
+								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)) {
 							io.setSelected(true);
 							imgLists.remove(i);
 							imgLists.add(io);
@@ -267,11 +263,9 @@ public class OperateView extends View {
 
 				ImageObject io = getSelected();
 				if (io != null) {
-					if (io.pointOnCorner(event.getX(), event.getY(),
-							OperateConstants.LEFTTOP)) {
+					if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)) {
 						imgLists.remove(io);
-					} else if (io.pointOnCorner(event.getX(), event.getY(),
-							OperateConstants.RIGHTBOTTOM)) {
+					} else if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)) {
 						mResizeAndRotateSinceDown = true;
 						float x = event.getX();
 						float y = event.getY();
@@ -279,8 +273,7 @@ public class OperateView extends View {
 						float delY = y - io.getPoint().y;
 						diff = (float) Math.sqrt((delX * delX + delY * delY));
 						mStartDistance = diff;
-						mPrevRot = (float) Math.toDegrees(Math
-								.atan2(delX, delY));
+						mPrevRot = (float) Math.toDegrees(Math.atan2(delX, delY));
 						mStartScale = io.getScale();
 						mStartRot = io.getRotation();
 					} else if (io.contains(event.getX(), event.getY())) {
