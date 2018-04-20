@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">camdemo</string>
+    <string name="face_detect_activity">face detect</string>
 </resources>
