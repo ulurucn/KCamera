@@ -2,4 +2,5 @@
     <string name="app_name">camdemo</string>
     <string name="face_detect_activity">face detect</string>
     <string name="image_manipulations_activity">image manipulations</string>
+    <string name="color_blob_activity">color blob</string>
 </resources>
