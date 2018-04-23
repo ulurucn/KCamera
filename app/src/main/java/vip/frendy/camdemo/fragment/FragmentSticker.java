@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import vip.frendy.base.BitmapExt;
@@ -72,9 +71,9 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
 
     private void showImage(final Bitmap bitmap) {
         if(mContent.getWidth() != 0) {
-            mOperateView = new OperateView(getContext(), bitmap);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    bitmap.getWidth(), bitmap.getHeight());
+            Bitmap resizeBmp = mOperateUtils.compressionFiller(bitmap, mContent);
+            mOperateView = new OperateView(getContext(), resizeBmp);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(resizeBmp.getWidth(), resizeBmp.getHeight());
             layoutParams.gravity = Gravity.CENTER;
             mOperateView.setLayoutParams(layoutParams);
             mContent.addView(mOperateView);
