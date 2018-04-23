@@ -11,7 +11,7 @@
         <vip.frendy.edit.crop.CropImageView
             android:id="@+id/pic"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"/>
     </FrameLayout>
 
