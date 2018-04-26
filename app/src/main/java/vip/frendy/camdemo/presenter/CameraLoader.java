@@ -150,7 +150,16 @@ public class CameraLoader {
     private void setUpCamera(final int id) {
         mCameraInstance = getCameraInstance(id);
 
-        setFocusMode(SettingFocusMode.FOCUS_MODE_CONTINUOUS_VIDEO);
+        //对焦模式
+        Camera.Parameters params = mCameraInstance.getParameters();
+        mCameraHelper.setFocusMode(params, SettingFocusMode.FOCUS_MODE_CONTINUOUS_VIDEO);
+        //预览大小
+        Camera.Size previewSize = mCameraHelper.getLargePreviewSize(mCameraInstance);
+        params.setPreviewSize(previewSize.width, previewSize.height);
+        //图片大小
+        Camera.Size pictureSize = mCameraHelper.getLargePictureSize(mCameraInstance);
+        params.setPictureSize(pictureSize.width, pictureSize.height);
+        apply(params);
 
         int orientation = mCameraHelper.getCameraDisplayOrientation(mCurrentCameraId);
         CameraInfo2 cameraInfo = new CameraInfo2();

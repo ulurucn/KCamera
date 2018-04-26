@@ -146,4 +146,31 @@ public class CameraHelper {
         // else use whatever the default size is
         return new int[]{0, 0};
     }
+
+    public Camera.Size getLargePictureSize(Camera camera){
+        if(camera != null){
+            List<Camera.Size> sizes = camera.getParameters().getSupportedPictureSizes();
+            Camera.Size temp = sizes.get(0);
+            for(int i = 1;i < sizes.size();i ++){
+                float scale = (float)(sizes.get(i).height) / sizes.get(i).width;
+                if(temp.width < sizes.get(i).width && scale < 0.6f && scale > 0.5f)
+                    temp = sizes.get(i);
+            }
+            return temp;
+        }
+        return null;
+    }
+
+    public Camera.Size getLargePreviewSize(Camera camera){
+        if(camera != null){
+            List<Camera.Size> sizes = camera.getParameters().getSupportedPreviewSizes();
+            Camera.Size temp = sizes.get(0);
+            for(int i = 1;i < sizes.size();i ++){
+                if(temp.width < sizes.get(i).width)
+                    temp = sizes.get(i);
+            }
+            return temp;
+        }
+        return null;
+    }
 }
