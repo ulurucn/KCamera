@@ -30,6 +30,7 @@ import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
 public class CameraActivity extends BaseActivity implements View.OnClickListener, CameraLoader.ILoaderListener, CameraLoader.ICameraListener {
     private Context mContext = this;
 
+    private GLSurfaceView mGLSurfaceView;
     private GPUImage mGPUImage;
 
     private CameraLoader mCamera;
@@ -53,8 +54,10 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
         findViewById(R.id.beauty).setOnClickListener(this);
         findViewById(R.id.watermark).setOnClickListener(this);
 
+        mGLSurfaceView = findViewById(R.id.surfaceView);
+
         mGPUImage = new GPUImage(this);
-        mGPUImage.setGLSurfaceView((GLSurfaceView) findViewById(R.id.surfaceView));
+        mGPUImage.setGLSurfaceView(mGLSurfaceView);
 
         mFilterHelper = new FilterHelper(this);
         mCamera = new CameraLoader(this, this, this);
@@ -85,7 +88,7 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onCameraSetUp(Camera camera, int orientation, boolean flipHorizontal, boolean flipVertical) {
-        mGPUImage.setUpCamera(camera, orientation, flipHorizontal, false);
+        mGPUImage.setUpCamera(camera, orientation, flipHorizontal, flipVertical);
     }
 
     @Override
@@ -93,16 +96,21 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         //mGPUImage.setImage(bitmap);
-        final GLSurfaceView view = findViewById(R.id.surfaceView);
-        view.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         mGPUImage.saveToPictures(bitmap, "GPUImage", System.currentTimeMillis() + ".jpg", new GPUImage.OnPictureSavedListener() {
                     @Override
                     public void onPictureSaved(final Uri uri) {
                         file.delete();
                         camera.startPreview();
-                        view.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+                        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
                     }
                 });
+    }
+
+    @Override
+    public void onSwitching() {
+        mGLSurfaceView.requestLayout();
+        mGPUImage.deleteImage();
     }
 
     @Override

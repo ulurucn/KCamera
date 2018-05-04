@@ -45,7 +45,11 @@ public class CameraLoader {
     }
 
     public void switchCamera() {
+        //释放
         releaseCamera();
+        //回调处理
+        if(mCameraListener != null) mCameraListener.onSwitching();
+        //初始化新摄像头
         mCurrentCameraId = (mCurrentCameraId + 1) % mCameraHelper.getNumberOfCameras();
         setUpCamera(mCurrentCameraId);
     }
@@ -141,6 +145,7 @@ public class CameraLoader {
 
     private void releaseCamera() {
         if(mCameraInstance != null) {
+            mCameraInstance.stopPreview();
             mCameraInstance.setPreviewCallback(null);
             mCameraInstance.release();
             mCameraInstance = null;
@@ -174,5 +179,6 @@ public class CameraLoader {
     }
     public interface ICameraListener {
         void onTakePicture(Camera camera, File file);
+        void onSwitching();
     }
 }
