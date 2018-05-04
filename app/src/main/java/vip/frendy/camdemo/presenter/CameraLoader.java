@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import vip.frendy.base.Common;
+import vip.frendy.base.Device;
 import vip.frendy.camera.CameraHelper;
 import vip.frendy.camera.entity.CameraInfo2;
 import vip.frendy.camera.settings.SettingFocusMode;
@@ -29,11 +30,14 @@ public class CameraLoader {
     private ILoaderListener mListener;
     private ICameraListener mCameraListener;
 
+    private int mTotalRam;
+
     public CameraLoader(Activity activity, ILoaderListener listener, ICameraListener cameraListener) {
         mActivity = activity;
         mCameraHelper = new CameraHelper(mActivity);
         mListener = listener;
         mCameraListener = cameraListener;
+        mTotalRam = Device.getTotalRam(activity);
     }
 
     public void onResume() {
@@ -163,7 +167,11 @@ public class CameraLoader {
         params.setPreviewSize(previewSize.width, previewSize.height);
         //图片大小
         Camera.Size pictureSize = mCameraHelper.getLargePictureSize(mCameraInstance);
-        params.setPictureSize(pictureSize.width, pictureSize.height);
+        if(mTotalRam <= 2 && pictureSize.width > 1920 && pictureSize.height > 1080) {
+            params.setPictureSize(1920, 1080);
+        } else {
+            params.setPictureSize(pictureSize.width, pictureSize.height);
+        }
         apply(params);
 
         int orientation = mCameraHelper.getCameraDisplayOrientation(mCurrentCameraId);
