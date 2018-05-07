@@ -193,6 +193,8 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
 
             @Override
             public void run() {
+                if(filter == null) return;
+
                 final GPUImageFilter oldFilter = mFilter;
                 mFilter = filter;
                 if (oldFilter != null) {
