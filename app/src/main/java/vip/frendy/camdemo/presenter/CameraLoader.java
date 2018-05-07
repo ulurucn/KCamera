@@ -30,6 +30,8 @@ public class CameraLoader {
     private ILoaderListener mListener;
     private ICameraListener mCameraListener;
 
+    private int DEFAULT_WIDTH = 1920;
+    private int DEFAULT_HEIGHT = 1080;
     private int mTotalRam;
 
     public CameraLoader(Activity activity, ILoaderListener listener, ICameraListener cameraListener) {
@@ -162,16 +164,13 @@ public class CameraLoader {
         //对焦模式
         Camera.Parameters params = mCameraInstance.getParameters();
         mCameraHelper.setFocusMode(params, SettingFocusMode.FOCUS_MODE_CONTINUOUS_VIDEO);
+        //获取合适的大小
+        int[] size = mCameraHelper.getPreferredPreviewSize(params, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         //预览大小
-        Camera.Size previewSize = mCameraHelper.getLargePreviewSize(mCameraInstance);
-        params.setPreviewSize(previewSize.width, previewSize.height);
+        params.setPreviewSize(size[0], size[1]);
         //图片大小
-        Camera.Size pictureSize = mCameraHelper.getLargePictureSize(mCameraInstance);
-        if(mTotalRam <= 2 && pictureSize.width > 1920 && pictureSize.height > 1080) {
-            params.setPictureSize(1920, 1080);
-        } else {
-            params.setPictureSize(pictureSize.width, pictureSize.height);
-        }
+        params.setPictureSize(size[0], size[1]);
+        //应用
         apply(params);
 
         int orientation = mCameraHelper.getCameraDisplayOrientation(mCurrentCameraId);

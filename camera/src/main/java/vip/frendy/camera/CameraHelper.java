@@ -96,7 +96,7 @@ public class CameraHelper {
     /**
      * 设置fps
      */
-    public void chooseFramerate(Camera.Parameters params, float frameRate) {
+    public void getPreferredFramerate(Camera.Parameters params, float frameRate) {
         int framerate = (int) (frameRate * 1000);
         List<int[]> rates = params.getSupportedPreviewFpsRange();
         int[] bestFramerate = rates.get(0);
@@ -120,7 +120,7 @@ public class CameraHelper {
      * specify the dimensions of the encoded video).  If it fails to find a match it just
      * uses the default preview size for video.
      */
-    public static int[] choosePreviewSize(Camera.Parameters params, int width, int height) {
+    public int[] getPreferredPreviewSize(Camera.Parameters params, int width, int height) {
         // We should make sure that the requested MPEG size is less than the preferred
         // size, and has the same aspect ratio.
         Camera.Size ppsfv = params.getPreferredPreviewSizeForVideo();
