@@ -42,10 +42,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final Photo photo = mData.get(position);
         if (photo != null && photo.getPath() != null) {
-            Glide.with(mContext).load(photo.getPath())
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
-                    .into(holder.ivImg);
+            Glide.with(mContext).load(photo.getPath()).into(holder.ivImg);
 
             holder.ivImg.setOnClickListener(new View.OnClickListener() {
                 @Override
