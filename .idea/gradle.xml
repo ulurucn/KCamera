@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/arcamera" />
             <option value="$PROJECT_DIR$/camera" />
             <option value="$PROJECT_DIR$/edit" />
             <option value="$PROJECT_DIR$/filter" />
@@ -17,6 +18,8 @@
             <option value="$PROJECT_DIR$/openCVLibrary330" />
             <option value="$PROJECT_DIR$/opencv" />
             <option value="$PROJECT_DIR$/puzzle" />
+            <option value="$PROJECT_DIR$/rajawali" />
+            <option value="$PROJECT_DIR$/stmobile" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

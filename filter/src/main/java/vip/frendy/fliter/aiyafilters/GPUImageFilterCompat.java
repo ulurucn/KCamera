@@ -2,6 +2,7 @@ package vip.frendy.fliter.aiyafilters;
 
 import java.nio.FloatBuffer;
 
+import vip.frendy.fliter.aiyafilters.camera.AFilter;
 import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.utils.OpenGlUtils;
 
