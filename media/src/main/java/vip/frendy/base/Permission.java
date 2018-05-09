@@ -28,6 +28,10 @@ public class Permission {
         ActivityCompat.requestPermissions(mActivity, permissions, REQUEST_CODE_PERMISSION);
     }
 
+    public void requestPermissions(String[] permissions) {
+        ActivityCompat.requestPermissions(mActivity, permissions, REQUEST_CODE_PERMISSION);
+    }
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, IPermissionsListener listener) {
         if (requestCode == REQUEST_CODE_PERMISSION) {
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

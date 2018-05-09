@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
@@ -25,12 +26,18 @@
         android:clickable="false"/>
 
     <!--用于显示3D模型-->
-    <org.rajawali3d.view.SurfaceView
-        android:id="@+id/rajwali_surface"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        surfaceview:frameRate="30.0"
-        surfaceview:renderMode="RENDER_WHEN_DIRTY"/>
+    <LinearLayout
+        android:id="@+id/rajwali_surface_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    </LinearLayout>
+    <!--<org.rajawali3d.view.SurfaceView-->
+        <!--android:id="@+id/rajwali_surface"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--surfaceview:frameRate="30.0"-->
+        <!--surfaceview:renderMode="RENDER_WHEN_DIRTY"/>-->
 
     <!--拍照\录像按钮-->
     <vip.frendy.camdemo.widget.CircularProgressView

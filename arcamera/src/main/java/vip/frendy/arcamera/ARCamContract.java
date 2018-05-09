@@ -1,4 +1,4 @@
-package vip.frendy.camdemo.contract;
+package vip.frendy.arcamera;
 
 import android.graphics.Bitmap;
 

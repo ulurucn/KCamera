@@ -27,6 +27,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,13 +59,13 @@ import vip.frendy.arcamera.util.Accelerometer;
 import vip.frendy.arcamera.util.FileUtils;
 import vip.frendy.arcamera.util.LandmarkUtils;
 import vip.frendy.camdemo.presenter.OrnamentFactory;
-import vip.frendy.arcamera.util.PermissionUtils;
+import vip.frendy.base.Permission2;
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.adapter.FilterAdapter;
 import vip.frendy.camdemo.adapter.OrnamentAdapter;
 import vip.frendy.camdemo.adapter.PhotoAdapter;
 import vip.frendy.arcamera.codec.CameraRecorder;
-import vip.frendy.camdemo.contract.ARCamContract;
+import vip.frendy.arcamera.ARCamContract;
 import vip.frendy.camdemo.presenter.ARCamPresenter;
 import vip.frendy.camdemo.presenter.FilterFactory;
 import vip.frendy.camdemo.presenter.MediaLoaderCallback;
@@ -90,7 +91,7 @@ public class ARCamActivity extends AppCompatActivity implements ARCamContract.Vi
     private final static int TYPE_PHOTO = 0;
     private final static int TYPE_RECORD = 1;
 
-    private Context mContext;
+    private Context mContext = this;
     private ARCamPresenter mPresenter;
 
     private RelativeLayout mLayoutRoot;
@@ -171,18 +172,21 @@ public class ARCamActivity extends AppCompatActivity implements ARCamContract.Vi
     private View mStreamingView;
     private Handler mStreamingHandler;
 
+    private String[] mPermissions = new String[] {
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = ARCamActivity.this;
         mPresenter = new ARCamPresenter(this);
         // 用于人脸检测
         mAccelerometer = new Accelerometer(this);
         mAccelerometer.start();
 
-        PermissionUtils.askPermission(this, new String[]{Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE}, 10, initViewRunnable);
+        Permission2.askPermission(this, mPermissions, 10, initViewRunnable);
     }
 
     protected void setContentView(){
@@ -219,15 +223,29 @@ public class ARCamActivity extends AppCompatActivity implements ARCamContract.Vi
     }
 
     private void initRajawaliSurface() {
-        mRenderSurface = (org.rajawali3d.view.SurfaceView) findViewById(R.id.rajwali_surface);
+        if(mRenderSurface == null) {
+            mRenderSurface = new org.rajawali3d.view.SurfaceView(mContext);
+            mRenderSurface.setFrameRate(30.0);
+            mRenderSurface.setRenderMode(ISurface.RENDERMODE_WHEN_DIRTY);
+
+            LinearLayout content = findViewById(R.id.rajwali_surface_content);
+            content.addView((org.rajawali3d.view.SurfaceView) mRenderSurface);
+
+            mISurfaceRenderer = new My3DRenderer(this);
+            ((My3DRenderer) mISurfaceRenderer).setScreenW(IMAGE_WIDTH);
+            ((My3DRenderer) mISurfaceRenderer).setScreenH(IMAGE_HEIGHT);
+            mRenderSurface.setSurfaceRenderer(mISurfaceRenderer);
+        } else {
+            LinearLayout content = findViewById(R.id.rajwali_surface_content);
+            ((LinearLayout)(((org.rajawali3d.view.SurfaceView) mRenderSurface).getParent())).removeAllViews();
+            content.addView((org.rajawali3d.view.SurfaceView) mRenderSurface);
+        }
+
         // 将Rajawali的SurfaceView的背景设为透明
         ((org.rajawali3d.view.SurfaceView) mRenderSurface).setTransparent(true);
         // 将Rajawali的SurfaceView的尺寸设为录像的尺寸
         ((org.rajawali3d.view.SurfaceView) mRenderSurface).getHolder().setFixedSize(VIDEO_WIDTH, VIDEO_HEIGHT);
-        mISurfaceRenderer = new My3DRenderer(this);
-        ((My3DRenderer) mISurfaceRenderer).setScreenW(IMAGE_WIDTH);
-        ((My3DRenderer) mISurfaceRenderer).setScreenH(IMAGE_HEIGHT);
-        mRenderSurface.setSurfaceRenderer(mISurfaceRenderer);
+
         ((org.rajawali3d.view.SurfaceView) mRenderSurface).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -696,7 +714,7 @@ public class ARCamActivity extends AppCompatActivity implements ARCamContract.Vi
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionUtils.onRequestPermissionsResult(requestCode == 10, grantResults, initViewRunnable,
+        Permission2.onRequestPermissionsResult(requestCode == 10, grantResults, initViewRunnable,
                 new Runnable() {
                     @Override
                     public void run() {

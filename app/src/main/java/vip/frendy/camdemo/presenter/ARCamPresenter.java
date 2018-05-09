@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vip.frendy.arcamera.model.DynamicPoint;
-import vip.frendy.camdemo.contract.ARCamContract;
+import vip.frendy.arcamera.ARCamContract;
 
 /**
  * Created by Simon on 2017/7/19.
