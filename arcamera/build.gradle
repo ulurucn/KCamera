@@ -15,6 +15,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         //ndk-build in main
+        ndk {
+            abiFilters 'armeabi', 'armeabi-v7a'
+        }
     }
 
     sourceSets {
