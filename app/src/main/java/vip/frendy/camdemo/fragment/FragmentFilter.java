@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 
+import java.io.File;
+
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.presenter.FilterHelper;
 import vip.frendy.edit.common.Common;
@@ -79,8 +81,8 @@ public class FragmentFilter extends BaseFragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.ok) {
-            String fileName = System.currentTimeMillis() + ".jpg";
-            mPic.saveToPictures(vip.frendy.base.Common.DEFAULT_DIR, fileName, new GPUImageView.OnPictureSavedListener() {
+            String path = vip.frendy.base.Common.getOutputMediaDir() + File.separator + System.currentTimeMillis() + ".jpg";
+            mPic.saveToPictures(path, new GPUImageView.OnPictureSavedListener() {
                 @Override
                 public void onPictureSaved(Uri uri) {
                     if(mListener != null) mListener.onPictureEditApply(0, Common.getRealFilePath(getContext(), uri));
