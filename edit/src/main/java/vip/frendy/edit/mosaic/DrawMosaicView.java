@@ -85,9 +85,10 @@ public class DrawMosaicView extends ViewGroup {
 	/**
 	 * 触摸路径数据
 	 */
-
 	private List<MosaicPath> touchPaths;
 	private List<MosaicPath> erasePaths;
+	//回退操作保存
+	private List<MosaicPath> cachePaths;
 
 	private MosaicPath touchPath;
 
@@ -115,8 +116,9 @@ public class DrawMosaicView extends ViewGroup {
 	 * 初始化绘画板 默认的情况下是马赛克模式
 	 */
 	private void initDrawView() {
-		touchPaths = new ArrayList<MosaicPath>();
-		erasePaths = new ArrayList<MosaicPath>();
+		touchPaths = new ArrayList<>();
+		erasePaths = new ArrayList<>();
+		cachePaths = new ArrayList<>();
 
 		mPadding = dp2px(INNER_PADDING);
 		mBrushWidth = dp2px(PATH_WIDTH);
@@ -239,6 +241,7 @@ public class DrawMosaicView extends ViewGroup {
 		}
 		erasePaths.clear();
 		touchPaths.clear();
+		cachePaths.clear();
 
 		bmCoverLayer = getBitmap(bitmap);
 		updatePathMosaic();
@@ -255,11 +258,42 @@ public class DrawMosaicView extends ViewGroup {
 	}
 
 	/**
+	 * 更新画板
+	 */
+	public void update() {
+		updatePathMosaic();
+		invalidate();
+	}
+
+	public void backward() {
+		if(touchPaths == null || cachePaths == null) return;
+		if(touchPaths.size() <= 0) return;
+
+		MosaicPath lastPath = touchPaths.get(touchPaths.size() - 1);
+		touchPaths.remove(lastPath);
+		cachePaths.add(lastPath);
+
+		update();
+	}
+
+	public void forward() {
+		if(touchPaths == null || cachePaths == null) return;
+		if(cachePaths.size() <= 0) return;
+
+		MosaicPath lastPath = cachePaths.get(cachePaths.size() - 1);
+		touchPaths.add(lastPath);
+		cachePaths.remove(lastPath);
+
+		update();
+	}
+
+	/**
 	 * 清除绘画数据
 	 */
 	public void clear() {
 		touchPaths.clear();
 		erasePaths.clear();
+		cachePaths.clear();
 
 		if (bmMosaicLayer != null) {
 			bmMosaicLayer.recycle();
@@ -291,6 +325,7 @@ public class DrawMosaicView extends ViewGroup {
 
 		touchPaths.clear();
 		erasePaths.clear();
+		cachePaths.clear();
 		return true;
 	}
 

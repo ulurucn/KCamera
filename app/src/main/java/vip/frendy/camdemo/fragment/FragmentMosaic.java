@@ -4,11 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
-import vip.frendy.edit.frame.PhotoFrame;
 import vip.frendy.edit.interfaces.IPictureEditListener;
 import vip.frendy.edit.mosaic.DrawMosaicView;
 import vip.frendy.edit.mosaic.MosaicUtil;
@@ -54,6 +52,9 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
         mRootView.findViewById(R.id.ok).setOnClickListener(this);
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
         mRootView.findViewById(R.id.eraser).setOnClickListener(this);
+        mRootView.findViewById(R.id.blur).setOnClickListener(this);
+        mRootView.findViewById(R.id.forward).setOnClickListener(this);
+        mRootView.findViewById(R.id.backward).setOnClickListener(this);
 
         imgPath = getArguments().getString(PIC_PATH);
         bitmapSrc = BitmapFactory.decodeFile(imgPath);
@@ -74,6 +75,13 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.eraser) {
             mPic.setMosaicType(MosaicUtil.MosaicType.ERASER);
+        } else if(view.getId() == R.id.blur) {
+            bitmap = MosaicUtil.getBlur(bitmapSrc);
+            mPic.setMosaicResource(bitmap);
+        } else if(view.getId() == R.id.forward) {
+            mPic.forward();
+        } else if(view.getId() == R.id.backward) {
+            mPic.backward();
         }
     }
 
