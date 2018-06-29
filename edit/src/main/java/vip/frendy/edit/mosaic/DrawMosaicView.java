@@ -95,10 +95,11 @@ public class DrawMosaicView extends ViewGroup {
 	/**
 	 * 马赛克类型 Mosaic: 打码 erase: 橡皮擦
 	 * */
-
 	private MosaicUtil.MosaicType mMosaicType = MosaicUtil.MosaicType.MOSAIC;
 
 	private Context mContext;
+
+	private OnPathMosaicUpdatedListener mUpdatedListener;
 
 	public DrawMosaicView(Context context) {
 		super(context);
@@ -449,6 +450,10 @@ public class DrawMosaicView extends ViewGroup {
 		canvas.save();
 
 		bmTouchLayer.recycle();
+
+		//更新回调
+		if(mUpdatedListener != null)
+			mUpdatedListener.OnPathMosaicUpdated();
 	}
 
 	@Override
@@ -511,5 +516,17 @@ public class DrawMosaicView extends ViewGroup {
 		Resources resources = context.getResources();
 		int px = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, resources.getDisplayMetrics()));
 		return px;
+	}
+
+	/**
+	 * 设置画板更新监听
+	 * @param listener
+	 */
+	public void setOnPathMosaicUpdatedListener(OnPathMosaicUpdatedListener listener) {
+		mUpdatedListener = listener;
+	}
+
+	public interface OnPathMosaicUpdatedListener {
+		void OnPathMosaicUpdated();
 	}
 }
