@@ -287,6 +287,24 @@ public class DrawMosaicView extends ViewGroup {
 		update();
 	}
 
+	public boolean canBackward() {
+		if(touchPaths == null || cachePaths == null) return false;
+		if(touchPaths.size() <= 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public boolean canForward() {
+		if(touchPaths == null || cachePaths == null) return false;
+		if(cachePaths.size() <= 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	/**
 	 * 清除绘画数据
 	 */
