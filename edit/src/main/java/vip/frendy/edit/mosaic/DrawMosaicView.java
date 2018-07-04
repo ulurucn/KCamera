@@ -136,7 +136,6 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置画刷的宽度
-	 * 
 	 * @param brushWidth 画刷宽度大小
 	 */
 	public void setMosaicBrushWidth(int brushWidth) {
@@ -145,20 +144,16 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置马赛克类型
-	 * 
 	 * @param type 类型
 	 */
-
 	public void setMosaicType(MosaicUtil.MosaicType type) {
 		this.mMosaicType = type;
 	}
 
 	/**
 	 * 设置所要打码的图片资源
-	 * 
 	 * @param imgPath 图片路径
 	 */
-
 	public void setMosaicBackgroundResource(String imgPath) {
 		File file = new File(imgPath);
 		if (file == null || !file.exists()) {
@@ -178,7 +173,6 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置马赛克样式资源
-	 * 
 	 * @param imgPath 样式图片路径
 	 */
 	public void setMosaicResource(String imgPath) {
@@ -210,7 +204,6 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置所要打码的资源图片
-	 * 
 	 * @param bitmap 资源图片路径
 	 */
 	public void setMosaicBackgroundResource(Bitmap bitmap) {
@@ -231,7 +224,6 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置马赛克样式资源
-	 * 
 	 * @param bitmap 样式图片资源
 	 */
 	public void setMosaicResource(Bitmap bitmap) {
@@ -509,6 +501,13 @@ public class DrawMosaicView extends ViewGroup {
 		canvas.drawBitmap(bmMosaicLayer, 0, 0, null);
 		canvas.save();
 		return bitmap;
+	}
+
+	/**
+	 * 获取擦除路径
+	 */
+	public List<MosaicPath> getErasePaths() {
+		return erasePaths;
 	}
 
 	private int dp2px(int dip) {
