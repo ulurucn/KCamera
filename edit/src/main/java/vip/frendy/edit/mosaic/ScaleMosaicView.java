@@ -373,20 +373,19 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		}
 		pointerX = pointerX / pointerCount;
 		pointerY = pointerY / pointerCount;
-		if (pointerCount > 1){
+		if(pointerCount > 1){
 			isMultiPointer = true;
 			//在多指模式，防误触变量重置
 			isCanDrawPath = false;
 			lastCheckDrawTime = 0;
 		}
-		if (lastPointerCount != pointerCount){
+		if(lastPointerCount != pointerCount){
 			mLastX = pointerX;
 			mLastY = pointerY;
 			isCanDrag = false;
 			lastPointerCount = pointerCount;
 		}
-		//if (pointerCount > 1 || lastPointerCount >1){
-		if (isMultiPointer){
+		if(isMultiPointer){
 			switch (event.getAction()){
 				case MotionEvent.ACTION_MOVE:
 					if (pointerCount == 1)
@@ -423,24 +422,24 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		int x = (int) event.getX();
 		int y = (int) event.getY();
 		//防误触
-		if (!isCanDrawPath){
-			if(lastCheckDrawTime == 0){
+		if(!isCanDrawPath){
+			if(lastCheckDrawTime == 0) {
 				lastCheckDrawTime = System.currentTimeMillis();
 			}
-			if (System.currentTimeMillis() - lastCheckDrawTime > 50){ //大于50ms为有效值
+			if(System.currentTimeMillis() - lastCheckDrawTime > 50) { //大于50ms为有效值
 				isCanDrawPath = true;
 			}
 		}
-		onPathEvent(action, x, y);
+		onPathEvent(event, x, y);
 		return true;
 	}
 
-	private void onPathEvent(int action, int x, int y) {
-		if (mImageWidth <= 0 || mImageHeight <= 0) {
+	private void onPathEvent(MotionEvent event, int x, int y) {
+		if(mImageWidth <= 0 || mImageHeight <= 0) {
 			return;
 		}
 
-		if (x < mImageRect.left || x > mImageRect.right || y < mImageRect.top || y > mImageRect.bottom) {
+		if(x < mImageRect.left || x > mImageRect.right || y < mImageRect.top || y > mImageRect.bottom) {
 			return;
 		}
 
@@ -448,25 +447,30 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		x = (int) ((x - mImageRect.left) / ratio);
 		y = (int) ((y - mImageRect.top) / ratio);
 
-		if (action == MotionEvent.ACTION_DOWN) {
-
+		if(event.getAction() == MotionEvent.ACTION_DOWN) {
 			touchPath = new MosaicPath();
-
 			touchPath.drawPath = new Path();
 			touchPath.drawPath.moveTo(x, y);
 			touchPath.paintWidth = mBrushWidth;
 
-			if (this.mMosaicType == MosaicUtil.MosaicType.MOSAIC) {
-				touchPaths.add(touchPath);
-
-			} else {
-				erasePaths.add(touchPath);
+			if(event.getPointerCount() <= 1) {
+				if(this.mMosaicType == MosaicUtil.MosaicType.MOSAIC) {
+					touchPaths.add(touchPath);
+				} else {
+					erasePaths.add(touchPath);
+				}
 			}
-		} else if (action == MotionEvent.ACTION_MOVE) {
-			touchPath.drawPath.lineTo(x, y);
+		} else if(event.getAction() == MotionEvent.ACTION_MOVE) {
+			if(isCanDrawPath) {
+				if(touchPath != null && touchPath.drawPath != null)
+					touchPath.drawPath.lineTo(x, y);
 
-			updatePathMosaic();
-			invalidate();
+				updatePathMosaic();
+				invalidate();
+			}
+		} else if(event.getAction() == MotionEvent.ACTION_UP) {
+			isCanDrawPath = false;
+			lastCheckDrawTime = 0;
 		}
 	}
 
@@ -481,11 +485,11 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	 * 刷新绘画板
 	 */
 	private void updatePathMosaic() {
-		if (mImageWidth <= 0 || mImageHeight <= 0) {
+		if(mImageWidth <= 0 || mImageHeight <= 0) {
 			return;
 		}
 
-		if (bmMosaicLayer != null) {
+		if(bmMosaicLayer != null) {
 			bmMosaicLayer.recycle();
 		}
 		bmMosaicLayer = Bitmap.createBitmap(mImageWidth, mImageHeight, Config.ARGB_8888);

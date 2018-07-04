@@ -3,11 +3,13 @@ package vip.frendy.camdemo.fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
+import vip.frendy.edit.mosaic.DrawMosaicView;
 import vip.frendy.edit.mosaic.MosaicUtil;
 import vip.frendy.edit.mosaic.ScaleMosaicView;
 
@@ -64,6 +66,13 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
         mPic.setMosaicBackgroundResource(imgPath);
         mPic.setMosaicResource(bitmap);
         mPic.setMosaicBrushWidth(20);
+        mPic.setOnPathMosaicUpdatedListener(new DrawMosaicView.OnPathMosaicUpdatedListener() {
+            @Override
+            public void OnPathMosaicUpdated() {
+                Log.e("mosaic", "** mosaic forward = " + mPic.canForward());
+                Log.e("mosaic", "** mosaic backward = " + mPic.canBackward());
+            }
+        });
     }
 
     @Override
