@@ -8,8 +8,8 @@ import android.view.View;
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
-import vip.frendy.edit.mosaic.DrawMosaicView;
 import vip.frendy.edit.mosaic.MosaicUtil;
+import vip.frendy.edit.mosaic.ScaleMosaicView;
 
 /**
  * Created by frendy on 2018/4/12.
@@ -23,7 +23,7 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
 
     private IPictureEditListener mListener;
 
-    private DrawMosaicView mPic;
+    private ScaleMosaicView mPic;
     private Bitmap bitmap;
 
     public static FragmentMosaic getInstance(Bundle args, IPictureEditListener listener) {
