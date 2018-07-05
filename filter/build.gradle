@@ -14,12 +14,6 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-//        ndk {
-//            moduleName "gpuimage-library"
-//            stl "gnustl_shared"
-//            abiFilters "all"
-//            ldLibs "log"
-//        }
     }
 
     sourceSets {

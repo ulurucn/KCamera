@@ -14,11 +14,11 @@ import android.opengl.Matrix;
  */
 public enum MatrixUtils {
     ;
-    public static final int TYPE_FITXY=0;
-    public static final int TYPE_CENTERCROP=1;
-    public static final int TYPE_CENTERINSIDE=2;
-    public static final int TYPE_FITSTART=3;
-    public static final int TYPE_FITEND=4;
+    public static final int TYPE_FIT_XY=0;
+    public static final int TYPE_CENTER_CROP=1;
+    public static final int TYPE_CENTER_INSIDE=2;
+    public static final int TYPE_FIT_START=3;
+    public static final int TYPE_FIT_END=4;
 
     MatrixUtils(){
 
@@ -50,7 +50,7 @@ public enum MatrixUtils {
         if(imgHeight>0&&imgWidth>0&&viewWidth>0&&viewHeight>0){
             float[] projection=new float[16];
             float[] camera=new float[16];
-            if(type==TYPE_FITXY){
+            if(type==TYPE_FIT_XY){
                 Matrix.orthoM(projection,0,-1,1,-1,1,1,3);
                 Matrix.setLookAtM(camera,0,0,0,1,0,0,0,0,1,0);
                 Matrix.multiplyMM(matrix,0,projection,0,camera,0);
@@ -59,31 +59,31 @@ public enum MatrixUtils {
             float sWhImg=(float)imgWidth/imgHeight;
             if(sWhImg>sWhView){
                 switch (type){
-                    case TYPE_CENTERCROP:
+                    case TYPE_CENTER_CROP:
                         Matrix.orthoM(projection,0,-sWhView/sWhImg,sWhView/sWhImg,-1,1,1,3);
                         break;
-                    case TYPE_CENTERINSIDE:
+                    case TYPE_CENTER_INSIDE:
                         Matrix.orthoM(projection,0,-1,1,-sWhImg/sWhView,sWhImg/sWhView,1,3);
                         break;
-                    case TYPE_FITSTART:
+                    case TYPE_FIT_START:
                         Matrix.orthoM(projection,0,-1,1,1-2*sWhImg/sWhView,1,1,3);
                         break;
-                    case TYPE_FITEND:
+                    case TYPE_FIT_END:
                         Matrix.orthoM(projection,0,-1,1,-1,2*sWhImg/sWhView-1,1,3);
                         break;
                 }
             }else{
                 switch (type){
-                    case TYPE_CENTERCROP:
+                    case TYPE_CENTER_CROP:
                         Matrix.orthoM(projection,0,-1,1,-sWhImg/sWhView,sWhImg/sWhView,1,3);
                         break;
-                    case TYPE_CENTERINSIDE:
+                    case TYPE_CENTER_INSIDE:
                         Matrix.orthoM(projection,0,-sWhView/sWhImg,sWhView/sWhImg,-1,1,1,3);
                         break;
-                    case TYPE_FITSTART:
+                    case TYPE_FIT_START:
                         Matrix.orthoM(projection,0,-1,2*sWhView/sWhImg-1,-1,1,1,3);
                         break;
-                    case TYPE_FITEND:
+                    case TYPE_FIT_END:
                         Matrix.orthoM(projection,0,1-2*sWhView/sWhImg,1,-1,1,1,3);
                         break;
                 }

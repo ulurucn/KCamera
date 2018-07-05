@@ -25,11 +25,9 @@ public class MosaicUtil {
 	 * @param bitmap 原图
 	 * @return 马赛克图片
 	 */
-	public static Bitmap getMosaic(Bitmap bitmap) {
+	public static Bitmap getMosaic(Bitmap bitmap, int radius) {
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
-		int radius = 10;
-		
 		
 		Bitmap mosaicBitmap = Bitmap.createBitmap(width, height,
 				Config.ARGB_8888);
@@ -62,6 +60,10 @@ public class MosaicUtil {
 		canvas.save();
 		
 		return mosaicBitmap;
+	}
+
+	public static Bitmap getMosaic(Bitmap bitmap) {
+		return getMosaic(bitmap, 10);
 	}
 	
 	

@@ -196,13 +196,11 @@ public class GPUImageView extends FrameLayout {
      * This method is async and will notify when the image was saved through the
      * listener.
      *
-     * @param folderName the folder name
-     * @param fileName the file name
+     * @param path the file path
      * @param listener the listener
      */
-    public void saveToPictures(final String folderName, final String fileName,
-                               final OnPictureSavedListener listener) {
-        new SaveTask(folderName, fileName, listener).execute();
+    public void saveToPictures(final String path, final OnPictureSavedListener listener) {
+        new SaveTask(path, listener).execute();
     }
 
     /**
@@ -212,16 +210,14 @@ public class GPUImageView extends FrameLayout {
      * This method is async and will notify when the image was saved through the
      * listener.
      *
-     * @param folderName the folder name
-     * @param fileName   the file name
+     * @param path   the file path
      * @param width      requested output width
      * @param height     requested output height
      * @param listener   the listener
      */
-    public void saveToPictures(final String folderName, final String fileName,
-                               int width, int height,
+    public void saveToPictures(final String path, int width, int height,
                                final OnPictureSavedListener listener) {
-        new SaveTask(folderName, fileName, width, height, listener).execute();
+        new SaveTask(path, width, height, listener).execute();
     }
 
     /**
@@ -404,22 +400,19 @@ public class GPUImageView extends FrameLayout {
     }
 
     private class SaveTask extends AsyncTask<Void, Void, Void> {
-        private final String mFolderName;
-        private final String mFileName;
+        private final String mPath;
         private final int mWidth;
         private final int mHeight;
         private final OnPictureSavedListener mListener;
         private final Handler mHandler;
 
-        public SaveTask(final String folderName, final String fileName,
-                        final OnPictureSavedListener listener) {
-            this(folderName, fileName, 0, 0, listener);
+        public SaveTask(final String path, final OnPictureSavedListener listener) {
+            this(path, 0, 0, listener);
         }
 
-        public SaveTask(final String folderName, final String fileName, int width, int height,
+        public SaveTask(final String path, int width, int height,
                         final OnPictureSavedListener listener) {
-            mFolderName = folderName;
-            mFileName = fileName;
+            mPath = path;
             mWidth = width;
             mHeight = height;
             mListener = listener;
@@ -430,17 +423,15 @@ public class GPUImageView extends FrameLayout {
         protected Void doInBackground(final Void... params) {
             try {
                 Bitmap result = mWidth != 0 ? capture(mWidth, mHeight) : capture();
-                saveImage(mFolderName, mFileName, result);
+                saveImage(mPath, result);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             return null;
         }
 
-        private void saveImage(final String folderName, final String fileName, final Bitmap image) {
-            File path = Environment
-                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            File file = new File(path, folderName + "/" + fileName);
+        private void saveImage(final String path, final Bitmap image) {
+            File file = new File(path);
             try {
                 file.getParentFile().mkdirs();
                 image.compress(Bitmap.CompressFormat.JPEG, 80, new FileOutputStream(file));

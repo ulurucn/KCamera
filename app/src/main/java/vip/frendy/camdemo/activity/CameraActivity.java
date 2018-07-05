@@ -12,6 +12,7 @@ import android.view.View;
 
 import java.io.File;
 
+import vip.frendy.base.Common;
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.extension.HandlerExt;
 import vip.frendy.camdemo.presenter.CameraLoader;
@@ -97,7 +98,9 @@ public class CameraActivity extends BaseActivity implements View.OnClickListener
 
         //mGPUImage.setImage(bitmap);
         mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        mGPUImage.saveToPictures(bitmap, "GPUImage", System.currentTimeMillis() + ".jpg", new GPUImage.OnPictureSavedListener() {
+
+        String path = Common.getOutputMediaDir() + File.separator + System.currentTimeMillis() + ".jpg";
+        mGPUImage.saveToPictures(bitmap, path, new GPUImage.OnPictureSavedListener() {
                     @Override
                     public void onPictureSaved(final Uri uri) {
                         file.delete();

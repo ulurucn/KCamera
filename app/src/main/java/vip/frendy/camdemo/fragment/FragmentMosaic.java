@@ -3,15 +3,14 @@ package vip.frendy.camdemo.fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
-import vip.frendy.edit.frame.PhotoFrame;
 import vip.frendy.edit.interfaces.IPictureEditListener;
-import vip.frendy.edit.mosaic.DrawMosaicView;
 import vip.frendy.edit.mosaic.MosaicUtil;
+import vip.frendy.edit.mosaic.ScaleMosaicView;
 
 /**
  * Created by frendy on 2018/4/12.
@@ -25,8 +24,9 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
 
     private IPictureEditListener mListener;
 
-    private DrawMosaicView mPic;
+    private ScaleMosaicView mPic;
     private Bitmap bitmap;
+    private boolean isEraser = false;
 
     public static FragmentMosaic getInstance(Bundle args, IPictureEditListener listener) {
         FragmentMosaic fragment = new FragmentMosaic();
@@ -54,6 +54,9 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
         mRootView.findViewById(R.id.ok).setOnClickListener(this);
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
         mRootView.findViewById(R.id.eraser).setOnClickListener(this);
+        mRootView.findViewById(R.id.blur).setOnClickListener(this);
+        mRootView.findViewById(R.id.forward).setOnClickListener(this);
+        mRootView.findViewById(R.id.backward).setOnClickListener(this);
 
         imgPath = getArguments().getString(PIC_PATH);
         bitmapSrc = BitmapFactory.decodeFile(imgPath);
@@ -63,6 +66,17 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
         mPic.setMosaicBackgroundResource(imgPath);
         mPic.setMosaicResource(bitmap);
         mPic.setMosaicBrushWidth(20);
+        mPic.setOnPathMosaicUpdatedListener(new ScaleMosaicView.OnPathMosaicUpdatedListener() {
+            @Override
+            public void OnPathMosaicUpdated() {
+                Log.e("mosaic", "** mosaic forward = " + mPic.canForward());
+                Log.e("mosaic", "** mosaic backward = " + mPic.canBackward());
+            }
+            @Override
+            public void OnPathEraserApplyed() {
+
+            }
+        });
     }
 
     @Override
@@ -73,7 +87,15 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.eraser) {
-            mPic.setMosaicType(MosaicUtil.MosaicType.ERASER);
+            isEraser = !isEraser;
+            mPic.setMosaicType(isEraser ? MosaicUtil.MosaicType.ERASER : MosaicUtil.MosaicType.MOSAIC);
+        } else if(view.getId() == R.id.blur) {
+            bitmap = MosaicUtil.getBlur(bitmapSrc);
+            mPic.setMosaicResource(bitmap);
+        } else if(view.getId() == R.id.forward) {
+            mPic.forward();
+        } else if(view.getId() == R.id.backward) {
+            mPic.backward();
         }
     }
 

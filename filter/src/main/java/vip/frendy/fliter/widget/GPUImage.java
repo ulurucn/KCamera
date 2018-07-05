@@ -361,14 +361,12 @@ public class GPUImage {
      * This method is async and will notify when the image was saved through the
      * listener.
      *
-     * @param folderName the folder name
-     * @param fileName the file name
+     * @param path the file path
      * @param listener the listener
      */
     @Deprecated
-    public void saveToPictures(final String folderName, final String fileName,
-            final OnPictureSavedListener listener) {
-        saveToPictures(mCurrentBitmap, folderName, fileName, listener);
+    public void saveToPictures(final String path, final OnPictureSavedListener listener) {
+        saveToPictures(mCurrentBitmap, path, listener);
     }
 
     /**
@@ -379,14 +377,12 @@ public class GPUImage {
      * listener.
      *
      * @param bitmap the bitmap
-     * @param folderName the folder name
-     * @param fileName the file name
+     * @param path the file path
      * @param listener the listener
      */
     @Deprecated
-    public void saveToPictures(final Bitmap bitmap, final String folderName, final String fileName,
-            final OnPictureSavedListener listener) {
-        new SaveTask(bitmap, folderName, fileName, listener).execute();
+    public void saveToPictures(final Bitmap bitmap, final String path, final OnPictureSavedListener listener) {
+        new SaveTask(bitmap, path, listener).execute();
     }
 
     /**
@@ -428,16 +424,13 @@ public class GPUImage {
     private class SaveTask extends AsyncTask<Void, Void, Void> {
 
         private final Bitmap mBitmap;
-        private final String mFolderName;
-        private final String mFileName;
+        private final String mPath;
         private final OnPictureSavedListener mListener;
         private final Handler mHandler;
 
-        public SaveTask(final Bitmap bitmap, final String folderName, final String fileName,
-                final OnPictureSavedListener listener) {
+        public SaveTask(final Bitmap bitmap, final String path, final OnPictureSavedListener listener) {
             mBitmap = bitmap;
-            mFolderName = folderName;
-            mFileName = fileName;
+            mPath = path;
             mListener = listener;
             mHandler = new Handler();
         }
@@ -445,14 +438,12 @@ public class GPUImage {
         @Override
         protected Void doInBackground(final Void... params) {
             Bitmap result = getBitmapWithFilterApplied(mBitmap);
-            saveImage(mFolderName, mFileName, result);
+            saveImage(mPath, result);
             return null;
         }
 
-        private void saveImage(final String folderName, final String fileName, final Bitmap image) {
-            File path = Environment
-                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            File file = new File(path, folderName + "/" + fileName);
+        private void saveImage(final String path, final Bitmap image) {
+            File file = new File(path);
             try {
                 file.getParentFile().mkdirs();
                 image.compress(CompressFormat.JPEG, 80, new FileOutputStream(file));
