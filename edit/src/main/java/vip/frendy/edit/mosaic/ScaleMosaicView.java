@@ -86,7 +86,6 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	 * 触摸路径数据
 	 */
 	private List<MosaicPath> touchPaths;
-	private List<MosaicPath> erasePaths;
 	//回退操作保存
 	private List<MosaicPath> cachePaths;
 
@@ -94,12 +93,12 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 
 	/**
 	 * 马赛克类型 Mosaic: 打码 erase: 橡皮擦
-	 * */
+	 */
 	private MosaicUtil.MosaicType mMosaicType = MosaicUtil.MosaicType.MOSAIC;
 
 	private Context mContext;
 
-	private DrawMosaicView.OnPathMosaicUpdatedListener mUpdatedListener;
+	private OnPathMosaicUpdatedListener mUpdatedListener;
 
 	/**
 	 * 缩放相关属性
@@ -135,7 +134,6 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	 */
 	private void initDrawView() {
 		touchPaths = new ArrayList<>();
-		erasePaths = new ArrayList<>();
 		cachePaths = new ArrayList<>();
 
 		mPadding = dp2px(INNER_PADDING);
@@ -252,7 +250,6 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		if (bmCoverLayer != null) {
 			bmCoverLayer.recycle();
 		}
-		erasePaths.clear();
 		touchPaths.clear();
 		cachePaths.clear();
 
@@ -323,7 +320,6 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	 */
 	public void clear() {
 		touchPaths.clear();
-		erasePaths.clear();
 		cachePaths.clear();
 
 		if (bmMosaicLayer != null) {
@@ -355,7 +351,6 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		}
 
 		touchPaths.clear();
-		erasePaths.clear();
 		cachePaths.clear();
 		return true;
 	}
@@ -418,7 +413,7 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 			}
 			return true;
 		}
-		int action = event.getAction();
+
 		int x = (int) event.getX();
 		int y = (int) event.getY();
 		//防误触
@@ -452,12 +447,13 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 			touchPath.drawPath = new Path();
 			touchPath.drawPath.moveTo(x, y);
 			touchPath.paintWidth = mBrushWidth;
+			touchPath.type = mMosaicType;
 
 			if(event.getPointerCount() <= 1) {
-				if(this.mMosaicType == MosaicUtil.MosaicType.MOSAIC) {
-					touchPaths.add(touchPath);
-				} else {
-					erasePaths.add(touchPath);
+				touchPaths.add(touchPath);
+				//回调
+				if(touchPath.type == MosaicUtil.MosaicType.ERASER && mUpdatedListener != null) {
+					mUpdatedListener.OnPathEraserApplyed();
 				}
 			}
 		} else if(event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -505,24 +501,28 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		paint.setStrokeWidth(mBrushWidth);
 		paint.setColor(Color.BLUE);
 
+		Paint paintEraser = new Paint(Paint.ANTI_ALIAS_FLAG);
+		paintEraser.setStyle(Paint.Style.STROKE);
+		paintEraser.setAntiAlias(true);
+		paintEraser.setStrokeJoin(Paint.Join.ROUND);
+		paintEraser.setStrokeCap(Paint.Cap.ROUND);
+		paintEraser.setPathEffect(new CornerPathEffect(10));
+		paintEraser.setStrokeWidth(mBrushWidth);
+		paintEraser.setColor(Color.TRANSPARENT);
+		paintEraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+
 		Canvas canvas = new Canvas(bmTouchLayer);
 
 		for (MosaicPath path : touchPaths) {
 			Path pathTemp = path.drawPath;
 			int drawWidth = path.paintWidth;
 			paint.setStrokeWidth(drawWidth);
-			canvas.drawPath(pathTemp, paint);
-		}
 
-		paint.setColor(Color.TRANSPARENT);
-		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-
-		for (MosaicPath path : erasePaths) {
-			Path pathTemp = path.drawPath;
-			int drawWidth = path.paintWidth;
-			paint.setStrokeWidth(drawWidth);
-
-			canvas.drawPath(pathTemp, paint);
+			if(path.type == MosaicUtil.MosaicType.MOSAIC) {
+				canvas.drawPath(pathTemp, paint);
+			} else {
+				canvas.drawPath(pathTemp, paintEraser);
+			}
 		}
 
 		canvas.setBitmap(bmMosaicLayer);
@@ -550,7 +550,6 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		if (bmBaseLayer != null) {
 			canvas.drawBitmap(bmBaseLayer, null, mImageRect, null);
 		}
-
 		if (bmMosaicLayer != null) {
 			canvas.drawBitmap(bmMosaicLayer, null, mImageRect, null);
 		}
@@ -558,7 +557,6 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
 		if (mImageWidth <= 0 || mImageHeight <= 0) {
 			return;
 		}
@@ -597,13 +595,6 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		canvas.drawBitmap(bmMosaicLayer, 0, 0, null);
 		canvas.save();
 		return bitmap;
-	}
-
-	/**
-	 * 获取擦除路径
-	 */
-	public List<MosaicPath> getErasePaths() {
-		return erasePaths;
 	}
 
 	private int dp2px(int dip) {
@@ -677,11 +668,12 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	 * 设置画板更新监听
 	 * @param listener
 	 */
-	public void setOnPathMosaicUpdatedListener(DrawMosaicView.OnPathMosaicUpdatedListener listener) {
+	public void setOnPathMosaicUpdatedListener(OnPathMosaicUpdatedListener listener) {
 		mUpdatedListener = listener;
 	}
 
 	public interface OnPathMosaicUpdatedListener {
 		void OnPathMosaicUpdated();
+		void OnPathEraserApplyed();
 	}
 }

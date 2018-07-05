@@ -9,7 +9,6 @@ import android.view.View;
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
-import vip.frendy.edit.mosaic.DrawMosaicView;
 import vip.frendy.edit.mosaic.MosaicUtil;
 import vip.frendy.edit.mosaic.ScaleMosaicView;
 
@@ -27,6 +26,7 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
 
     private ScaleMosaicView mPic;
     private Bitmap bitmap;
+    private boolean isEraser = false;
 
     public static FragmentMosaic getInstance(Bundle args, IPictureEditListener listener) {
         FragmentMosaic fragment = new FragmentMosaic();
@@ -66,11 +66,15 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
         mPic.setMosaicBackgroundResource(imgPath);
         mPic.setMosaicResource(bitmap);
         mPic.setMosaicBrushWidth(20);
-        mPic.setOnPathMosaicUpdatedListener(new DrawMosaicView.OnPathMosaicUpdatedListener() {
+        mPic.setOnPathMosaicUpdatedListener(new ScaleMosaicView.OnPathMosaicUpdatedListener() {
             @Override
             public void OnPathMosaicUpdated() {
                 Log.e("mosaic", "** mosaic forward = " + mPic.canForward());
                 Log.e("mosaic", "** mosaic backward = " + mPic.canBackward());
+            }
+            @Override
+            public void OnPathEraserApplyed() {
+
             }
         });
     }
@@ -83,7 +87,8 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.eraser) {
-            mPic.setMosaicType(MosaicUtil.MosaicType.ERASER);
+            isEraser = !isEraser;
+            mPic.setMosaicType(isEraser ? MosaicUtil.MosaicType.ERASER : MosaicUtil.MosaicType.MOSAIC);
         } else if(view.getId() == R.id.blur) {
             bitmap = MosaicUtil.getBlur(bitmapSrc);
             mPic.setMosaicResource(bitmap);
