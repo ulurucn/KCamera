@@ -85,19 +85,21 @@ public class DrawMosaicView extends ViewGroup {
 	/**
 	 * 触摸路径数据
 	 */
-
 	private List<MosaicPath> touchPaths;
 	private List<MosaicPath> erasePaths;
+	//回退操作保存
+	private List<MosaicPath> cachePaths;
 
 	private MosaicPath touchPath;
 
 	/**
 	 * 马赛克类型 Mosaic: 打码 erase: 橡皮擦
 	 * */
-
 	private MosaicUtil.MosaicType mMosaicType = MosaicUtil.MosaicType.MOSAIC;
 
 	private Context mContext;
+
+	private OnPathMosaicUpdatedListener mUpdatedListener;
 
 	public DrawMosaicView(Context context) {
 		super(context);
@@ -115,8 +117,9 @@ public class DrawMosaicView extends ViewGroup {
 	 * 初始化绘画板 默认的情况下是马赛克模式
 	 */
 	private void initDrawView() {
-		touchPaths = new ArrayList<MosaicPath>();
-		erasePaths = new ArrayList<MosaicPath>();
+		touchPaths = new ArrayList<>();
+		erasePaths = new ArrayList<>();
+		cachePaths = new ArrayList<>();
 
 		mPadding = dp2px(INNER_PADDING);
 		mBrushWidth = dp2px(PATH_WIDTH);
@@ -133,7 +136,6 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置画刷的宽度
-	 * 
 	 * @param brushWidth 画刷宽度大小
 	 */
 	public void setMosaicBrushWidth(int brushWidth) {
@@ -142,20 +144,16 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置马赛克类型
-	 * 
 	 * @param type 类型
 	 */
-
 	public void setMosaicType(MosaicUtil.MosaicType type) {
 		this.mMosaicType = type;
 	}
 
 	/**
 	 * 设置所要打码的图片资源
-	 * 
 	 * @param imgPath 图片路径
 	 */
-
 	public void setMosaicBackgroundResource(String imgPath) {
 		File file = new File(imgPath);
 		if (file == null || !file.exists()) {
@@ -175,7 +173,6 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置马赛克样式资源
-	 * 
 	 * @param imgPath 样式图片路径
 	 */
 	public void setMosaicResource(String imgPath) {
@@ -207,7 +204,6 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置所要打码的资源图片
-	 * 
 	 * @param bitmap 资源图片路径
 	 */
 	public void setMosaicBackgroundResource(Bitmap bitmap) {
@@ -228,7 +224,6 @@ public class DrawMosaicView extends ViewGroup {
 
 	/**
 	 * 设置马赛克样式资源
-	 * 
 	 * @param bitmap 样式图片资源
 	 */
 	public void setMosaicResource(Bitmap bitmap) {
@@ -239,6 +234,7 @@ public class DrawMosaicView extends ViewGroup {
 		}
 		erasePaths.clear();
 		touchPaths.clear();
+		cachePaths.clear();
 
 		bmCoverLayer = getBitmap(bitmap);
 		updatePathMosaic();
@@ -255,11 +251,60 @@ public class DrawMosaicView extends ViewGroup {
 	}
 
 	/**
+	 * 更新画板
+	 */
+	public void update() {
+		updatePathMosaic();
+		invalidate();
+	}
+
+	public void backward() {
+		if(touchPaths == null || cachePaths == null) return;
+		if(touchPaths.size() <= 0) return;
+
+		MosaicPath lastPath = touchPaths.get(touchPaths.size() - 1);
+		touchPaths.remove(lastPath);
+		cachePaths.add(lastPath);
+
+		update();
+	}
+
+	public void forward() {
+		if(touchPaths == null || cachePaths == null) return;
+		if(cachePaths.size() <= 0) return;
+
+		MosaicPath lastPath = cachePaths.get(cachePaths.size() - 1);
+		touchPaths.add(lastPath);
+		cachePaths.remove(lastPath);
+
+		update();
+	}
+
+	public boolean canBackward() {
+		if(touchPaths == null || cachePaths == null) return false;
+		if(touchPaths.size() <= 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public boolean canForward() {
+		if(touchPaths == null || cachePaths == null) return false;
+		if(cachePaths.size() <= 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
 	 * 清除绘画数据
 	 */
 	public void clear() {
 		touchPaths.clear();
 		erasePaths.clear();
+		cachePaths.clear();
 
 		if (bmMosaicLayer != null) {
 			bmMosaicLayer.recycle();
@@ -291,6 +336,7 @@ public class DrawMosaicView extends ViewGroup {
 
 		touchPaths.clear();
 		erasePaths.clear();
+		cachePaths.clear();
 		return true;
 	}
 
@@ -396,6 +442,10 @@ public class DrawMosaicView extends ViewGroup {
 		canvas.save();
 
 		bmTouchLayer.recycle();
+
+		//更新回调
+		if(mUpdatedListener != null)
+			mUpdatedListener.OnPathMosaicUpdated();
 	}
 
 	@Override
@@ -453,10 +503,29 @@ public class DrawMosaicView extends ViewGroup {
 		return bitmap;
 	}
 
+	/**
+	 * 获取擦除路径
+	 */
+	public List<MosaicPath> getErasePaths() {
+		return erasePaths;
+	}
+
 	private int dp2px(int dip) {
 		Context context = this.getContext();
 		Resources resources = context.getResources();
 		int px = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, resources.getDisplayMetrics()));
 		return px;
+	}
+
+	/**
+	 * 设置画板更新监听
+	 * @param listener
+	 */
+	public void setOnPathMosaicUpdatedListener(OnPathMosaicUpdatedListener listener) {
+		mUpdatedListener = listener;
+	}
+
+	public interface OnPathMosaicUpdatedListener {
+		void OnPathMosaicUpdated();
 	}
 }

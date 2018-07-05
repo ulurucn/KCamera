@@ -1,3 +1,5 @@
 include ':app', ':edit', ':camera', ':filter', ':puzzle', ':media', ':folder'
 
 include ':opencv', ':openCVLibrary330'
+
+include ':arcamera', ':stmobile', ':rajawali'

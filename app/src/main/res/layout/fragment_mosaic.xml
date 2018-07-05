@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <vip.frendy.edit.mosaic.DrawMosaicView
+        <vip.frendy.edit.mosaic.ScaleMosaicView
             android:id="@+id/pic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,6 +26,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="eraser"/>
+
+        <Button
+            android:id="@+id/blur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="blur"/>
+
+        <Button
+            android:id="@+id/forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="forward"/>
+
+        <Button
+            android:id="@+id/backward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="backward"/>
     </LinearLayout>
 
     <LinearLayout
