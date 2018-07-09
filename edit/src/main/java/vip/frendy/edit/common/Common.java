@@ -29,7 +29,7 @@ public class Common {
             data = uri.getPath();
         } else if(ContentResolver.SCHEME_FILE.equals(scheme)) {
             data = uri.getPath();
-        } else if(ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+        } else if(ContentResolver.SCHEME_CONTENT.equals(scheme) && context != null) {
             Cursor cursor = context.getContentResolver().query(uri, new String[]{ MediaStore.Images.ImageColumns.DATA }, null, null, null );
             if(null != cursor) {
                 if(cursor.moveToFirst()) {
@@ -45,6 +45,8 @@ public class Common {
     }
 
     public static void writeImage(Bitmap bitmap, String destPath, int quality) {
+        if(bitmap == null) return;
+
         try {
             deleteFile(destPath);
             if (createFile(destPath)) {
