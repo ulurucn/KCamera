@@ -281,19 +281,19 @@ public class ImageObject {
 		PointF point = null;
 		float delX = 0;
 		float delY = 0;
-		if (OperateConstants.LEFTTOP == type) {
+		if (OperateConstants.LEFTTOP == type && deleteBm != null) {
 			point = getPointLeftTop();
 			delX = x - (point.x - deleteBm.getWidth() / 2);
 			delY = y - (point.y - deleteBm.getHeight() / 2);
-		} else if (OperateConstants.RIGHTBOTTOM == type) {
+		} else if (OperateConstants.RIGHTBOTTOM == type && rotateBm != null) {
 			point = getPointRightBottom();
 			delX = x - (point.x + rotateBm.getWidth() / 2);
 			delY = y - (point.y + rotateBm.getHeight() / 2);
-		} else if (OperateConstants.RIGHTTOP == type){
+		} else if (OperateConstants.RIGHTTOP == type && flipBm != null){
 			point = getPointRightTop();
 			delX = x - (point.x + flipBm.getWidth() / 2);
 			delY = y - (point.y + flipBm.getHeight() / 2);
-		}else if(OperateConstants.LEFTBOTTOM == type){
+		}else if(OperateConstants.LEFTBOTTOM == type && settingBm != null){
 			point = getPointLeftBottom();
 			delX = x - (point.x - settingBm.getWidth() / 2);
 			delY = y - (point.y - settingBm.getHeight() / 2);
@@ -356,16 +356,19 @@ public class ImageObject {
 	 */
 	public void drawIcon(Canvas canvas) {
 		PointF deletePF = getPointLeftTop();
-		canvas.drawBitmap(deleteBm, deletePF.x - deleteBm.getWidth() / 2,
+		if (deleteBm != null)  canvas.drawBitmap(deleteBm, deletePF.x - deleteBm.getWidth() / 2,
 				deletePF.y - deleteBm.getHeight() / 2, paint);
+
 		PointF rotatePF = getPointRightBottom();
-		canvas.drawBitmap(rotateBm, rotatePF.x - rotateBm.getWidth() / 2,
+		if(rotateBm != null)  canvas.drawBitmap(rotateBm, rotatePF.x - rotateBm.getWidth() / 2,
 				rotatePF.y - rotateBm.getHeight() / 2, paint);
+
 		PointF flipPF = getPointRightTop();
-		canvas.drawBitmap(flipBm,flipPF.x - flipBm.getWidth() / 2,
+		if(flipBm != null) canvas.drawBitmap(flipBm,flipPF.x - flipBm.getWidth() / 2,
 				flipPF.y-flipBm.getHeight() / 2,paint);
+
 		PointF settingPF = getPointLeftBottom();
-		canvas.drawBitmap(settingBm,settingPF.x - settingBm.getWidth() / 2,
+		if(settingBm != null) canvas.drawBitmap(settingBm,settingPF.x - settingBm.getWidth() / 2,
 				settingPF.y - settingBm.getHeight() / 2,paint);
 	}
 	/**

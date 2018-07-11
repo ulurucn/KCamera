@@ -271,9 +271,9 @@ public class OperateView extends View {
 
 				ImageObject io = getSelected();
 				if (io != null) {
-					if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)) {
+					if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP) && io.getDeleteBm() != null) {
 						imgLists.remove(io);
-					} else if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)) {
+					} else if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM) && io.getRotateBm() != null) {
 						mResizeAndRotateSinceDown = true;
 						float x = event.getX();
 						float y = event.getY();
@@ -284,9 +284,9 @@ public class OperateView extends View {
 						mPrevRot = (float) Math.toDegrees(Math.atan2(delX, delY));
 						mStartScale = io.getScale();
 						mStartRot = io.getRotation();
-					} else if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP)) {
+					} else if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP) && io.getFlipBm() != null) {
 						io.horizontalFlip();
-					} else if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)){
+					} else if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM) && io.getSettingBm() != null){
 						iSettingListener.showSettingBar();
 					} else if (io.contains(event.getX(), event.getY())) {
 						mMovedSinceDown = true;
