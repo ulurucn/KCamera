@@ -13,6 +13,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/stickerBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -29,6 +30,46 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="文本"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/settingBar"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white_easy_photos">
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:max="100"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/seekBar_cancel"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:text="Cancel"/>
+
+            <Button
+                android:id="@+id/seekBar_ok"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:text="Save"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout

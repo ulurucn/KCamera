@@ -2,14 +2,19 @@ package vip.frendy.edit.operate;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import vip.frendy.base.BitmapExt;
 
 /**
  * @author jarlen
@@ -25,8 +30,11 @@ public class ImageObject {
 	protected final int resizeBoxSize = 100;
 	protected boolean isTextObject;
 	protected Bitmap srcBm;
+	protected Bitmap _srcBm;
 	protected Bitmap rotateBm;
 	protected Bitmap deleteBm;
+	protected Bitmap flipBm;
+	protected Bitmap settingBm;
 	Paint paint = new Paint();
 
 	private Canvas canvas = null;
@@ -47,12 +55,15 @@ public class ImageObject {
 	 * @param rotateBm 旋转图片
 	 * @param deleteBm	删除图片
 	 */
-	public ImageObject(Bitmap srcBm, Bitmap rotateBm, Bitmap deleteBm) {
+	public ImageObject(Bitmap srcBm, Bitmap rotateBm, Bitmap deleteBm, Bitmap flipBm, Bitmap settingBm) {
 		this.srcBm = Bitmap.createBitmap(srcBm.getWidth(), srcBm.getHeight(), Config.ARGB_8888);
+		_srcBm = Bitmap.createBitmap(srcBm);
 		canvas = new Canvas(this.srcBm);
 		canvas.drawBitmap(srcBm, 0, 0, paint);
 		this.rotateBm = rotateBm;
 		this.deleteBm = deleteBm;
+		this.flipBm = flipBm;
+		this.settingBm = settingBm;
 		paint.setColor(Color.WHITE);
 		paint.setAntiAlias(true);// 去掉边缘锯齿
 		paint.setStrokeWidth(2);// 设置线宽
@@ -66,14 +77,17 @@ public class ImageObject {
 	 * @param rotateBm	旋转图片
 	 * @param deleteBm 删除图片
 	 */
-	public ImageObject(Bitmap srcBm, int x, int y, Bitmap rotateBm, Bitmap deleteBm) {
+	public ImageObject(Bitmap srcBm, int x, int y, Bitmap rotateBm, Bitmap deleteBm,Bitmap flipBm,Bitmap settingBm) {
 		this.srcBm = Bitmap.createBitmap(srcBm.getWidth(), srcBm.getHeight(), Config.ARGB_8888);
+		_srcBm = Bitmap.createBitmap(srcBm);
 		canvas = new Canvas(this.srcBm);
 		canvas.drawBitmap(srcBm, 0, 0, paint);
 		mPoint.x = x;
 		mPoint.y = y;
 		this.rotateBm = rotateBm;
 		this.deleteBm = deleteBm;
+		this.flipBm = flipBm;
+		this.settingBm = settingBm;
 		paint.setColor(Color.WHITE);
 		paint.setAntiAlias(true);// 去掉边缘锯齿
 		paint.setStrokeWidth(2);// 设置线宽
@@ -275,6 +289,14 @@ public class ImageObject {
 			point = getPointRightBottom();
 			delX = x - (point.x + rotateBm.getWidth() / 2);
 			delY = y - (point.y + rotateBm.getHeight() / 2);
+		} else if (OperateConstants.RIGHTTOP == type){
+			point = getPointRightTop();
+			delX = x - (point.x + flipBm.getWidth() / 2);
+			delY = y - (point.y + flipBm.getHeight() / 2);
+		}else if(OperateConstants.LEFTBOTTOM == type){
+			point = getPointLeftBottom();
+			delX = x - (point.x - settingBm.getWidth() / 2);
+			delY = y - (point.y - settingBm.getHeight() / 2);
 		}
 		float diff = (float) Math.sqrt((delX * delX + delY * delY));
 		// float del = rotateBm.getWidth() / 2;
@@ -339,6 +361,41 @@ public class ImageObject {
 		PointF rotatePF = getPointRightBottom();
 		canvas.drawBitmap(rotateBm, rotatePF.x - rotateBm.getWidth() / 2,
 				rotatePF.y - rotateBm.getHeight() / 2, paint);
+		PointF flipPF = getPointRightTop();
+		canvas.drawBitmap(flipBm,flipPF.x - flipBm.getWidth() / 2,
+				flipPF.y-flipBm.getHeight() / 2,paint);
+		PointF settingPF = getPointLeftBottom();
+		canvas.drawBitmap(settingBm,settingPF.x - settingBm.getWidth() / 2,
+				settingPF.y - settingBm.getHeight() / 2,paint);
+	}
+	/**
+	 * 水平翻转方法
+	 *
+	 */
+	public void horizontalFlip(){
+		srcBm = BitmapExt.reverseImage(srcBm, -1, 1);
+	}
+
+	/**
+	 * 设置透明度
+	 *
+	 */
+	public void setTransparency(int progress){
+		int[] argb = new int[_srcBm.getWidth() * _srcBm.getHeight()];
+
+		_srcBm.getPixels(argb, 0, _srcBm.getWidth(), 0, 0,
+				_srcBm.getWidth(), _srcBm.getHeight());// 获得图片的ARGB值
+
+		progress = progress * 255 / 100;
+
+		for (int i = 0; i < argb.length-1; i++) {
+
+			argb[i] = (progress << 24) | (argb[i] & 0x00FFFFFF);
+
+		}
+
+		srcBm = Bitmap.createBitmap(argb, _srcBm.getWidth(),
+				_srcBm.getHeight(), Config.ARGB_8888);
 	}
 
 	/**
@@ -392,6 +449,22 @@ public class ImageObject {
 
 	public void setDeleteBm(Bitmap deleteBm) {
 		this.deleteBm = deleteBm;
+	}
+
+    public Bitmap getFlipBm() {
+        return flipBm;
+    }
+
+    public void setFlipBm(Bitmap flipBm) {
+        this.flipBm = flipBm;
+    }
+
+    public Bitmap getSettingBm(){
+		return settingBm;
+	}
+
+	public void setSettingBm(Bitmap settingBm){
+		this.settingBm = settingBm;
 	}
 
 	public Point getPosition() {

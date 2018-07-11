@@ -12,6 +12,8 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import vip.frendy.edit.interfaces.ISettingListener;
+
 /**
  * @author jarlen
  * @modified frendy
@@ -24,6 +26,7 @@ public class OperateView extends View {
 	// true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
 	private boolean isMultiAdd;
 	private float picScale = 0.4f;
+	private ISettingListener iSettingListener;
 
 	/**
 	 * 设置水印图片初始化大小
@@ -42,9 +45,10 @@ public class OperateView extends View {
 		this.isMultiAdd = isMultiAdd;
 	}
 
-	public OperateView(Context context, Bitmap resizeBmp) {
+	public OperateView(Context context, Bitmap resizeBmp, ISettingListener iSettingListener) {
 		super(context);
-		bgBmp = resizeBmp;
+		this.bgBmp = resizeBmp;
+		this.iSettingListener = iSettingListener;
 		int width = bgBmp.getWidth();
 		int height = bgBmp.getHeight();
 		mCanvasLimits = new Rect(0, 0, width, height);
@@ -223,7 +227,9 @@ public class OperateView extends View {
 					ImageObject io = imgLists.get(i);
 					if (io.contains(event.getX(), event.getY())
 							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)) {
+							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)
+							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP)
+                            || io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)) {
 						io.setSelected(true);
 						imgLists.remove(i);
 						imgLists.add(io);
@@ -245,7 +251,9 @@ public class OperateView extends View {
 						ImageObject io = imgLists.get(i);
 						if (io.contains(event.getX(), event.getY())
 								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)) {
+								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)
+								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP)
+                                || io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)) {
 							io.setSelected(true);
 							imgLists.remove(i);
 							imgLists.add(io);
@@ -276,6 +284,10 @@ public class OperateView extends View {
 						mPrevRot = (float) Math.toDegrees(Math.atan2(delX, delY));
 						mStartScale = io.getScale();
 						mStartRot = io.getRotation();
+					} else if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP)) {
+						io.horizontalFlip();
+					} else if (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)){
+						iSettingListener.showSettingBar();
 					} else if (io.contains(event.getX(), event.getY())) {
 						mMovedSinceDown = true;
 						mPreviousPos.x = (int) event.getX();
@@ -362,5 +374,16 @@ public class OperateView extends View {
 
 	public interface MyListener {
 		public void onClick(TextObject tObject);
+	}
+
+	/**
+	 * 设置透明度
+	 */
+	public void setStickerTransparency(int progress){
+		ImageObject io = getSelected();
+		if (io != null) {
+			io.setTransparency(progress);
+			invalidate();
+		}
 	}
 }

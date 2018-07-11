@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 
 import vip.frendy.base.BitmapExt;
 import vip.frendy.camdemo.R;
 import vip.frendy.camdemo.extension.HandlerExt;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
+import vip.frendy.edit.interfaces.ISettingListener;
 import vip.frendy.edit.operate.ImageObject;
 import vip.frendy.edit.operate.OperateUtils;
 import vip.frendy.edit.operate.OperateView;
@@ -21,17 +23,21 @@ import vip.frendy.edit.operate.TextObject;
  * Created by frendy on 2018/4/12.
  */
 
-public class FragmentSticker extends BaseFragment implements View.OnClickListener {
+public class FragmentSticker extends BaseFragment implements View.OnClickListener,ISettingListener,SeekBar.OnSeekBarChangeListener{
     public static String PIC_PATH = "pic_path";
 
     private String imgPath;
     private Bitmap bitmapSrc;
+    private SeekBar mSeekBar;
 
     private IPictureEditListener mListener;
 
     private LinearLayout mContent;
     private OperateView mOperateView;
     private OperateUtils mOperateUtils;
+    private LinearLayout mSettingBar;
+    private LinearLayout mStickerBar;
+    private int mDefalutProgress = 100;
 
     public static FragmentSticker getInstance(Bundle args, IPictureEditListener listener) {
         FragmentSticker fragment = new FragmentSticker();
@@ -52,6 +58,9 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     @Override
     protected void initWidgets() {
         mContent = mRootView.findViewById(R.id.content);
+        mSettingBar = mRootView.findViewById(R.id.settingBar);
+        mStickerBar = mRootView.findViewById(R.id.stickerBar);
+        mSeekBar = mRootView.findViewById(R.id.seekBar);
     }
 
     @Override
@@ -60,6 +69,9 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
         mRootView.findViewById(R.id.sitcker).setOnClickListener(this);
         mRootView.findViewById(R.id.text).setOnClickListener(this);
+        mRootView.findViewById(R.id.seekBar_ok).setOnClickListener(this);
+        mRootView.findViewById(R.id.seekBar_cancel).setOnClickListener(this);
+        mSeekBar.setOnSeekBarChangeListener(this);
 
         mOperateUtils = new OperateUtils(getActivity());
         imgPath = getArguments().getString(PIC_PATH);
@@ -72,7 +84,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     private void showImage(final Bitmap bitmap) {
         if(mContent.getWidth() != 0) {
             Bitmap resizeBmp = mOperateUtils.compressionFiller(bitmap, mContent);
-            mOperateView = new OperateView(getContext(), resizeBmp);
+            mOperateView = new OperateView(getContext(), resizeBmp,this);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(resizeBmp.getWidth(), resizeBmp.getHeight());
             layoutParams.gravity = Gravity.CENTER;
             mOperateView.setLayoutParams(layoutParams);
@@ -100,6 +112,13 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.wanhuaile));
         } else if(view.getId() == R.id.text) {
             addText("写死的测试文本");
+        }else if(view.getId() == R.id.seekBar_cancel){
+            mOperateView.setStickerTransparency(mDefalutProgress);
+            mStickerBar.setVisibility(View.VISIBLE);
+            mSettingBar.setVisibility(View.GONE);
+        }else if(view.getId() == R.id.seekBar_ok){
+            mStickerBar.setVisibility(View.VISIBLE);
+            mSettingBar.setVisibility(View.GONE);
         }
     }
 
@@ -127,5 +146,28 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             bitmapSrc.recycle();
             bitmapSrc = null;
         }
+    }
+
+    @Override
+    public void showSettingBar() {
+        mStickerBar.setVisibility(View.GONE);
+        mSettingBar.setVisibility(View.VISIBLE);
+        mSeekBar.setProgress(0);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        progress = (int)(mDefalutProgress-progress);
+        mOperateView.setStickerTransparency(progress);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }

@@ -173,7 +173,9 @@ public class OperateUtils {
 	public ImageObject getImageObject(Bitmap srcBmp) {
 		Bitmap rotateBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.rotate);
 		Bitmap deleteBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.delete);
-		ImageObject imgObject = new ImageObject(srcBmp, rotateBm, deleteBm);
+		Bitmap flipBm = BitmapFactory.decodeResource(activity.getResources(),R.drawable.flip);
+		Bitmap settingBm = BitmapFactory.decodeResource(activity.getResources(),R.drawable.setting);
+		ImageObject imgObject = new ImageObject(srcBmp, rotateBm, deleteBm,flipBm,settingBm);
 		Point point = new Point(20, 20);
 		imgObject.setPoint(point);
 		return imgObject;
@@ -192,6 +194,8 @@ public class OperateUtils {
 	public ImageObject getImageObject(Bitmap srcBmp, OperateView operateView, int quadrant, int x, int y) {
 		Bitmap rotateBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.rotate);
 		Bitmap deleteBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.delete);
+		Bitmap flipBm = BitmapFactory.decodeResource(activity.getResources(),R.drawable.flip);
+		Bitmap settingBm = BitmapFactory.decodeResource(activity.getResources(),R.drawable.setting);
 		int width = operateView.getWidth();
 		int height = operateView.getHeight();
 //		int srcWidth = srcBmp.getWidth();
@@ -233,7 +237,7 @@ public class OperateUtils {
 			default :
 				break;
 		}
-		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm);
+		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm,flipBm,settingBm);
 		Point point = new Point(20, 20);
 		imgObject.setPoint(point);
 		return imgObject;
