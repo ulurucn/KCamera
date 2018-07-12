@@ -109,7 +109,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.sitcker) {
-            addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.wanhuaile));
+            addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.fun_cam_005));
         } else if(view.getId() == R.id.text) {
             addText("写死的测试文本");
         }else if(view.getId() == R.id.seekBar_cancel){

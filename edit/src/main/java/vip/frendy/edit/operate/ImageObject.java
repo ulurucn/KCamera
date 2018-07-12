@@ -1,5 +1,6 @@
 package vip.frendy.edit.operate;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -392,9 +393,8 @@ public class ImageObject {
 		progress = progress * 255 / 100;
 
 		for (int i = 0; i < argb.length-1; i++) {
-
-			argb[i] = (progress << 24) | (argb[i] & 0x00FFFFFF);
-
+			if((argb[i]  & 0x00FFFFFF) != 0)
+				argb[i] = (progress << 24) | (argb[i] & 0x00FFFFFF);
 		}
 
 		srcBm = Bitmap.createBitmap(argb, _srcBm.getWidth(),
