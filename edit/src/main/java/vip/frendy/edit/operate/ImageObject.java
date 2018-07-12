@@ -1,6 +1,5 @@
 package vip.frendy.edit.operate;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
