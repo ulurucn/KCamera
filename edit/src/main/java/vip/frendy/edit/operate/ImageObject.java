@@ -389,11 +389,11 @@ public class ImageObject {
 		_srcBm.getPixels(argb, 0, _srcBm.getWidth(), 0, 0,
 				_srcBm.getWidth(), _srcBm.getHeight());// 获得图片的ARGB值
 
-		progress = progress * 255 / 100;
-
 		for (int i = 0; i < argb.length-1; i++) {
-			if((argb[i]  & 0x00FFFFFF) != 0)
-				argb[i] = (progress << 24) | (argb[i] & 0x00FFFFFF);
+			int a = (argb[i] >> 24) & 0xff;
+			a = a * progress / 100;
+
+			argb[i] = (a << 24) | (argb[i] & 0x00FFFFFF);
 		}
 
 		srcBm = Bitmap.createBitmap(argb, _srcBm.getWidth(),
