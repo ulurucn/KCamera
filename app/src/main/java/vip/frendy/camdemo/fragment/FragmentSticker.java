@@ -91,6 +91,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             mContent.addView(mOperateView);
             //设置可以添加多个图片
             mOperateView.setMultiAdd(true);
+            mOperateView.setPicScale(0.8f);
         } else {
             HandlerExt.postDelayToUI(new Runnable() {
                 @Override
