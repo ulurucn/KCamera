@@ -133,8 +133,6 @@ public class CropOverlayView extends View {
 
 	// View Methods ////////////////////////////////////////////////////////////
 
-	public Bitmap mBitmap = null;
-
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 
@@ -227,8 +225,7 @@ public class CropOverlayView extends View {
 
 	public void setCropOverlayCornerBitmap(Bitmap bitmap) {
 		mCornerBitmap = bitmap;
-		if (mCornerBitmap != null)
-		{
+		if (mCornerBitmap != null) {
 			mCornerWidth = mCornerBitmap.getWidth();
 			mCornerHeight = mCornerBitmap.getHeight();
 		}
@@ -277,8 +274,7 @@ public class CropOverlayView extends View {
 		else {
 			mGuidelines = guidelines;
 
-			if (initializedCropWindow)
-			{
+			if (initializedCropWindow) {
 				initCropWindow(mBitmapRect);
 				invalidate();
 			}
@@ -724,5 +720,14 @@ public class CropOverlayView extends View {
 			mPressedHandle.updateCropWindow(x, y, mBitmapRect, mSnapRadius);
 		}
 		invalidate();
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		if(mCornerBitmap != null) {
+			mCornerBitmap.recycle();
+			mCornerBitmap = null;
+		}
 	}
 }

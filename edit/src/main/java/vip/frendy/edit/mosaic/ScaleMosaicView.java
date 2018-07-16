@@ -220,8 +220,7 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		if (bitmap != null) {
 			setMosaicType(MosaicUtil.MosaicType.MOSAIC);
 
-			if (bmCoverLayer != null)
-			{
+			if(bmCoverLayer != null) {
 				bmCoverLayer.recycle();
 			}
 			bmCoverLayer = bitmap;
@@ -261,7 +260,7 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	public void setMosaicResource(Bitmap bitmap) {
 		setMosaicType(MosaicUtil.MosaicType.MOSAIC);
 
-		if (bmCoverLayer != null) {
+		if(bmCoverLayer != null) {
 			bmCoverLayer.recycle();
 		}
 		touchPaths.clear();
@@ -386,15 +385,15 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	public boolean reset() {
 		this.mImageWidth = 0;
 		this.mImageHeight = 0;
-		if (bmCoverLayer != null) {
+		if(bmCoverLayer != null) {
 			bmCoverLayer.recycle();
 			bmCoverLayer = null;
 		}
-		if (bmBaseLayer != null) {
+		if(bmBaseLayer != null) {
 			bmBaseLayer.recycle();
 			bmBaseLayer = null;
 		}
-		if (bmMosaicLayer != null) {
+		if(bmMosaicLayer != null) {
 			bmMosaicLayer.recycle();
 			bmMosaicLayer = null;
 		}
@@ -402,6 +401,23 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		touchPaths.clear();
 		cachePaths.clear();
 		return true;
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		if(bmCoverLayer != null) {
+			bmCoverLayer.recycle();
+			bmCoverLayer = null;
+		}
+		if(bmBaseLayer != null) {
+			bmBaseLayer.recycle();
+			bmBaseLayer = null;
+		}
+		if(bmMosaicLayer != null) {
+			bmMosaicLayer.recycle();
+			bmMosaicLayer = null;
+		}
 	}
 
 	public boolean dispatchTouchEvent(MotionEvent event) {
