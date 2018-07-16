@@ -27,6 +27,8 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     private boolean attached = false;
     private boolean visible = true;
 
+    private OnWarpCanvasDrawListener mOnWarpCanvasDrawListener;
+
     public void initMorpher() {
         if (mCanvasView != null) {
             mCanvasView.setFocusable(true);
@@ -60,6 +62,9 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
             canvas.concat(mMatrix);
             canvas.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
                     null, 0, null);
+
+            if(mOnWarpCanvasDrawListener != null)
+                mOnWarpCanvasDrawListener.onWarpCanvasDrawed();
         }
     }
 
@@ -239,5 +244,14 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
         public void set(MorphMatrix morphMatrix) {
             System.arraycopy(morphMatrix.verts, 0, this.verts, 0, morphMatrix.verts.length);
         }
+    }
+
+    //监听
+    public void setOnWarpCanvasDrawListener(OnWarpCanvasDrawListener listener) {
+        mOnWarpCanvasDrawListener = listener;
+    }
+
+    public interface OnWarpCanvasDrawListener {
+        void onWarpCanvasDrawed();
     }
 }
