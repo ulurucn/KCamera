@@ -120,6 +120,14 @@
                 android:layout_weight="1"
                 android:padding="2dp"
                 android:text="warp"/>
+
+            <Button
+                android:id="@+id/warp2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="warp2"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
