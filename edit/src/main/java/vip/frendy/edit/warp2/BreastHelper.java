@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 
@@ -13,9 +14,10 @@ import android.view.MotionEvent;
 
 public class BreastHelper implements CanvasView.OnCanvasChangeListener {
 
-    private Bitmap mBitmapSrc, mBitmap;
+    private Bitmap mBitmapSrc, mBitmap, mBitmapOp1, mBitmapOp2;
     private CanvasView mCanvasView;
     private boolean attached = false;
+    private RectF mRectOp = new RectF();
 
     private int r_1 = 100;
     private int r_2 = 100;
@@ -66,6 +68,11 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
         mCanvasView = canvasView;
     }
 
+    public void setOpBitmap(Bitmap op1, Bitmap op2) {
+        mBitmapOp1 = op1;
+        mBitmapOp2 = op2;
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         if(mCirclePaint != null) {
@@ -78,6 +85,21 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
             if(showCircle) {
                 canvas.drawCircle(x_1, y_1, r_1, mCirclePaint);
                 canvas.drawCircle(x_2, y_2, r_2, mCirclePaint);
+
+                if(mBitmapOp1 != null) {
+                    mRectOp.left = x_1 - r_1 - mBitmapOp1.getWidth() / 2 + 4;
+                    mRectOp.top = y_1 + r_1 - mBitmapOp1.getWidth() / 2;
+                    mRectOp.right = mRectOp.left + mBitmapOp1.getWidth();
+                    mRectOp.bottom = mRectOp.top + mBitmapOp1.getWidth();
+                    canvas.drawBitmap(mBitmapOp1, null, mRectOp, null);
+                }
+                if(mBitmapOp2 != null) {
+                    mRectOp.left = x_2 + r_2 - mBitmapOp2.getWidth() / 2 - 4;
+                    mRectOp.top = y_2 + r_2 - mBitmapOp2.getWidth() / 2;
+                    mRectOp.right = mRectOp.left + mBitmapOp2.getWidth();
+                    mRectOp.bottom = mRectOp.top + mBitmapOp2.getWidth();
+                    canvas.drawBitmap(mBitmapOp2, null, mRectOp, null);
+                }
             }
         }
     }

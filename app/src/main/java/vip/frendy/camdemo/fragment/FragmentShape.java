@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 
+import vip.frendy.base.BitmapExt;
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
@@ -25,7 +26,7 @@ public class FragmentShape extends BaseFragment implements View.OnClickListener,
     private IPictureEditListener mListener;
 
     private CanvasView mPic;
-    private Bitmap bitmap;
+    private Bitmap bitmap, bitmapOp1, bitmapOp2;
     private BreastHelper mBreastHelper;
     private SeekBar mSeekbar;
 
@@ -62,6 +63,9 @@ public class FragmentShape extends BaseFragment implements View.OnClickListener,
         bitmapSrc = BitmapFactory.decodeFile(imgPath);
         bitmap = bitmapSrc;
 
+        bitmapOp2 = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_edit_shape_op);
+        bitmapOp1 = BitmapExt.reverseImage(bitmapOp2, -1, 1);
+
         //显示图片
         mPic.post(new Runnable() {
             @Override
@@ -75,6 +79,7 @@ public class FragmentShape extends BaseFragment implements View.OnClickListener,
                             mBreastHelper = new BreastHelper();
                         }
                         mBreastHelper.setDrawingView(mPic);
+                        mBreastHelper.setOpBitmap(bitmapOp1, bitmapOp2);
                         mBreastHelper.initMorpher();
                         mPic.isBaseDrawingEnabled(false);
 
@@ -121,6 +126,14 @@ public class FragmentShape extends BaseFragment implements View.OnClickListener,
         if(bitmap != null) {
             bitmap.recycle();
             bitmap = null;
+        }
+        if(bitmapOp1 != null) {
+            bitmapOp1.recycle();
+            bitmapOp1 = null;
+        }
+        if(bitmapOp2 != null) {
+            bitmapOp2.recycle();
+            bitmapOp2 = null;
         }
     }
 }
