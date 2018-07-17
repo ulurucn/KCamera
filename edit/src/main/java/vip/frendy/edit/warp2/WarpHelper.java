@@ -27,6 +27,9 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     private boolean attached = false;
     private boolean visible = true;
 
+    // 触点
+    private TouchHelper mTouchHelper;
+
     private OnWarpCanvasDrawListener mOnWarpCanvasDrawListener;
 
     public void initMorpher() {
@@ -51,6 +54,9 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
 
             mMatrix.invert(mInverse);
             mMotions.add(new MorphMatrix(mMorphMatrix));
+
+            // 触点
+            mTouchHelper = new TouchHelper();
         }
     }
 
@@ -62,6 +68,10 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
             canvas.concat(mMatrix);
             canvas.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
                     null, 0, null);
+
+            // 触点
+            if(mTouchHelper != null)
+                mTouchHelper.onDraw(canvas);
 
             if(mOnWarpCanvasDrawListener != null)
                 mOnWarpCanvasDrawListener.onWarpCanvasDrawed();
@@ -93,6 +103,11 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
                 touch_up();
             }
         }
+
+        // 触点
+        if(mTouchHelper != null)
+            mTouchHelper.onTouchEvent(mCanvasView, event);
+
         return true;
     }
 
@@ -172,31 +187,27 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     /*
     * Handling Undo click
     * */
-    public boolean undo() {
+    public void undo() {
         if (mCanvasView != null && mMotions.size() > 1) {
             mMorphMatrix.set(mMotions.get(mMotions.size() - 2));
             mUndoneMotions.add(mMotions.remove(mMotions.size() - 1));
             invalidate();
-            return mMotions.size() > 1;
         }
-        return isUndoActive();
     }
 
     public boolean isUndoActive() {
-        return mMotions.size() > 1;
+        return mMotions.size() > 0;
     }
 
     /*
     * Handling Redo click
     * */
-    public boolean redo() {
+    public void redo() {
         if (mCanvasView != null && mUndoneMotions.size() > 0) {
             mMorphMatrix.set(mUndoneMotions.remove(mUndoneMotions.size() - 1));
             mMotions.add(new MorphMatrix(mMorphMatrix));
             invalidate();
-            return isRedoActive();
         }
-        return false;
     }
 
     public boolean isRedoActive() {
