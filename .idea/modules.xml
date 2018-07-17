@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/camera/camera.iml" filepath="$PROJECT_DIR$/camera/camera.iml" />
       <module fileurl="file://$PROJECT_DIR$/edit/edit.iml" filepath="$PROJECT_DIR$/edit/edit.iml" />
       <module fileurl="file://$PROJECT_DIR$/filter/filter.iml" filepath="$PROJECT_DIR$/filter/filter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/filter2/filter2.iml" filepath="$PROJECT_DIR$/filter2/filter2.iml" />
       <module fileurl="file://$PROJECT_DIR$/folder/folder.iml" filepath="$PROJECT_DIR$/folder/folder.iml" />
       <module fileurl="file://$PROJECT_DIR$/media/media.iml" filepath="$PROJECT_DIR$/media/media.iml" />
       <module fileurl="file://$PROJECT_DIR$/openCVLibrary330/openCVLibrary330.iml" filepath="$PROJECT_DIR$/openCVLibrary330/openCVLibrary330.iml" />
