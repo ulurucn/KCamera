@@ -159,6 +159,7 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		setMosaicType(MosaicUtil.MosaicType.MOSAIC);
 
 		touchCirclePaint = new Paint();
+		touchCirclePaint.setAntiAlias(true);
 		touchCirclePaint.setStyle(Paint.Style.STROKE);
 		touchCirclePaint.setStrokeWidth(5);
 		touchCirclePaint.setColor(Color.parseColor("#ffffff"));

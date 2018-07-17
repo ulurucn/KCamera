@@ -2,6 +2,7 @@ package vip.frendy.edit.warp2;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 
@@ -230,6 +231,34 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
         if (mCanvasView != null) {
             mCanvasView.invalidate();
         }
+    }
+
+    /**
+     * 触点UI设置
+     */
+    public void setTouchCirclePaint(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchCirclePaint(paint);
+    }
+
+    public void setTouchCirclePaint2(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchCirclePaint2(paint);
+    }
+
+    public void setTouchCrossPaint(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchCrossPaint(paint);
+    }
+
+    public void setTouchCrossPaint2(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchCrossPaint2(paint);
+    }
+
+    public void setTouchLinePaint(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchLinePaint(paint);
     }
 
     public BitmapDrawable getBitmapDrawable() {

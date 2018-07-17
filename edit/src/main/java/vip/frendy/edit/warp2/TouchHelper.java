@@ -27,14 +27,20 @@ public class TouchHelper {
     private Paint touchCrossPaint;
     private Paint touchCrossPaint2;
 
+    private Path path = new Path();
+    private Path pathCross1 = new Path();
+    private Path pathCross2 = new Path();
+
     public TouchHelper() {
         //触点
         touchCirclePaint = new Paint();
+        touchCirclePaint.setAntiAlias(true);
         touchCirclePaint.setStyle(Paint.Style.STROKE);
         touchCirclePaint.setStrokeWidth(5);
         touchCirclePaint.setColor(Color.parseColor("#d75372"));
 
         touchCrossPaint = new Paint();
+        touchCrossPaint.setAntiAlias(true);
         touchCrossPaint.setStyle(Paint.Style.STROKE);
         touchCrossPaint.setStrokeWidth(5);
         touchCrossPaint.setColor(Color.parseColor("#d75372"));
@@ -43,31 +49,54 @@ public class TouchHelper {
         DashPathEffect pathEffect = new DashPathEffect(new float[] { 20, 10 }, 1);
 
         touchCirclePaint2 = new Paint();
+        touchCirclePaint2.setAntiAlias(true);
         touchCirclePaint2.setStyle(Paint.Style.STROKE);
         touchCirclePaint2.setStrokeWidth(5);
         touchCirclePaint2.setColor(Color.parseColor("#ffffff"));
         touchCirclePaint2.setPathEffect(pathEffect);
 
         touchLinePaint = new Paint();
+        touchLinePaint.setAntiAlias(true);
         touchLinePaint.setStyle(Paint.Style.STROKE);
         touchLinePaint.setStrokeWidth(5);
         touchLinePaint.setColor(Color.parseColor("#ffffff"));
         touchLinePaint.setPathEffect(pathEffect);
 
         touchCrossPaint2 = new Paint();
+        touchCrossPaint2.setAntiAlias(true);
         touchCrossPaint2.setStyle(Paint.Style.STROKE);
         touchCrossPaint2.setStrokeWidth(5);
         touchCrossPaint2.setColor(Color.parseColor("#ffffff"));
     }
 
+    public void setTouchCirclePaint(Paint paint) {
+        touchCirclePaint = paint;
+    }
+
+    public void setTouchCirclePaint2(Paint paint) {
+        touchCirclePaint2 = paint;
+    }
+
+    public void setTouchCrossPaint(Paint paint) {
+        touchCrossPaint = paint;
+    }
+
+    public void setTouchCrossPaint2(Paint paint) {
+        touchCrossPaint2 = paint;
+    }
+
+    public void setTouchLinePaint(Paint paint) {
+        touchLinePaint = paint;
+    }
+
     public void onDraw(Canvas canvas) {
         if(enableTouchCircle && showTouchCircle && touchCirclePaint != null) {
-            Path path = new Path();
+            path.reset();
             path.moveTo(startX, startY);
             path.lineTo(touchX, touchY);
             canvas.drawPath(path, touchLinePaint);
 
-            Path pathCross1 = new Path();
+            pathCross1.reset();
             pathCross1.moveTo(startX - touchCrossR, startY);
             pathCross1.lineTo(startX + touchCrossR, startY);
             pathCross1.moveTo(startX, startY - touchCrossR);
@@ -75,7 +104,7 @@ public class TouchHelper {
             canvas.drawPath(pathCross1, touchCrossPaint);
             canvas.drawCircle(startX, startY, touchCircleR, touchCirclePaint);
 
-            Path pathCross2 = new Path();
+            pathCross2.reset();
             pathCross2.moveTo(touchX - touchCrossR, touchY);
             pathCross2.lineTo(touchX + touchCrossR, touchY);
             pathCross2.moveTo(touchX, touchY - touchCrossR);
