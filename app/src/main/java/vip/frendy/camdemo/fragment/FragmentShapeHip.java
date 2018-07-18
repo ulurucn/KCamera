@@ -132,5 +132,9 @@ public class FragmentShapeHip extends BaseFragment implements View.OnClickListen
             bitmapOp1.recycle();
             bitmapOp1 = null;
         }
+        if(bitmapOval != null) {
+            bitmapOval.recycle();
+            bitmapOval = null;
+        }
     }
 }

@@ -112,6 +112,9 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
         return true;
     }
 
+    @Override
+    public void onPreGenerateBitmap() {}
+
     public boolean isAttached() {
         return this.attached;
     }

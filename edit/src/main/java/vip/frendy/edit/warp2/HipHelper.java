@@ -16,11 +16,9 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private static final int COUNT = (WIDTH + 1) * (HEIGHT + 1);
 
     private MorphMatrix mMorphMatrix = new MorphMatrix(COUNT * 2);
+    private MorphMatrix mMorphMatrixOrig = new MorphMatrix(COUNT * 2);
     private final Matrix mMatrix = new Matrix();
     private final Matrix mInverse = new Matrix();
-
-    private int mLastWarpX = -9999; // Not a touch coordinate
-    private int mLastWarpY;
 
     private BitmapDrawable mBitmap;
     private CanvasView mCanvasView;
@@ -28,9 +26,13 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private boolean visible = true;
 
     private RectF mOval = new RectF();
-    private Bitmap mBitmapOval;
+    private RectF mRectOp = new RectF();
+    private Bitmap mBitmapOval, mBitmapOp;
     private boolean isSelectedOval = false;
+    private boolean isSelectedOp = false;
     private float x_1, y_1;
+    private float op_x, op_y;
+    private float op_scale = 1;
 
     public void initMorpher() {
         if (mCanvasView != null) {
@@ -48,6 +50,7 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                 for (int x = 0; x <= WIDTH; x++) {
                     float fx = w * x / WIDTH;
                     setXY(mMorphMatrix, index, fx, fy);
+                    setXY(mMorphMatrixOrig, index, fx, fy);
                     index += 1;
                 }
             }
@@ -80,20 +83,27 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (visible) {
-            canvas.drawColor(0xFFCCCCCC);
+        canvas.drawColor(0xFFCCCCCC);
 
-            canvas.concat(mMatrix);
-            canvas.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
-                    null, 0, null);
+        canvas.concat(mMatrix);
+        canvas.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
+                null, 0, null);
 
-            if(mBitmapOval != null) {
-                mOval.left = x_1 - mBitmapOval.getWidth() / 2;
-                mOval.top = y_1 - mBitmapOval.getHeight() / 2;
-                mOval.right = mOval.left + mBitmapOval.getWidth();
-                mOval.bottom = mOval.top + mBitmapOval.getHeight();
-                canvas.drawBitmap(mBitmapOval, null, mOval, null);
-            }
+        if(mBitmapOval != null && visible) {
+            float width = mBitmapOval.getWidth() * op_scale;
+            float height = mBitmapOval.getHeight() * op_scale;
+            mOval.left = x_1 - width / 2;
+            mOval.top = y_1 - height / 2;
+            mOval.right = mOval.left + width;
+            mOval.bottom = mOval.top + height;
+            canvas.drawBitmap(mBitmapOval, null, mOval, null);
+        }
+        if(mBitmapOp != null && visible) {
+            mRectOp.left = mOval.right - mBitmapOp.getWidth() / 2;
+            mRectOp.top = mOval.bottom - mBitmapOp.getWidth() / 2;
+            mRectOp.right = mRectOp.left + mBitmapOp.getWidth();
+            mRectOp.bottom = mRectOp.top + mBitmapOp.getHeight();
+            canvas.drawBitmap(mBitmapOp, null, mRectOp, null);
         }
     }
 
@@ -103,17 +113,28 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
             case MotionEvent.ACTION_DOWN:
                 if(isInArea(event.getX(), event.getY(), mOval)) {
                     isSelectedOval = true;
+                    isSelectedOp = false;
                     x_1 = event.getX();
                     y_1 = event.getY();
                     invalidate();
+                } else if(mBitmapOp != null && isInArea(event.getX(), event.getY(), mRectOp)) {
+                    isSelectedOval = false;
+                    isSelectedOp = true;
+                    op_x = event.getX();
+                    op_y = event.getY();
                 } else {
                     isSelectedOval = false;
+                    isSelectedOp = false;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(isSelectedOval) {
                     x_1 = event.getX();
                     y_1 = event.getY();
+                    invalidate();
+                } else if(isSelectedOp) {
+                    double d = event.getX() - op_x;
+                    op_scale = 1 + (float) d / mCanvasView.getWidth();
                     invalidate();
                 }
                 break;
@@ -123,54 +144,80 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         return true;
     }
 
-    public void warpHip() {
-        if (visible) {
-            float hx = mOval.left;
-            float hy = mOval.top + (mOval.bottom - mOval.top) / 2;
+    @Override
+    public void onPreGenerateBitmap() {
+        visible = false;
+    }
 
-            float[] pt = { hx, hy };
-            mInverse.mapPoints(pt);
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 
-            int x = (int) pt[0];
-            int y = (int) pt[1];
-            if (mLastWarpX != x || mLastWarpY != y) {
-                mLastWarpX = x;
-                mLastWarpY = y;
-                warp(pt[0], pt[1]);
-                if (mCanvasView != null) {
-                    mCanvasView.invalidate();
-                }
+    //作用范围半径
+    private int r = 150;
+    private void warp(float startX, float startY, float endX, float endY) {
+        //计算拖动距离
+        float ddPull = (endX - startX) * (endX - startX) + (endY - startY) * (endY - startY);
+        float dPull = (float) Math.sqrt(ddPull);
+        //文献中提到的算法，并不能很好的实现拖动距离 MC 越大变形效果越明显的功能，下面这行代码则是我对该算法的优化
+        //dPull = screenWidth - dPull >= 0.0001f ? screenWidth - dPull : 0.0001f;
+
+        float[] orig = mMorphMatrixOrig.getVerts();
+        float[] verts = mMorphMatrix.getVerts();
+
+        for (int i = 0; i < COUNT * 2; i += 2) {
+            //计算每个坐标点与触摸点之间的距离
+            float dx = orig[i] - startX;
+            float dy = orig[i + 1] - startY;
+            float dd = dx * dx + dy * dy;
+            float d = (float) Math.sqrt(dd);
+
+            //文献中提到的算法同样不能实现只有圆形选区内的图像才进行变形的功能，这里需要做一个距离的判断
+            if (d < r) {
+                //变形系数，扭曲度
+                double e = (r * r - dd) * (r * r - dd) / ((r * r - dd + dPull * dPull) * (r * r - dd + dPull * dPull));
+                double pullX = e * (endX - startX);
+                double pullY = e * (endY - startY);
+                verts[i] = (float) (orig[i] + pullX);
+                verts[i + 1] = (float) (orig[i + 1] + pullY);
             }
+        }
+        invalidate();
+    }
+
+    private void toWarpLeft(int strength) {
+        float _startX = mOval.left;
+        float _startY = mOval.top;
+        int _step = 1;
+        int _step_max = (int)(mOval.bottom - mOval.top);
+
+        while (_step < _step_max) {
+            float _scale = 1;//Math.abs(_step_max / 2 - _step) / _step_max / 2;
+            float _endX = _startX + strength * _scale;
+            float _endY = _startY;
+
+            warp(_startX, _startY, _endX, _endY);
+
+            _startY += 1;
+            _step += 1;
         }
     }
 
-    private static void setXY(MorphMatrix morphMatrix, int index, float x, float y) {
-        morphMatrix.getVerts()[index * 2] = x;
-        morphMatrix.getVerts()[index * 2 + 1] = y;
-    }
+    private void toWarpRight(int strength) {
+        float _startX = mOval.right;
+        float _startY = mOval.top;
+        int _step = 1;
+        int _step_max = (int)(mOval.bottom - mOval.top);
 
-    private void warp(float cx, float cy) {
-        final float K = 10000;
-        float[] dst = mMorphMatrix.getVerts();
-        float src[] = dst.clone();
-        for (int i = 0; i < COUNT * 2; i += 2) {
-            float x = src[i];
-            float y = src[i + 1];
-            float dx = cx - x;
-            float dy = cy - y;
-            float dd = dx * dx + dy * dy;
-            float d = (float) Math.sqrt(dd);
-            float pull = K / (dd + 0.000001f);
+        while (_step < _step_max) {
+            float _scale = 1;//Math.abs(_step_max / 2 - _step) / _step_max / 2;
+            float _endX = _startX - strength * _scale;
+            float _endY = _startY;
 
-            pull /= (d + 0.000001f);
+            warp(_startX, _startY, _endX, _endY);
 
-            if (pull >= 1) {
-                dst[i] = cx;
-                dst[i + 1] = cy;
-            } else {
-                dst[i] = x + dx * pull;
-                dst[i + 1] = y + dy * pull;
-            }
+            _startY += 1;
+            _step += 1;
         }
     }
 
@@ -189,15 +236,21 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     }
 
     public void setOpBitmap(Bitmap op) {
-
+        mBitmapOp = op;
     }
 
     public void setStrength(int strength) {
-        warpHip();
+        toWarpLeft(strength);
+        toWarpRight(strength);
     }
 
     private boolean isInArea(float x, float y, RectF rectF) {
         return (x >= rectF.left && x <= rectF.right && y >= rectF.top && y <= rectF.bottom);
+    }
+
+    private static void setXY(MorphMatrix morphMatrix, int index, float x, float y) {
+        morphMatrix.getVerts()[index * 2] = x;
+        morphMatrix.getVerts()[index * 2 + 1] = y;
     }
 
     private static class MorphMatrix {

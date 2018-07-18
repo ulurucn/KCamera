@@ -176,6 +176,11 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
         return true;
     }
 
+    @Override
+    public void onPreGenerateBitmap() {
+        showCircle = true;
+    }
+
     public void invalidate() {
         if (mCanvasView != null) {
             mCanvasView.invalidate();
