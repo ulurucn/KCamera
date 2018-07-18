@@ -7,8 +7,8 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 
-public class HipHelper implements CanvasView.OnCanvasChangeListener {
-    private static final String TAG = HipHelper.class.getSimpleName();
+public class SlimHelper implements CanvasView.OnCanvasChangeListener {
+    private static final String TAG = SlimHelper.class.getSimpleName();
 
     // Mesh size
     private static final int WIDTH = 15;
@@ -26,13 +26,20 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private boolean visible = true;
 
     private RectF mOval = new RectF();
-    private RectF mRectOp = new RectF();
-    private Bitmap mBitmapOval, mBitmapOp;
+    private RectF mRectOpUp = new RectF();
+    private RectF mRectOpDown = new RectF();
+    private RectF mRectOpLeft = new RectF();
+    private RectF mRectOpRight = new RectF();
+    private Bitmap mBitmapOval, mBitmapOpUp, mBitmapOpDown, mBitmapOpLeft, mBitmapOpRight;
     private boolean isSelectedOval = false;
-    private boolean isSelectedOp = false;
+    private boolean isSelectedOpUp = false;
+    private boolean isSelectedOpDown = false;
+    private boolean isSelectedOpLeft = false;
+    private boolean isSelectedOpRight = false;
     private float x_1, y_1;
     private float op_x, op_y;
-    private float op_scale = 1;
+    private float op_scale_x = 1;
+    private float op_scale_y = 1;
 
     public void initMorpher() {
         if (mCanvasView != null) {
@@ -90,20 +97,41 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                 null, 0, null);
 
         if(mBitmapOval != null && visible) {
-            float width = mBitmapOval.getWidth() * op_scale;
-            float height = mBitmapOval.getHeight() * op_scale;
+            float width = mBitmapOval.getWidth() * op_scale_x;
+            float height = mBitmapOval.getHeight() * op_scale_y;
             mOval.left = x_1 - width / 2;
             mOval.top = y_1 - height / 2;
             mOval.right = mOval.left + width;
             mOval.bottom = mOval.top + height;
             canvas.drawBitmap(mBitmapOval, null, mOval, null);
         }
-        if(mBitmapOp != null && visible) {
-            mRectOp.left = mOval.right - mBitmapOp.getWidth() / 2;
-            mRectOp.top = mOval.bottom - mBitmapOp.getWidth() / 2;
-            mRectOp.right = mRectOp.left + mBitmapOp.getWidth();
-            mRectOp.bottom = mRectOp.top + mBitmapOp.getHeight();
-            canvas.drawBitmap(mBitmapOp, null, mRectOp, null);
+        if(mBitmapOpUp != null && visible) {
+            mRectOpUp.left = mOval.right - (mOval.right - mOval.left) / 2 - mBitmapOpUp.getWidth() / 2;
+            mRectOpUp.top = mOval.top - mBitmapOpUp.getHeight() / 2;
+            mRectOpUp.right = mRectOpUp.left + mBitmapOpUp.getWidth();
+            mRectOpUp.bottom = mRectOpUp.top + mBitmapOpUp.getHeight();
+            canvas.drawBitmap(mBitmapOpUp, null, mRectOpUp, null);
+        }
+        if(mBitmapOpDown != null && visible) {
+            mRectOpDown.left = mOval.right - (mOval.right - mOval.left) / 2 - mBitmapOpDown.getWidth() / 2;
+            mRectOpDown.top = mOval.bottom - mBitmapOpDown.getHeight() / 2;
+            mRectOpDown.right = mRectOpDown.left + mBitmapOpDown.getWidth();
+            mRectOpDown.bottom = mRectOpDown.top + mBitmapOpDown.getHeight();
+            canvas.drawBitmap(mBitmapOpDown, null, mRectOpDown, null);
+        }
+        if(mBitmapOpLeft != null && visible) {
+            mRectOpLeft.left = mOval.left - mBitmapOpLeft.getWidth() / 2;
+            mRectOpLeft.top = mOval.top + (mOval.bottom - mOval.top) / 2 - mBitmapOpLeft.getHeight() / 2;
+            mRectOpLeft.right = mRectOpLeft.left + mBitmapOpLeft.getWidth();
+            mRectOpLeft.bottom = mRectOpLeft.top + mBitmapOpLeft.getHeight();
+            canvas.drawBitmap(mBitmapOpLeft, null, mRectOpLeft, null);
+        }
+        if(mBitmapOpRight != null && visible) {
+            mRectOpRight.left = mOval.right - mBitmapOpRight.getWidth() / 2;
+            mRectOpRight.top = mOval.top + (mOval.bottom - mOval.top) / 2 - mBitmapOpRight.getHeight() / 2;
+            mRectOpRight.right = mRectOpRight.left + mBitmapOpRight.getWidth();
+            mRectOpRight.bottom = mRectOpRight.top + mBitmapOpRight.getHeight();
+            canvas.drawBitmap(mBitmapOpRight, null, mRectOpRight, null);
         }
     }
 
@@ -113,18 +141,51 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
             case MotionEvent.ACTION_DOWN:
                 if(isInArea(event.getX(), event.getY(), mOval)) {
                     isSelectedOval = true;
-                    isSelectedOp = false;
+                    isSelectedOpUp = false;
+                    isSelectedOpDown = false;
+                    isSelectedOpLeft = false;
+                    isSelectedOpRight = false;
                     x_1 = event.getX();
                     y_1 = event.getY();
                     invalidate();
-                } else if(mBitmapOp != null && isInArea(event.getX(), event.getY(), mRectOp)) {
+                } else if(mBitmapOpUp != null && isInArea(event.getX(), event.getY(), mRectOpUp)) {
                     isSelectedOval = false;
-                    isSelectedOp = true;
+                    isSelectedOpUp = true;
+                    isSelectedOpDown = false;
+                    isSelectedOpLeft = false;
+                    isSelectedOpRight = false;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(mBitmapOpDown != null && isInArea(event.getX(), event.getY(), mRectOpDown)) {
+                    isSelectedOval = false;
+                    isSelectedOpUp = false;
+                    isSelectedOpDown = true;
+                    isSelectedOpLeft = false;
+                    isSelectedOpRight = false;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(mBitmapOpLeft != null && isInArea(event.getX(), event.getY(), mRectOpLeft)) {
+                    isSelectedOval = false;
+                    isSelectedOpUp = false;
+                    isSelectedOpDown = false;
+                    isSelectedOpLeft = true;
+                    isSelectedOpRight = false;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(mBitmapOpRight != null && isInArea(event.getX(), event.getY(), mRectOpRight)) {
+                    isSelectedOval = false;
+                    isSelectedOpUp = false;
+                    isSelectedOpDown = false;
+                    isSelectedOpLeft = false;
+                    isSelectedOpRight = true;
                     op_x = event.getX();
                     op_y = event.getY();
                 } else {
                     isSelectedOval = false;
-                    isSelectedOp = false;
+                    isSelectedOpUp = false;
+                    isSelectedOpDown = false;
+                    isSelectedOpLeft = false;
+                    isSelectedOpRight = false;
                     visible = !visible;
                     invalidate();
                 }
@@ -134,9 +195,21 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                     x_1 = event.getX();
                     y_1 = event.getY();
                     invalidate();
-                } else if(isSelectedOp) {
+                } else if(isSelectedOpUp) {
+                    double d = event.getY() - op_y;
+                    op_scale_y = 1 - (float) d / mCanvasView.getHeight();
+                    invalidate();
+                } else if(isSelectedOpDown) {
+                    double d = event.getY() - op_y;
+                    op_scale_y = 1 + (float) d / mCanvasView.getHeight();
+                    invalidate();
+                } else if(isSelectedOpLeft) {
                     double d = event.getX() - op_x;
-                    op_scale = 1 + (float) d / mCanvasView.getWidth();
+                    op_scale_x = 1 - (float) d / mCanvasView.getWidth();
+                    invalidate();
+                } else if(isSelectedOpRight) {
+                    double d = event.getX() - op_x;
+                    op_scale_x = 1 + (float) d / mCanvasView.getWidth();
                     invalidate();
                 }
                 break;
@@ -194,7 +267,7 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         int _step_max = (int)(mOval.bottom - mOval.top) / 2;
 
         while (_step < _step_max) {
-            float _scale = 1;//Math.abs(_step_max / 2 - _step) / _step_max / 2;
+            float _scale = 1;
             float _endX = _startX + strength * _scale;
             float _endY = _startY;
 
@@ -212,7 +285,7 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         int _step_max = (int)(mOval.bottom - mOval.top) / 2;
 
         while (_step < _step_max) {
-            float _scale = 1;//Math.abs(_step_max / 2 - _step) / _step_max / 2;
+            float _scale = 1;
             float _endX = _startX - strength * _scale;
             float _endY = _startY;
 
@@ -237,8 +310,11 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         mBitmapOval = oval;
     }
 
-    public void setOpBitmap(Bitmap op) {
-        mBitmapOp = op;
+    public void setOpBitmap(Bitmap up, Bitmap down, Bitmap left, Bitmap right) {
+        mBitmapOpUp = up;
+        mBitmapOpDown = down;
+        mBitmapOpLeft = left;
+        mBitmapOpRight = right;
     }
 
     public void setStrength(int strength) {
