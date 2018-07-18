@@ -114,7 +114,21 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if(isInCircle(event.getX(), event.getY(), x_1, y_1, r_1)) {
+                if(mBitmapOp1 != null && isInArea(event.getX(), event.getY(), mRectOp1, 20)) {
+                    isSelectedCircle1 = false;
+                    isSelectedCircle2 = false;
+                    isSelectedOp1 = true;
+                    isSelectedOp2 = false;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(mBitmapOp2 != null && isInArea(event.getX(), event.getY(), mRectOp2, 20)) {
+                    isSelectedCircle1 = false;
+                    isSelectedCircle2 = false;
+                    isSelectedOp1 = false;
+                    isSelectedOp2 = true;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(isInCircle(event.getX(), event.getY(), x_1, y_1, r_1)) {
                     x_1 = event.getX();
                     y_1 = event.getY();
                     isSelectedCircle1 = true;
@@ -130,20 +144,6 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
                     isSelectedOp1 = false;
                     isSelectedOp2 = false;
                     invalidate();
-                } else if(mBitmapOp1 != null && isInArea(event.getX(), event.getY(), mRectOp1)) {
-                    isSelectedCircle1 = false;
-                    isSelectedCircle2 = false;
-                    isSelectedOp1 = true;
-                    isSelectedOp2 = false;
-                    op_x = event.getX();
-                    op_y = event.getY();
-                } else if(mBitmapOp2 != null && isInArea(event.getX(), event.getY(), mRectOp2)) {
-                    isSelectedCircle1 = false;
-                    isSelectedCircle2 = false;
-                    isSelectedOp1 = false;
-                    isSelectedOp2 = true;
-                    op_x = event.getX();
-                    op_y = event.getY();
                 } else {
                     isSelectedCircle1 = false;
                     isSelectedCircle2 = false;
@@ -201,8 +201,8 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
         return d <= r;
     }
 
-    private boolean isInArea(float x, float y, RectF rectF) {
-        return (x >= rectF.left && x <= rectF.right && y >= rectF.top && y <= rectF.bottom);
+    private boolean isInArea(float x, float y, RectF rectF, int padding) {
+        return (x >= (rectF.left - padding) && x <= (rectF.right + padding) && y >= (rectF.top - padding) && y <= (rectF.bottom + padding));
     }
 
     private int getR1(MotionEvent event, int r, float op_x, float op_y) {

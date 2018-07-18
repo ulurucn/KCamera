@@ -139,7 +139,39 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if(isInArea(event.getX(), event.getY(), mOval)) {
+                if(mBitmapOpUp != null && isInArea(event.getX(), event.getY(), mRectOpUp, 20)) {
+                    isSelectedOval = false;
+                    isSelectedOpUp = true;
+                    isSelectedOpDown = false;
+                    isSelectedOpLeft = false;
+                    isSelectedOpRight = false;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(mBitmapOpDown != null && isInArea(event.getX(), event.getY(), mRectOpDown, 20)) {
+                    isSelectedOval = false;
+                    isSelectedOpUp = false;
+                    isSelectedOpDown = true;
+                    isSelectedOpLeft = false;
+                    isSelectedOpRight = false;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(mBitmapOpLeft != null && isInArea(event.getX(), event.getY(), mRectOpLeft, 20)) {
+                    isSelectedOval = false;
+                    isSelectedOpUp = false;
+                    isSelectedOpDown = false;
+                    isSelectedOpLeft = true;
+                    isSelectedOpRight = false;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(mBitmapOpRight != null && isInArea(event.getX(), event.getY(), mRectOpRight, 20)) {
+                    isSelectedOval = false;
+                    isSelectedOpUp = false;
+                    isSelectedOpDown = false;
+                    isSelectedOpLeft = false;
+                    isSelectedOpRight = true;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(isInArea(event.getX(), event.getY(), mOval, 0)) {
                     isSelectedOval = true;
                     isSelectedOpUp = false;
                     isSelectedOpDown = false;
@@ -148,38 +180,6 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
                     x_1 = event.getX();
                     y_1 = event.getY();
                     invalidate();
-                } else if(mBitmapOpUp != null && isInArea(event.getX(), event.getY(), mRectOpUp)) {
-                    isSelectedOval = false;
-                    isSelectedOpUp = true;
-                    isSelectedOpDown = false;
-                    isSelectedOpLeft = false;
-                    isSelectedOpRight = false;
-                    op_x = event.getX();
-                    op_y = event.getY();
-                } else if(mBitmapOpDown != null && isInArea(event.getX(), event.getY(), mRectOpDown)) {
-                    isSelectedOval = false;
-                    isSelectedOpUp = false;
-                    isSelectedOpDown = true;
-                    isSelectedOpLeft = false;
-                    isSelectedOpRight = false;
-                    op_x = event.getX();
-                    op_y = event.getY();
-                } else if(mBitmapOpLeft != null && isInArea(event.getX(), event.getY(), mRectOpLeft)) {
-                    isSelectedOval = false;
-                    isSelectedOpUp = false;
-                    isSelectedOpDown = false;
-                    isSelectedOpLeft = true;
-                    isSelectedOpRight = false;
-                    op_x = event.getX();
-                    op_y = event.getY();
-                } else if(mBitmapOpRight != null && isInArea(event.getX(), event.getY(), mRectOpRight)) {
-                    isSelectedOval = false;
-                    isSelectedOpUp = false;
-                    isSelectedOpDown = false;
-                    isSelectedOpLeft = false;
-                    isSelectedOpRight = true;
-                    op_x = event.getX();
-                    op_y = event.getY();
                 } else {
                     isSelectedOval = false;
                     isSelectedOpUp = false;
@@ -322,8 +322,8 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
         toWarpRight(strength);
     }
 
-    private boolean isInArea(float x, float y, RectF rectF) {
-        return (x >= rectF.left && x <= rectF.right && y >= rectF.top && y <= rectF.bottom);
+    private boolean isInArea(float x, float y, RectF rectF, int padding) {
+        return (x >= (rectF.left - padding) && x <= (rectF.right + padding) && y >= (rectF.top - padding) && y <= (rectF.bottom + padding));
     }
 
     private static void setXY(MorphMatrix morphMatrix, int index, float x, float y) {

@@ -111,17 +111,17 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if(isInArea(event.getX(), event.getY(), mOval)) {
+                if(mBitmapOp != null && isInArea(event.getX(), event.getY(), mRectOp, 20)) {
+                    isSelectedOval = false;
+                    isSelectedOp = true;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(isInArea(event.getX(), event.getY(), mOval, 0)) {
                     isSelectedOval = true;
                     isSelectedOp = false;
                     x_1 = event.getX();
                     y_1 = event.getY();
                     invalidate();
-                } else if(mBitmapOp != null && isInArea(event.getX(), event.getY(), mRectOp)) {
-                    isSelectedOval = false;
-                    isSelectedOp = true;
-                    op_x = event.getX();
-                    op_y = event.getY();
                 } else {
                     isSelectedOval = false;
                     isSelectedOp = false;
@@ -246,8 +246,8 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         toWarpRight(strength);
     }
 
-    private boolean isInArea(float x, float y, RectF rectF) {
-        return (x >= rectF.left && x <= rectF.right && y >= rectF.top && y <= rectF.bottom);
+    private boolean isInArea(float x, float y, RectF rectF, int padding) {
+        return (x >= (rectF.left - padding) && x <= (rectF.right + padding) && y >= (rectF.top - padding) && y <= (rectF.bottom + padding));
     }
 
     private static void setXY(MorphMatrix morphMatrix, int index, float x, float y) {
