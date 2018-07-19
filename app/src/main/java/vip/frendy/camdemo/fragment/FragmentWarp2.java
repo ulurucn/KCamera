@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
@@ -15,7 +16,7 @@ import vip.frendy.edit.warp2.WarpHelper;
  * Created by frendy on 2018/4/12.
  */
 
-public class FragmentWarp2 extends BaseFragment implements View.OnClickListener {
+public class FragmentWarp2 extends BaseFragment implements View.OnClickListener, WarpHelper.OnWarpCanvasDrawListener {
     public static String PIC_PATH = "pic_path";
 
     private String imgPath;
@@ -71,6 +72,7 @@ public class FragmentWarp2 extends BaseFragment implements View.OnClickListener 
                         if(mWarpHelper == null) {
                             mWarpHelper = new WarpHelper();
                         }
+                        mWarpHelper.setOnWarpCanvasDrawListener(FragmentWarp2.this);
                         mWarpHelper.setDrawingView(mPic);
                         mWarpHelper.initMorpher();
                         mPic.isBaseDrawingEnabled(false);
@@ -106,6 +108,14 @@ public class FragmentWarp2 extends BaseFragment implements View.OnClickListener 
             return mWarpHelper.isRedoActive();
         }
         return false;
+    }
+
+    @Override
+    public void onWarpCanvasDrawed() {
+        ((Button) mRootView.findViewById(R.id.forward)).setTextColor(getResources().getColor(
+                mWarpHelper.isRedoActive() ? android.R.color.holo_red_dark : android.R.color.black));
+        ((Button) mRootView.findViewById(R.id.backward)).setTextColor(getResources().getColor(
+                mWarpHelper.isUndoActive() ? android.R.color.holo_red_dark : android.R.color.black));
     }
 
     @Override

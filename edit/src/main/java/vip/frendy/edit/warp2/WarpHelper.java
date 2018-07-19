@@ -200,7 +200,7 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     }
 
     public boolean isUndoActive() {
-        return mMotions.size() > 0;
+        return mMotions.size() > 1;
     }
 
     /*
