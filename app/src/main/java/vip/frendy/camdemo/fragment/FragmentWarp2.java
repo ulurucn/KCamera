@@ -73,7 +73,7 @@ public class FragmentWarp2 extends BaseFragment implements View.OnClickListener,
                             mWarpHelper = new WarpHelper();
                         }
                         mWarpHelper.setOnWarpCanvasDrawListener(FragmentWarp2.this);
-                        mWarpHelper.setDrawingView(mPic);
+                        mWarpHelper.attachCanvasView(mPic);
                         mWarpHelper.initMorpher();
                         mPic.isBaseDrawingEnabled(false);
                     }

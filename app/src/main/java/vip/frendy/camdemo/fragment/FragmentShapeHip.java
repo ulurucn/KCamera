@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 
-import vip.frendy.base.BitmapExt;
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
@@ -79,7 +78,7 @@ public class FragmentShapeHip extends BaseFragment implements View.OnClickListen
                         if(mHipHelper == null) {
                             mHipHelper = new HipHelper();
                         }
-                        mHipHelper.setDrawingView(mPic);
+                        mHipHelper.attachCanvasView(mPic);
                         mHipHelper.setOpBitmap(bitmapOp1);
                         mHipHelper.setOvalBitmap(bitmapOval);
                         mHipHelper.initMorpher();

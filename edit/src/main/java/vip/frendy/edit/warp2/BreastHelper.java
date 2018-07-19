@@ -25,7 +25,7 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
     private boolean isSelectedCircle1 = false;
     private boolean isSelectedCircle2 = false;
     private Paint mCirclePaint;
-    private boolean showCircle = true;
+    private boolean visible = true;
 
     private float op_x, op_y;
     private RectF mRectOp1 = new RectF();
@@ -61,7 +61,7 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
         return this.attached;
     }
 
-    public void setDrawingView(CanvasView canvasView) {
+    public void attachCanvasView(CanvasView canvasView) {
         if (canvasView == null) {
             if (mCanvasView != null) {
                 mCanvasView.setOnCanvasChangeListener(null);
@@ -88,7 +88,7 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
             }
             canvas.drawBitmap(mBitmap, 0, 0, null);
 
-            if(showCircle) {
+            if(visible) {
                 canvas.drawCircle(x_1, y_1, r_1, mCirclePaint);
                 canvas.drawCircle(x_2, y_2, r_2, mCirclePaint);
 
@@ -149,7 +149,7 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
                     isSelectedCircle2 = false;
                     isSelectedOp1 = false;
                     isSelectedOp2 = false;
-                    showCircle = !showCircle;
+                    visible = !visible;
                     invalidate();
                 }
                 break;
@@ -178,7 +178,7 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
 
     @Override
     public void onPreGenerateBitmap() {
-        showCircle = true;
+        visible = false;
     }
 
     public void invalidate() {
@@ -192,8 +192,8 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
         invalidate();
     }
 
-    public void showCircle(boolean show) {
-        showCircle = show;
+    public void setVisible(boolean show) {
+        visible = show;
     }
 
     private boolean isInCircle(float eventX, float eventY, float x, float y, float r) {

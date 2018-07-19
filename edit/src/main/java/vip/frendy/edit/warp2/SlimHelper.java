@@ -75,7 +75,7 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
         return this.attached;
     }
 
-    public void setDrawingView(CanvasView canvasView) {
+    public void attachCanvasView(CanvasView canvasView) {
         if (canvasView == null) {
             if (mCanvasView != null) {
                 mCanvasView.setOnCanvasChangeListener(null);

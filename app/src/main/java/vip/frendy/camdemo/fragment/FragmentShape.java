@@ -78,7 +78,7 @@ public class FragmentShape extends BaseFragment implements View.OnClickListener,
                         if(mBreastHelper == null) {
                             mBreastHelper = new BreastHelper();
                         }
-                        mBreastHelper.setDrawingView(mPic);
+                        mBreastHelper.attachCanvasView(mPic);
                         mBreastHelper.setOpBitmap(bitmapOp1, bitmapOp2);
                         mBreastHelper.initMorpher();
                         mPic.isBaseDrawingEnabled(false);

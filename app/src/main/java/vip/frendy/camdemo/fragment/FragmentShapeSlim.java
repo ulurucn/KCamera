@@ -81,7 +81,7 @@ public class FragmentShapeSlim extends BaseFragment implements View.OnClickListe
                         if(mSlimHelper == null) {
                             mSlimHelper = new SlimHelper();
                         }
-                        mSlimHelper.setDrawingView(mPic);
+                        mSlimHelper.attachCanvasView(mPic);
                         mSlimHelper.setOpBitmap(bitmapOpUp, bitmapOpDown, bitmapOpLeft, bitmapOpRight);
                         mSlimHelper.setOvalBitmap(bitmapOval);
                         mSlimHelper.initMorpher();
