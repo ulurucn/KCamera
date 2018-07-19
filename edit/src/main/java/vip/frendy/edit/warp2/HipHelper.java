@@ -2,7 +2,9 @@ package vip.frendy.edit.warp2;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
@@ -20,7 +22,7 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private final Matrix mMatrix = new Matrix();
     private final Matrix mInverse = new Matrix();
 
-    private BitmapDrawable mBitmap;
+    private Bitmap mBitmapSrc, mBitmap;
     private CanvasView mCanvasView;
     private boolean attached = false;
     private boolean visible = true;
@@ -34,11 +36,31 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private float op_x, op_y;
     private float op_scale = 1;
 
+    private int mStrength = 0;
+    private int r_max = 300;
+    private int r_1 = 200;
+    private Paint mCirclePaint;
+    private boolean isSelectedCircle = false;
+    private boolean isSelectedCircleOp = false;
+
+    public static final int TYPE_OVAL = 0;
+    public static final int TYPE_CIRCLE = 1;
+    private int mType = TYPE_OVAL;
+
+    public HipHelper() {
+        mCirclePaint = new Paint();
+        mCirclePaint.setAntiAlias(true);
+        mCirclePaint.setStyle(Paint.Style.STROKE);
+        mCirclePaint.setStrokeWidth(5);
+        mCirclePaint.setColor(Color.parseColor("#d75372"));
+    }
+
     public void initMorpher() {
         if (mCanvasView != null) {
             mCanvasView.setFocusable(true);
 
-            mBitmap = (BitmapDrawable) mCanvasView.getBackground();
+            mBitmapSrc = ((BitmapDrawable) mCanvasView.getBackground()).getBitmap();
+            mBitmap = mBitmapSrc;
 
             float w = mCanvasView.getWidth();
             float h = mCanvasView.getHeight();
@@ -83,10 +105,16 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
 
     @Override
     public void onDraw(Canvas canvas) {
-        canvas.drawColor(0xFFCCCCCC);
+        if(mType == TYPE_OVAL) {
+            onDrawOval(canvas);
+        } else if(mType == TYPE_CIRCLE) {
+            onDrawCircle(canvas);
+        }
+    }
 
+    private void onDrawOval(Canvas canvas) {
         canvas.concat(mMatrix);
-        canvas.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
+        canvas.drawBitmapMesh(mBitmap, WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
                 null, 0, null);
 
         if(mBitmapOval != null && visible) {
@@ -107,8 +135,36 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         }
     }
 
+    private void onDrawCircle(Canvas canvas) {
+        if(mStrength != 0) {
+            mBitmap = ShapeUtils.enlarge(mBitmapSrc, (int) x_1, (int) y_1, r_1, mStrength);
+        }
+        canvas.drawBitmap(mBitmap, 0, 0, null);
+
+        if(visible) {
+            canvas.drawCircle(x_1, y_1, r_1, mCirclePaint);
+
+            if(mBitmapOp != null) {
+                mRectOp.left = x_1 + r_1 - mBitmapOp.getWidth() / 2 - 4;
+                mRectOp.top = y_1 + r_1 - mBitmapOp.getWidth() / 2;
+                mRectOp.right = mRectOp.left + mBitmapOp.getWidth();
+                mRectOp.bottom = mRectOp.top + mBitmapOp.getWidth();
+                canvas.drawBitmap(mBitmapOp, null, mRectOp, null);
+            }
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if(mType == TYPE_OVAL) {
+            onTouchEventOval(event);
+        } else if(mType == TYPE_CIRCLE) {
+            onTouchEventCircle(event);
+        }
+        return true;
+    }
+
+    private void onTouchEventOval(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if(mBitmapOp != null && isInArea(event.getX(), event.getY(), mRectOp, 20)) {
@@ -143,7 +199,42 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
             case MotionEvent.ACTION_UP:
                 break;
         }
-        return true;
+    }
+
+    private void onTouchEventCircle(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if(mBitmapOp != null && isInArea(event.getX(), event.getY(), mRectOp, 20)) {
+                    isSelectedCircle = false;
+                    isSelectedCircleOp = true;
+                    op_x = event.getX();
+                    op_y = event.getY();
+                } else if(isInCircle(event.getX(), event.getY(), x_1, y_1, r_1)) {
+                    isSelectedCircle = true;
+                    isSelectedCircleOp = false;
+                    x_1 = event.getX();
+                    y_1 = event.getY();
+                    invalidate();
+                } else {
+                    isSelectedCircle = false;
+                    isSelectedCircleOp = false;
+                    visible = !visible;
+                    invalidate();
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(isSelectedCircle) {
+                    x_1 = event.getX();
+                    y_1 = event.getY();
+                    invalidate();
+                } else if(isSelectedCircleOp) {
+                    r_1 = getR2(event, r_1, op_x, op_y);
+                    invalidate();
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+        }
     }
 
     @Override
@@ -229,10 +320,6 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         }
     }
 
-    public BitmapDrawable getBitmapDrawable() {
-        return mBitmap;
-    }
-
     public void setOvalBitmap(Bitmap oval) {
         mBitmapOval = oval;
     }
@@ -242,12 +329,43 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     }
 
     public void setStrength(int strength) {
-        toWarpLeft(strength);
-        toWarpRight(strength);
+        if(mType == TYPE_OVAL) {
+            toWarpLeft(strength);
+            toWarpRight(strength);
+        } else if(mType == TYPE_CIRCLE) {
+            mStrength = strength;
+            invalidate();
+        }
+    }
+
+    public void setType(int type) {
+        mType = type;
+        invalidate();
+    }
+
+    public int getType() {
+        return mType;
+    }
+
+    private boolean isInCircle(float eventX, float eventY, float x, float y, float r) {
+        double d = Math.sqrt((eventX - x) * (eventX - x) + (eventY - y) * (eventY - y));
+        return d <= r;
     }
 
     private boolean isInArea(float x, float y, RectF rectF, int padding) {
         return (x >= (rectF.left - padding) && x <= (rectF.right + padding) && y >= (rectF.top - padding) && y <= (rectF.bottom + padding));
+    }
+
+    private int getR2(MotionEvent event, int r, float op_x, float op_y) {
+        double d = Math.sqrt((event.getX() - op_x) * (event.getX() - op_x) + (event.getY() - op_y) * (event.getY() - op_y));
+        if(event.getX() - op_x < 0) {
+            r = r - (int) (d / 50);
+        } else {
+            r = r + (int) (d / 50);
+        }
+        if(r > r_max) r = r_max;
+        if(r < 10) r = 10;
+        return r;
     }
 
     private static void setXY(MorphMatrix morphMatrix, int index, float x, float y) {

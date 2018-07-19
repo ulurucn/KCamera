@@ -56,6 +56,7 @@ public class FragmentShapeHip extends BaseFragment implements View.OnClickListen
     protected void initAction() {
         mRootView.findViewById(R.id.ok).setOnClickListener(this);
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
+        mRootView.findViewById(R.id.type).setOnClickListener(this);
         mSeekbar.setOnSeekBarChangeListener(this);
         mSeekbar.setMax(100);
 
@@ -99,6 +100,8 @@ public class FragmentShapeHip extends BaseFragment implements View.OnClickListen
             if(mListener != null) mListener.onPictureEditApply(0, imgPath);
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
+        } else if(view.getId() == R.id.type) {
+            mHipHelper.setType(mHipHelper.getType() + 1 % 2);
         }
     }
 
