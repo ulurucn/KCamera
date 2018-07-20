@@ -56,6 +56,7 @@ public class FragmentShapeSlim extends BaseFragment implements View.OnClickListe
     protected void initAction() {
         mRootView.findViewById(R.id.ok).setOnClickListener(this);
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
+        mRootView.findViewById(R.id.compare).setOnClickListener(this);
         mSeekbar.setOnSeekBarChangeListener(this);
         mSeekbar.setMax(100);
 
@@ -102,6 +103,8 @@ public class FragmentShapeSlim extends BaseFragment implements View.OnClickListe
             if(mListener != null) mListener.onPictureEditApply(0, imgPath);
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
+        } else if(view.getId() == R.id.compare) {
+            mSlimHelper.setOriginal(!mSlimHelper.getOriginal());
         }
     }
 

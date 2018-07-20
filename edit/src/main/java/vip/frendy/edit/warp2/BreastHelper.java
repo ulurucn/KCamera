@@ -17,6 +17,7 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
     private Bitmap mBitmapSrc, mBitmap, mBitmapOp1, mBitmapOp2;
     private CanvasView mCanvasView;
     private boolean attached = false;
+    private boolean original = false;
 
     private int r_max = 300;
     private int r_1 = 100;
@@ -82,13 +83,17 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
     @Override
     public void onDraw(Canvas canvas) {
         if(mCirclePaint != null) {
-            if(mStrength != 0) {
-                mBitmap = ShapeUtils.enlarge(mBitmapSrc, (int) x_1, (int) y_1, r_1, mStrength);
-                mBitmap = ShapeUtils.enlarge(mBitmap, (int) x_2, (int) y_2, r_2, mStrength);
+            if(!original) {
+                if(mStrength != 0) {
+                    mBitmap = ShapeUtils.enlarge(mBitmapSrc, (int) x_1, (int) y_1, r_1, mStrength);
+                    mBitmap = ShapeUtils.enlarge(mBitmap, (int) x_2, (int) y_2, r_2, mStrength);
+                }
+                canvas.drawBitmap(mBitmap, 0, 0, null);
+            } else {
+                canvas.drawBitmap(mBitmapSrc, 0, 0, null);
             }
-            canvas.drawBitmap(mBitmap, 0, 0, null);
 
-            if(visible) {
+            if(visible && !original) {
                 canvas.drawCircle(x_1, y_1, r_1, mCirclePaint);
                 canvas.drawCircle(x_2, y_2, r_2, mCirclePaint);
 
@@ -192,8 +197,18 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
         invalidate();
     }
 
-    public void setVisible(boolean show) {
-        visible = show;
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+        invalidate();
+    }
+
+    public void setOriginal(boolean original) {
+        this.original = original;
+        invalidate();
+    }
+
+    public boolean getOriginal() {
+        return original;
     }
 
     private boolean isInCircle(float eventX, float eventY, float x, float y, float r) {

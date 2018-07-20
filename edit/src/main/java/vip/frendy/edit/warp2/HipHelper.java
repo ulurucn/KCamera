@@ -26,6 +26,7 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private CanvasView mCanvasView;
     private boolean attached = false;
     private boolean visible = true;
+    private boolean original = false;
 
     private RectF mOval = new RectF();
     private RectF mRectOp = new RectF();
@@ -113,11 +114,15 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     }
 
     private void onDrawOval(Canvas canvas) {
-        canvas.concat(mMatrix);
-        canvas.drawBitmapMesh(mBitmap, WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
-                null, 0, null);
+        if(!original) {
+            canvas.concat(mMatrix);
+            canvas.drawBitmapMesh(mBitmap, WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
+                    null, 0, null);
+        } else {
+            canvas.drawBitmap(mBitmapSrc, 0, 0, null);
+        }
 
-        if(mBitmapOval != null && visible) {
+        if(mBitmapOval != null && visible && !original) {
             float width = mBitmapOval.getWidth() * op_scale;
             float height = mBitmapOval.getHeight() * op_scale;
             mOval.left = x_1 - width / 2;
@@ -126,7 +131,7 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
             mOval.bottom = mOval.top + height;
             canvas.drawBitmap(mBitmapOval, null, mOval, null);
         }
-        if(mBitmapOp != null && visible) {
+        if(mBitmapOp != null && visible && !original) {
             mRectOp.left = mOval.right - mBitmapOp.getWidth() / 2;
             mRectOp.top = mOval.bottom - mBitmapOp.getWidth() / 2;
             mRectOp.right = mRectOp.left + mBitmapOp.getWidth();
@@ -136,12 +141,16 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     }
 
     private void onDrawCircle(Canvas canvas) {
-        if(mStrength != 0) {
-            mBitmap = ShapeUtils.enlarge(mBitmapSrc, (int) x_1, (int) y_1, r_1, mStrength);
+        if(!original) {
+            if(mStrength != 0) {
+                mBitmap = ShapeUtils.enlarge(mBitmapSrc, (int) x_1, (int) y_1, r_1, mStrength);
+            }
+            canvas.drawBitmap(mBitmap, 0, 0, null);
+        } else {
+            canvas.drawBitmap(mBitmapSrc, 0, 0, null);
         }
-        canvas.drawBitmap(mBitmap, 0, 0, null);
 
-        if(visible) {
+        if(visible && !original) {
             canvas.drawCircle(x_1, y_1, r_1, mCirclePaint);
 
             if(mBitmapOp != null) {
@@ -244,6 +253,16 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+        invalidate();
+    }
+
+    public void setOriginal(boolean original) {
+        this.original = original;
+        invalidate();
+    }
+
+    public boolean getOriginal() {
+        return original;
     }
 
     //作用范围半径

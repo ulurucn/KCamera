@@ -55,6 +55,7 @@ public class FragmentWarp2 extends BaseFragment implements View.OnClickListener,
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
         mRootView.findViewById(R.id.forward).setOnClickListener(this);
         mRootView.findViewById(R.id.backward).setOnClickListener(this);
+        mRootView.findViewById(R.id.compare).setOnClickListener(this);
 
         imgPath = getArguments().getString(PIC_PATH);
         bitmapSrc = BitmapFactory.decodeFile(imgPath);
@@ -93,6 +94,8 @@ public class FragmentWarp2 extends BaseFragment implements View.OnClickListener,
             mWarpHelper.redo();
         } else if(view.getId() == R.id.backward && mPic != null && mWarpHelper != null && mWarpHelper.isAttached()) {
             mWarpHelper.undo();
+        } else if(view.getId() == R.id.compare) {
+            mWarpHelper.setOriginal(!mWarpHelper.getOriginal());
         }
     }
 

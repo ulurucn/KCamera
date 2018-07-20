@@ -27,6 +27,7 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     private CanvasView mCanvasView;
     private boolean attached = false;
     private boolean visible = true;
+    private boolean original = false;
 
     // 触点
     private TouchHelper mTouchHelper;
@@ -64,8 +65,6 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     @Override
     public void onDraw(Canvas canvas) {
         if (visible) {
-            canvas.drawColor(0xFFCCCCCC);
-
             canvas.concat(mMatrix);
             canvas.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
                     null, 0, null);
@@ -220,14 +219,23 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
 
     public void setVisibility(boolean visibility) {
         visible = visibility;
-        if (mMotions.size() > 0) {
-            if (visible) {
+        invalidate();
+    }
+
+    public void setOriginal(boolean original) {
+        this.original = original;
+        if(mMotions.size() > 0) {
+            if(!original) {
                 mMorphMatrix = mMotions.get(mMotions.size() - 1);
             } else {
                 mMorphMatrix = mMotions.get(0);
             }
         }
         invalidate();
+    }
+
+    public boolean getOriginal() {
+        return original;
     }
 
     public void invalidate() {

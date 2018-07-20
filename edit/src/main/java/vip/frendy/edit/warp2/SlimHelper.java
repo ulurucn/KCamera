@@ -20,10 +20,11 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
     private final Matrix mMatrix = new Matrix();
     private final Matrix mInverse = new Matrix();
 
-    private BitmapDrawable mBitmap;
+    private Bitmap mBitmapSrc, mBitmap;
     private CanvasView mCanvasView;
     private boolean attached = false;
     private boolean visible = true;
+    private boolean original = false;
 
     private RectF mOval = new RectF();
     private RectF mRectOpUp = new RectF();
@@ -45,7 +46,8 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
         if (mCanvasView != null) {
             mCanvasView.setFocusable(true);
 
-            mBitmap = (BitmapDrawable) mCanvasView.getBackground();
+            mBitmapSrc = ((BitmapDrawable) mCanvasView.getBackground()).getBitmap();
+            mBitmap = mBitmapSrc;
 
             float w = mCanvasView.getWidth();
             float h = mCanvasView.getHeight();
@@ -90,13 +92,15 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
 
     @Override
     public void onDraw(Canvas canvas) {
-        canvas.drawColor(0xFFCCCCCC);
+        if(!original) {
+            canvas.concat(mMatrix);
+            canvas.drawBitmapMesh(mBitmap, WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
+                    null, 0, null);
+        } else {
+            canvas.drawBitmap(mBitmapSrc, 0, 0, null);
+        }
 
-        canvas.concat(mMatrix);
-        canvas.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
-                null, 0, null);
-
-        if(mBitmapOval != null && visible) {
+        if(mBitmapOval != null && visible && !original) {
             float width = mBitmapOval.getWidth() * op_scale_x;
             float height = mBitmapOval.getHeight() * op_scale_y;
             mOval.left = x_1 - width / 2;
@@ -105,28 +109,28 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
             mOval.bottom = mOval.top + height;
             canvas.drawBitmap(mBitmapOval, null, mOval, null);
         }
-        if(mBitmapOpUp != null && visible) {
+        if(mBitmapOpUp != null && visible && !original) {
             mRectOpUp.left = mOval.right - (mOval.right - mOval.left) / 2 - mBitmapOpUp.getWidth() / 2;
             mRectOpUp.top = mOval.top - mBitmapOpUp.getHeight() / 2;
             mRectOpUp.right = mRectOpUp.left + mBitmapOpUp.getWidth();
             mRectOpUp.bottom = mRectOpUp.top + mBitmapOpUp.getHeight();
             canvas.drawBitmap(mBitmapOpUp, null, mRectOpUp, null);
         }
-        if(mBitmapOpDown != null && visible) {
+        if(mBitmapOpDown != null && visible && !original) {
             mRectOpDown.left = mOval.right - (mOval.right - mOval.left) / 2 - mBitmapOpDown.getWidth() / 2;
             mRectOpDown.top = mOval.bottom - mBitmapOpDown.getHeight() / 2;
             mRectOpDown.right = mRectOpDown.left + mBitmapOpDown.getWidth();
             mRectOpDown.bottom = mRectOpDown.top + mBitmapOpDown.getHeight();
             canvas.drawBitmap(mBitmapOpDown, null, mRectOpDown, null);
         }
-        if(mBitmapOpLeft != null && visible) {
+        if(mBitmapOpLeft != null && visible && !original) {
             mRectOpLeft.left = mOval.left - mBitmapOpLeft.getWidth() / 2;
             mRectOpLeft.top = mOval.top + (mOval.bottom - mOval.top) / 2 - mBitmapOpLeft.getHeight() / 2;
             mRectOpLeft.right = mRectOpLeft.left + mBitmapOpLeft.getWidth();
             mRectOpLeft.bottom = mRectOpLeft.top + mBitmapOpLeft.getHeight();
             canvas.drawBitmap(mBitmapOpLeft, null, mRectOpLeft, null);
         }
-        if(mBitmapOpRight != null && visible) {
+        if(mBitmapOpRight != null && visible && !original) {
             mRectOpRight.left = mOval.right - mBitmapOpRight.getWidth() / 2;
             mRectOpRight.top = mOval.top + (mOval.bottom - mOval.top) / 2 - mBitmapOpRight.getHeight() / 2;
             mRectOpRight.right = mRectOpRight.left + mBitmapOpRight.getWidth();
@@ -226,6 +230,16 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+        invalidate();
+    }
+
+    public void setOriginal(boolean original) {
+        this.original = original;
+        invalidate();
+    }
+
+    public boolean getOriginal() {
+        return original;
     }
 
     //作用范围半径
@@ -300,10 +314,6 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
         if (mCanvasView != null) {
             mCanvasView.invalidate();
         }
-    }
-
-    public BitmapDrawable getBitmapDrawable() {
-        return mBitmap;
     }
 
     public void setOvalBitmap(Bitmap oval) {
