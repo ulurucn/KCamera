@@ -11,8 +11,8 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
     private static final String TAG = SlimHelper.class.getSimpleName();
 
     // Mesh size
-    private static final int WIDTH = 15;
-    private static final int HEIGHT = 15;
+    private static final int WIDTH = 9;
+    private static final int HEIGHT = 9;
     private static final int COUNT = (WIDTH + 1) * (HEIGHT + 1);
 
     private MorphMatrix mMorphMatrix = new MorphMatrix(COUNT * 2);
@@ -281,7 +281,7 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
         int _step_max = (int)(mOval.bottom - mOval.top) / 2;
 
         while (_step < _step_max) {
-            float _scale = 1;
+            float _scale = (_step + 1) / _step_max;
             float _endX = _startX + strength * _scale;
             float _endY = _startY;
 
@@ -299,7 +299,7 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
         int _step_max = (int)(mOval.bottom - mOval.top) / 2;
 
         while (_step < _step_max) {
-            float _scale = 1;
+            float _scale = (_step + 1) / _step_max;
             float _endX = _startX - strength * _scale;
             float _endY = _startY;
 
