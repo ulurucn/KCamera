@@ -138,6 +138,7 @@ public class TouchHelper {
             case MotionEvent.ACTION_MOVE:
                 touchX = event.getX();
                 touchY = event.getY();
+                invalidate(view);
                 break;
             case MotionEvent.ACTION_UP:
                 showTouchCircle = false;
