@@ -1,4 +1,4 @@
-include ':app', ':edit', ':camera', ':filter', ':puzzle', ':media', ':folder'
+include ':app', ':edit', ':camera', ':filter', ':filter2', ':puzzle', ':media', ':folder'
 
 include ':opencv', ':openCVLibrary330'
 

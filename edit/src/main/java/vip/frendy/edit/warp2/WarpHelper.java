@@ -2,6 +2,7 @@ package vip.frendy.edit.warp2;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 
@@ -26,6 +27,10 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     private CanvasView mCanvasView;
     private boolean attached = false;
     private boolean visible = true;
+    private boolean original = false;
+
+    // 触点
+    private TouchHelper mTouchHelper;
 
     private OnWarpCanvasDrawListener mOnWarpCanvasDrawListener;
 
@@ -51,17 +56,22 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
 
             mMatrix.invert(mInverse);
             mMotions.add(new MorphMatrix(mMorphMatrix));
+
+            // 触点
+            mTouchHelper = new TouchHelper();
         }
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         if (visible) {
-            canvas.drawColor(0xFFCCCCCC);
-
             canvas.concat(mMatrix);
             canvas.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
                     null, 0, null);
+
+            // 触点
+            if(mTouchHelper != null)
+                mTouchHelper.onDraw(canvas);
 
             if(mOnWarpCanvasDrawListener != null)
                 mOnWarpCanvasDrawListener.onWarpCanvasDrawed();
@@ -93,14 +103,22 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
                 touch_up();
             }
         }
+
+        // 触点
+        if(mTouchHelper != null)
+            mTouchHelper.onTouchEvent(mCanvasView, event);
+
         return true;
     }
+
+    @Override
+    public void onPreGenerateBitmap() {}
 
     public boolean isAttached() {
         return this.attached;
     }
 
-    public void setDrawingView(CanvasView canvasView) {
+    public void attachCanvasView(CanvasView canvasView) {
         if (canvasView == null) {
             if (mCanvasView != null) {
                 mCanvasView.setOnCanvasChangeListener(null);
@@ -172,14 +190,12 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     /*
     * Handling Undo click
     * */
-    public boolean undo() {
+    public void undo() {
         if (mCanvasView != null && mMotions.size() > 1) {
             mMorphMatrix.set(mMotions.get(mMotions.size() - 2));
             mUndoneMotions.add(mMotions.remove(mMotions.size() - 1));
             invalidate();
-            return mMotions.size() > 1;
         }
-        return isUndoActive();
     }
 
     public boolean isUndoActive() {
@@ -189,14 +205,12 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     /*
     * Handling Redo click
     * */
-    public boolean redo() {
+    public void redo() {
         if (mCanvasView != null && mUndoneMotions.size() > 0) {
             mMorphMatrix.set(mUndoneMotions.remove(mUndoneMotions.size() - 1));
             mMotions.add(new MorphMatrix(mMorphMatrix));
             invalidate();
-            return isRedoActive();
         }
-        return false;
     }
 
     public boolean isRedoActive() {
@@ -205,8 +219,13 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
 
     public void setVisibility(boolean visibility) {
         visible = visibility;
-        if (mMotions.size() > 0) {
-            if (visible) {
+        invalidate();
+    }
+
+    public void setOriginal(boolean original) {
+        this.original = original;
+        if(mMotions.size() > 0) {
+            if(!original) {
                 mMorphMatrix = mMotions.get(mMotions.size() - 1);
             } else {
                 mMorphMatrix = mMotions.get(0);
@@ -215,10 +234,47 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
         invalidate();
     }
 
+    public boolean getOriginal() {
+        return original;
+    }
+
     public void invalidate() {
         if (mCanvasView != null) {
             mCanvasView.invalidate();
         }
+    }
+
+    /**
+     * 触点UI设置
+     */
+    public void setTouchCirclePaint(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchCirclePaint(paint);
+    }
+
+    public void setTouchCirclePaint2(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchCirclePaint2(paint);
+    }
+
+    public void setTouchCrossPaint(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchCrossPaint(paint);
+    }
+
+    public void setTouchCrossPaint2(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchCrossPaint2(paint);
+    }
+
+    public void setTouchLinePaint(Paint paint) {
+        if(mTouchHelper != null)
+            mTouchHelper.setTouchLinePaint(paint);
+    }
+
+    public void setTouchStrokeWidth(int width) {
+        if(mTouchHelper != null)
+            mTouchHelper.setStrokeWidth(width);
     }
 
     public BitmapDrawable getBitmapDrawable() {

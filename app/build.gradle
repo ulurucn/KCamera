@@ -40,6 +40,7 @@ dependencies {
     compile project(':edit')
     compile project(':camera')
     compile project(':filter')
+    compile project(':filter2')
     compile project(':puzzle')
     compile project(':folder')
     compile project(':opencv')

@@ -59,8 +59,8 @@ public class CanvasView extends FrameLayout {
 
     public interface OnCanvasChangeListener {
         void onDraw(Canvas canvas);
-
         boolean onTouchEvent(MotionEvent event);
+        void onPreGenerateBitmap();
     }
 
     // If not drawable is provided, it`s scale to his current background
@@ -124,6 +124,9 @@ public class CanvasView extends FrameLayout {
     }
 
     public Bitmap generateBitmap() {
+        if(onCanvasChangeListener != null) {
+            onCanvasChangeListener.onPreGenerateBitmap();
+        }
         Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         draw(canvas);
