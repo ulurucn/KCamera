@@ -26,6 +26,7 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
     private boolean isSelectedCircle1 = false;
     private boolean isSelectedCircle2 = false;
     private Paint mCirclePaint;
+    private int mCirclePaintStrokeWidth = 8;
     private boolean visible = true;
 
     private float op_x, op_y;
@@ -40,8 +41,12 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
         mCirclePaint.setStyle(Paint.Style.STROKE);
-        mCirclePaint.setStrokeWidth(5);
+        mCirclePaint.setStrokeWidth(mCirclePaintStrokeWidth);
         mCirclePaint.setColor(Color.parseColor("#d75372"));
+    }
+
+    public void setCirclePaintStrokeWidth(int width) {
+        mCirclePaintStrokeWidth = width;
     }
 
     public void initMorpher() {

@@ -272,6 +272,11 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
             mTouchHelper.setTouchLinePaint(paint);
     }
 
+    public void setTouchStrokeWidth(int width) {
+        if(mTouchHelper != null)
+            mTouchHelper.setStrokeWidth(width);
+    }
+
     public BitmapDrawable getBitmapDrawable() {
         return mBitmap;
     }

@@ -41,6 +41,7 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private int r_max = 300;
     private int r_1 = 200;
     private Paint mCirclePaint;
+    private int mCirclePaintStrokeWidth = 8;
     private boolean isSelectedCircle = false;
     private boolean isSelectedCircleOp = false;
 
@@ -52,8 +53,12 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
         mCirclePaint.setStyle(Paint.Style.STROKE);
-        mCirclePaint.setStrokeWidth(5);
+        mCirclePaint.setStrokeWidth(mCirclePaintStrokeWidth);
         mCirclePaint.setColor(Color.parseColor("#d75372"));
+    }
+
+    public void setCirclePaintStrokeWidth(int width) {
+        mCirclePaintStrokeWidth = width;
     }
 
     public void initMorpher() {

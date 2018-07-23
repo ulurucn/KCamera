@@ -26,6 +26,7 @@ public class TouchHelper {
     private Paint touchLinePaint;
     private Paint touchCrossPaint;
     private Paint touchCrossPaint2;
+    private int strokeWidth = 5;
 
     private Path path = new Path();
     private Path pathCross1 = new Path();
@@ -36,13 +37,13 @@ public class TouchHelper {
         touchCirclePaint = new Paint();
         touchCirclePaint.setAntiAlias(true);
         touchCirclePaint.setStyle(Paint.Style.STROKE);
-        touchCirclePaint.setStrokeWidth(5);
+        touchCirclePaint.setStrokeWidth(strokeWidth);
         touchCirclePaint.setColor(Color.parseColor("#d75372"));
 
         touchCrossPaint = new Paint();
         touchCrossPaint.setAntiAlias(true);
         touchCrossPaint.setStyle(Paint.Style.STROKE);
-        touchCrossPaint.setStrokeWidth(5);
+        touchCrossPaint.setStrokeWidth(strokeWidth);
         touchCrossPaint.setColor(Color.parseColor("#d75372"));
 
         //虚线效果
@@ -51,21 +52,21 @@ public class TouchHelper {
         touchCirclePaint2 = new Paint();
         touchCirclePaint2.setAntiAlias(true);
         touchCirclePaint2.setStyle(Paint.Style.STROKE);
-        touchCirclePaint2.setStrokeWidth(5);
+        touchCirclePaint2.setStrokeWidth(strokeWidth);
         touchCirclePaint2.setColor(Color.parseColor("#ffffff"));
         touchCirclePaint2.setPathEffect(pathEffect);
 
         touchLinePaint = new Paint();
         touchLinePaint.setAntiAlias(true);
         touchLinePaint.setStyle(Paint.Style.STROKE);
-        touchLinePaint.setStrokeWidth(5);
+        touchLinePaint.setStrokeWidth(strokeWidth);
         touchLinePaint.setColor(Color.parseColor("#ffffff"));
         touchLinePaint.setPathEffect(pathEffect);
 
         touchCrossPaint2 = new Paint();
         touchCrossPaint2.setAntiAlias(true);
         touchCrossPaint2.setStyle(Paint.Style.STROKE);
-        touchCrossPaint2.setStrokeWidth(5);
+        touchCrossPaint2.setStrokeWidth(strokeWidth);
         touchCrossPaint2.setColor(Color.parseColor("#ffffff"));
     }
 
@@ -87,6 +88,16 @@ public class TouchHelper {
 
     public void setTouchLinePaint(Paint paint) {
         touchLinePaint = paint;
+    }
+
+    public void setStrokeWidth(int width) {
+        strokeWidth = width;
+        //更新paint
+        if(touchCirclePaint != null) touchCirclePaint.setStrokeWidth(strokeWidth);
+        if(touchCirclePaint2 != null) touchCirclePaint2.setStrokeWidth(strokeWidth);
+        if(touchCrossPaint != null) touchCrossPaint.setStrokeWidth(strokeWidth);
+        if(touchCrossPaint2 != null) touchCrossPaint2.setStrokeWidth(strokeWidth);
+        if(touchLinePaint != null) touchLinePaint.setStrokeWidth(strokeWidth);
     }
 
     public void onDraw(Canvas canvas) {
