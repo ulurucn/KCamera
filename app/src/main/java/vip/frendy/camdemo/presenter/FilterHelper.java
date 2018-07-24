@@ -15,8 +15,8 @@ import vip.frendy.fliter.base.GPUImageFilter;
 import vip.frendy.fliter.gpufilters.GPUImageSharpenFilter;
 import vip.frendy.fliter.gpufilters.GPUImageTwoInputFilter;
 import vip.frendy.fliter.gpufilters.GPUImageVignetteFilter;
-import vip.frendy.fliter.magicfilters.MagicBeautyFilter;
-import vip.frendy.fliter.magicfilters.MagicFairytaleFilter;
+import vip.frendy.filter2.magicfilters.MagicBeautyFilter;
+import vip.frendy.filter2.magicfilters.MagicFairytaleFilter;
 
 /**
  * Created by frendy on 2018/4/9.

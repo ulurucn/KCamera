@@ -170,10 +170,16 @@ public class OperateUtils {
 	 * @param srcBmp 被操作的图片
 	 * @return
 	 */
-	public ImageObject getImageObject(Bitmap srcBmp) {
-		Bitmap rotateBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.rotate);
-		Bitmap deleteBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.delete);
-		ImageObject imgObject = new ImageObject(srcBmp, rotateBm, deleteBm);
+	public ImageObject getImageObject(Bitmap srcBmp, int rotateDrawble,int deleteDrawable,int flipDrawable,int settingDrawable ) {
+
+		Bitmap rotateBm = null,deleteBm = null,flipBm = null,settingBm = null;
+
+		if(rotateDrawble != -1) rotateBm = BitmapFactory.decodeResource(activity.getResources(), rotateDrawble);
+		if(deleteDrawable != -1) deleteBm = BitmapFactory.decodeResource(activity.getResources(), deleteDrawable);
+		if(flipDrawable != -1) flipBm = BitmapFactory.decodeResource(activity.getResources(),flipDrawable);
+		if(settingDrawable != -1) settingBm = BitmapFactory.decodeResource(activity.getResources(),settingDrawable);
+
+		ImageObject imgObject = new ImageObject(srcBmp, rotateBm, deleteBm,flipBm,settingBm);
 		Point point = new Point(20, 20);
 		imgObject.setPoint(point);
 		return imgObject;
@@ -189,9 +195,14 @@ public class OperateUtils {
 	 * @param y 离边界y坐标
 	 * @return
 	 */
-	public ImageObject getImageObject(Bitmap srcBmp, OperateView operateView, int quadrant, int x, int y) {
-		Bitmap rotateBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.rotate);
-		Bitmap deleteBm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.delete);
+	public ImageObject getImageObject(Bitmap srcBmp, OperateView operateView, int quadrant, int x, int y,
+									  int rotateDrawble,int deleteDrawable,int flipDrawable,int settingDrawable ) {
+		Bitmap rotateBm = null,deleteBm = null,flipBm = null,settingBm = null;
+
+		if(rotateDrawble != -1) rotateBm = BitmapFactory.decodeResource(activity.getResources(), rotateDrawble);
+		if(deleteDrawable != -1) deleteBm = BitmapFactory.decodeResource(activity.getResources(), deleteDrawable);
+		if(flipDrawable != -1) flipBm = BitmapFactory.decodeResource(activity.getResources(),flipDrawable);
+		if(settingDrawable != -1) settingBm = BitmapFactory.decodeResource(activity.getResources(),settingDrawable);
 		int width = operateView.getWidth();
 		int height = operateView.getHeight();
 //		int srcWidth = srcBmp.getWidth();
@@ -233,7 +244,7 @@ public class OperateUtils {
 			default :
 				break;
 		}
-		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm);
+		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm,flipBm,settingBm);
 		Point point = new Point(20, 20);
 		imgObject.setPoint(point);
 		return imgObject;

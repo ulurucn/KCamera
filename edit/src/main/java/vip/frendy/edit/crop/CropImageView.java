@@ -501,16 +501,12 @@ public class CropImageView extends FrameLayout {
      * CropImageType.REVERSE_TYPE.UP_DOWN
      * CropImageType.REVERSE_TYPE.LEFT_RIGHT
      */
-    public void reverseImage(CropImageType.REVERSE_TYPE type)
-    {
+    public void reverseImage(CropImageType.REVERSE_TYPE type) {
     	Matrix matrix = new Matrix();
     	
-    	if(type == CropImageType.REVERSE_TYPE.UP_DOWN)
-    	{
+    	if(type == CropImageType.REVERSE_TYPE.UP_DOWN) {
     		matrix.postScale(1, -1);//上下翻转
-    	}
-    	else if(type == CropImageType.REVERSE_TYPE.LEFT_RIGHT)
-    	{
+    	} else if(type == CropImageType.REVERSE_TYPE.LEFT_RIGHT) {
     		matrix.postScale(-1, 1);;//左右翻转
     	}
     	
@@ -526,8 +522,7 @@ public class CropImageView extends FrameLayout {
      * bit = null 时，默认为白色角边线
      * 
      */
-    public void setCropOverlayCornerBitmap(Bitmap bit)
-    {
+    public void setCropOverlayCornerBitmap(Bitmap bit) {
     	mCropOverlayView.setCropOverlayCornerBitmap(bit);
     }
 
@@ -572,4 +567,12 @@ public class CropImageView extends FrameLayout {
         return spec;
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if(mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+    }
 }

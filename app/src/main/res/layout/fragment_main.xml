@@ -120,6 +120,44 @@
                 android:layout_weight="1"
                 android:padding="2dp"
                 android:text="warp"/>
+
+            <Button
+                android:id="@+id/warp2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="warp2"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/shape"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="shape"/>
+
+            <Button
+                android:id="@+id/hip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="hip"/>
+
+            <Button
+                android:id="@+id/slim"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="slim"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

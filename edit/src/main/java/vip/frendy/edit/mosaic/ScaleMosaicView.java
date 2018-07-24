@@ -91,6 +91,15 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 
 	private MosaicPath touchPath;
 
+	//是否显示触点圈圈
+	private boolean enableTouchCircle = true;
+	private boolean showTouchCircle = false;
+	private float touchX, touchY;
+	//触点圈圈半径
+	private int touchCircleR = 80;
+	//触点圈圈
+	private Paint touchCirclePaint;
+
 	/**
 	 * 马赛克类型 Mosaic: 打码 erase: 橡皮擦
 	 */
@@ -149,6 +158,12 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		setWillNotDraw(false);
 		setMosaicType(MosaicUtil.MosaicType.MOSAIC);
 
+		touchCirclePaint = new Paint();
+		touchCirclePaint.setAntiAlias(true);
+		touchCirclePaint.setStyle(Paint.Style.STROKE);
+		touchCirclePaint.setStrokeWidth(5);
+		touchCirclePaint.setColor(Color.parseColor("#ffffff"));
+
 		mScaleGestureDetector = new ScaleGestureDetector(mContext, this);
 	}
 
@@ -206,8 +221,7 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		if (bitmap != null) {
 			setMosaicType(MosaicUtil.MosaicType.MOSAIC);
 
-			if (bmCoverLayer != null)
-			{
+			if(bmCoverLayer != null) {
 				bmCoverLayer.recycle();
 			}
 			bmCoverLayer = bitmap;
@@ -247,7 +261,7 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	public void setMosaicResource(Bitmap bitmap) {
 		setMosaicType(MosaicUtil.MosaicType.MOSAIC);
 
-		if (bmCoverLayer != null) {
+		if(bmCoverLayer != null) {
 			bmCoverLayer.recycle();
 		}
 		touchPaths.clear();
@@ -265,6 +279,41 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		canvas.drawBitmap(bit, 0, 0, null);
 		canvas.save();
 		return bitmap;
+	}
+
+	//是否显示触点圈圈
+	public void enableTouchCircle(boolean enable) {
+		enableTouchCircle = enable;
+	}
+
+	//主动显示触点圈圈
+	public void showTouchCircle(boolean show) {
+		touchX = getWidth() / 2;
+		touchY = getHeight() / 2;
+		showTouchCircle = show;
+		invalidate();
+	}
+
+	//设置触点圈圈颜色
+	public void setTouchCirclePaintColor(int color) {
+		if(touchCirclePaint != null) {
+			touchCirclePaint.setColor(color);
+			invalidate();
+		}
+	}
+
+	//设置触点圈圈粗细
+	public void setTouchCirclePaintStrokeWidth(float width) {
+		if(touchCirclePaint != null) {
+			touchCirclePaint.setStrokeWidth(width);
+			invalidate();
+		}
+	}
+
+	//设置触点圈圈半径
+	public void setTouchCircleR(int r) {
+		touchCircleR = r;
+		invalidate();
 	}
 
 	/**
@@ -337,15 +386,15 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	public boolean reset() {
 		this.mImageWidth = 0;
 		this.mImageHeight = 0;
-		if (bmCoverLayer != null) {
+		if(bmCoverLayer != null) {
 			bmCoverLayer.recycle();
 			bmCoverLayer = null;
 		}
-		if (bmBaseLayer != null) {
+		if(bmBaseLayer != null) {
 			bmBaseLayer.recycle();
 			bmBaseLayer = null;
 		}
-		if (bmMosaicLayer != null) {
+		if(bmMosaicLayer != null) {
 			bmMosaicLayer.recycle();
 			bmMosaicLayer = null;
 		}
@@ -353,6 +402,23 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 		touchPaths.clear();
 		cachePaths.clear();
 		return true;
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		if(bmCoverLayer != null) {
+			bmCoverLayer.recycle();
+			bmCoverLayer = null;
+		}
+		if(bmBaseLayer != null) {
+			bmBaseLayer.recycle();
+			bmBaseLayer = null;
+		}
+		if(bmMosaicLayer != null) {
+			bmMosaicLayer.recycle();
+			bmMosaicLayer = null;
+		}
 	}
 
 	public boolean dispatchTouchEvent(MotionEvent event) {
@@ -474,6 +540,22 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	public boolean onTouchEvent(MotionEvent event) {
 		if(mScaleGestureDetector != null)
 			mScaleGestureDetector.onTouchEvent(event);
+		switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				touchX = event.getX();
+				touchY = event.getY();
+				showTouchCircle = true;
+				invalidate();
+				break;
+			case MotionEvent.ACTION_MOVE:
+				touchX = event.getX();
+				touchY = event.getY();
+				break;
+			case MotionEvent.ACTION_UP:
+				showTouchCircle = false;
+				invalidate();
+				break;
+		}
 		return super.onTouchEvent(event);
 	}
 
@@ -547,11 +629,14 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 	public void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 
-		if (bmBaseLayer != null) {
+		if(bmBaseLayer != null) {
 			canvas.drawBitmap(bmBaseLayer, null, mImageRect, null);
 		}
-		if (bmMosaicLayer != null) {
+		if(bmMosaicLayer != null) {
 			canvas.drawBitmap(bmMosaicLayer, null, mImageRect, null);
+		}
+		if(enableTouchCircle && showTouchCircle && touchCirclePaint != null) {
+			canvas.drawCircle(touchX, touchY, touchCircleR, touchCirclePaint);
 		}
 	}
 

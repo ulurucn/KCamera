@@ -17,6 +17,6 @@ public class OperateConstants {
 	public static final int RIGHTTOP = 2;
 	public static final int RIGHTBOTTOM = 3;
 	public static final int LEFTBOTTOM = 4;
-	
+
 
 }

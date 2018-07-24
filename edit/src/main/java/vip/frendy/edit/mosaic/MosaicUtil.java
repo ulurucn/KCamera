@@ -26,6 +26,8 @@ public class MosaicUtil {
 	 * @return 马赛克图片
 	 */
 	public static Bitmap getMosaic(Bitmap bitmap, int radius) {
+		if(bitmap == null) return null;
+
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
 		

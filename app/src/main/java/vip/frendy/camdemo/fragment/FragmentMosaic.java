@@ -66,6 +66,7 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
         mPic.setMosaicBackgroundResource(imgPath);
         mPic.setMosaicResource(bitmap);
         mPic.setMosaicBrushWidth(20);
+        mPic.setTouchCircleR(20 + 40);
         mPic.setOnPathMosaicUpdatedListener(new ScaleMosaicView.OnPathMosaicUpdatedListener() {
             @Override
             public void OnPathMosaicUpdated() {
@@ -89,6 +90,14 @@ public class FragmentMosaic extends BaseFragment implements View.OnClickListener
         } else if(view.getId() == R.id.eraser) {
             isEraser = !isEraser;
             mPic.setMosaicType(isEraser ? MosaicUtil.MosaicType.ERASER : MosaicUtil.MosaicType.MOSAIC);
+            //显示触点圈圈
+            mPic.showTouchCircle(true);
+            mPic.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(mPic != null) mPic.showTouchCircle(false);
+                }
+            }, 500);
         } else if(view.getId() == R.id.blur) {
             bitmap = MosaicUtil.getBlur(bitmapSrc);
             mPic.setMosaicResource(bitmap);
