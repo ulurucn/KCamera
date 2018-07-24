@@ -29,6 +29,7 @@ public class FragmentShape extends BaseFragment implements View.OnClickListener,
     private Bitmap bitmap, bitmapOp1, bitmapOp2;
     private BreastHelper mBreastHelper;
     private SeekBar mSeekbar;
+    private boolean isShowOp = false;
 
     public static FragmentShape getInstance(Bundle args, IPictureEditListener listener) {
         FragmentShape fragment = new FragmentShape();
@@ -110,10 +111,16 @@ public class FragmentShape extends BaseFragment implements View.OnClickListener,
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        isShowOp = mBreastHelper.getVisible();
+        mBreastHelper.setVisible(false);
+    }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {}
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        mBreastHelper.setVisible(isShowOp);
+        isShowOp = false;
+    }
 
     @Override
     public void onDestroy() {

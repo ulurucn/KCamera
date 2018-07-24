@@ -174,9 +174,13 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
                     invalidate();
                 } else if(isSelectedOp1) {
                     r_1 = getR1(event, r_1, op_x, op_y);
+                    op_x = event.getX();
+                    op_y = event.getY();
                     invalidate();
                 } else if(isSelectedOp2) {
                     r_2 = getR2(event, r_2, op_x, op_y);
+                    op_x = event.getX();
+                    op_y = event.getY();
                     invalidate();
                 }
                 break;
@@ -207,6 +211,10 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
         invalidate();
     }
 
+    public boolean getVisible() {
+        return visible;
+    }
+
     public void setOriginal(boolean original) {
         this.original = original;
         invalidate();
@@ -228,9 +236,9 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
     private int getR1(MotionEvent event, int r, float op_x, float op_y) {
         double d = Math.sqrt((event.getX() - op_x) * (event.getX() - op_x) + (event.getY() - op_y) * (event.getY() - op_y));
         if(event.getX() - op_x > 0) {
-            r = r - (int) (d / 50);
+            r = r - (int) d;
         } else {
-            r = r + (int) (d / 50);
+            r = r + (int) d;
         }
         if(r > r_max) r = r_max;
         if(r < 10) r = 10;
@@ -240,9 +248,9 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
     private int getR2(MotionEvent event, int r, float op_x, float op_y) {
         double d = Math.sqrt((event.getX() - op_x) * (event.getX() - op_x) + (event.getY() - op_y) * (event.getY() - op_y));
         if(event.getX() - op_x < 0) {
-            r = r - (int) (d / 50);
+            r = r - (int) d;
         } else {
-            r = r + (int) (d / 50);
+            r = r + (int) d;
         }
         if(r > r_max) r = r_max;
         if(r < 10) r = 10;

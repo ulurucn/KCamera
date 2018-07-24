@@ -12,8 +12,8 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     private static final String TAG = WarpHelper.class.getSimpleName();
 
     // Mesh size
-    private static final int WIDTH = 15;
-    private static final int HEIGHT = 15;
+    private static final int WIDTH = 9;
+    private static final int HEIGHT = 9;
     private static final int COUNT = (WIDTH + 1) * (HEIGHT + 1);
 
     private MorphMatrix mMorphMatrix = new MorphMatrix(COUNT * 2);
@@ -31,6 +31,7 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
 
     // 触点
     private TouchHelper mTouchHelper;
+    private float startX, startY;
 
     private OnWarpCanvasDrawListener mOnWarpCanvasDrawListener;
 
@@ -81,29 +82,20 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (visible) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                touch_down();
-            }
-
-            float[] pt = {event.getX(), event.getY()};
-            mInverse.mapPoints(pt);
-
-            int x = (int) pt[0];
-            int y = (int) pt[1];
-            if (mLastWarpX != x || mLastWarpY != y) {
-                mLastWarpX = x;
-                mLastWarpY = y;
-                warp(pt[0], pt[1]);
-                if (mCanvasView != null) {
-                    mCanvasView.invalidate();
-                }
-            }
-
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                touch_up();
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mUndoneMotions.clear();
+                    startX = event.getX();
+                    startY = event.getY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    break;
+                case MotionEvent.ACTION_UP:
+                    mMotions.add(new MorphMatrix(mMorphMatrix));
+                    warp(startX, startY, event.getX(), event.getY());
+                    break;
             }
         }
-
         // 触点
         if(mTouchHelper != null)
             mTouchHelper.onTouchEvent(mCanvasView, event);
@@ -138,42 +130,36 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
         morphMatrix.getVerts()[index * 2 + 1] = y;
     }
 
-    private void warp(float cx, float cy) {
-        final float K = 10000;
-        float[] dst = mMorphMatrix.getVerts();
-        float src[] = dst.clone();
+    //作用范围半径
+    private int r = 150;
+    private void warp(float startX, float startY, float endX, float endY) {
+        //计算拖动距离
+        float ddPull = (endX - startX) * (endX - startX) + (endY - startY) * (endY - startY);
+        float dPull = (float) Math.sqrt(ddPull);
+        //文献中提到的算法，并不能很好的实现拖动距离 MC 越大变形效果越明显的功能，下面这行代码则是我对该算法的优化
+        //dPull = screenWidth - dPull >= 0.0001f ? screenWidth - dPull : 0.0001f;
+
+        float[] orig = mMorphMatrix.getVerts();
+        float[] verts = mMorphMatrix.getVerts();
+
         for (int i = 0; i < COUNT * 2; i += 2) {
-            float x = src[i];
-            float y = src[i + 1];
-            float dx = cx - x;
-            float dy = cy - y;
+            //计算每个坐标点与触摸点之间的距离
+            float dx = orig[i] - startX;
+            float dy = orig[i + 1] - startY;
             float dd = dx * dx + dy * dy;
             float d = (float) Math.sqrt(dd);
-            float pull = K / (dd + 0.000001f);
 
-            pull /= (d + 0.000001f);
-
-            if (pull >= 1) {
-                dst[i] = cx;
-                dst[i + 1] = cy;
-            } else {
-                dst[i] = x + dx * pull;
-                dst[i + 1] = y + dy * pull;
+            //文献中提到的算法同样不能实现只有圆形选区内的图像才进行变形的功能，这里需要做一个距离的判断
+            if (d < r) {
+                //变形系数，扭曲度
+                double e = (r * r - dd) * (r * r - dd) / ((r * r - dd + dPull * dPull) * (r * r - dd + dPull * dPull));
+                double pullX = e * (endX - startX);
+                double pullY = e * (endY - startY);
+                verts[i] = (float) (orig[i] + pullX);
+                verts[i + 1] = (float) (orig[i + 1] + pullY);
             }
         }
-    }
-
-    private int mLastWarpX = -9999; // Not a touch coordinate
-    private int mLastWarpY;
-
-    private void touch_down() {
-        mUndoneMotions.clear();
-    }
-
-    private void touch_up() {
-        if (visible) {
-            mMotions.add(new MorphMatrix(mMorphMatrix));
-        }
+        invalidate();
     }
 
     /*

@@ -13,8 +13,8 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private static final String TAG = HipHelper.class.getSimpleName();
 
     // Mesh size
-    private static final int WIDTH = 15;
-    private static final int HEIGHT = 15;
+    private static final int WIDTH = 20;
+    private static final int HEIGHT = 20;
     private static final int COUNT = (WIDTH + 1) * (HEIGHT + 1);
 
     private MorphMatrix mMorphMatrix = new MorphMatrix(COUNT * 2);
@@ -206,8 +206,10 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                     invalidate();
                 } else if(isSelectedOp) {
                     double d = event.getX() - op_x;
-                    op_scale = 1 + (float) d / mCanvasView.getWidth();
-                    invalidate();
+                    if(d != 0) {
+                        op_scale = 1 + (float) d / mCanvasView.getWidth();
+                        invalidate();
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -243,6 +245,8 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                     invalidate();
                 } else if(isSelectedCircleOp) {
                     r_1 = getR2(event, r_1, op_x, op_y);
+                    op_x = event.getX();
+                    op_y = event.getY();
                     invalidate();
                 }
                 break;
@@ -259,6 +263,10 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     public void setVisible(boolean visible) {
         this.visible = visible;
         invalidate();
+    }
+
+    public boolean getVisible() {
+        return visible;
     }
 
     public void setOriginal(boolean original) {
@@ -309,7 +317,7 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         int _step_max = (int)(mOval.bottom - mOval.top) / 2;
 
         while (_step < _step_max) {
-            float _scale = 1;//Math.abs(_step_max / 2 - _step) / _step_max / 2;
+            float _scale = (_step + 1) / _step_max;
             float _endX = _startX + strength * _scale;
             float _endY = _startY;
 
@@ -327,7 +335,7 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         int _step_max = (int)(mOval.bottom - mOval.top) / 2;
 
         while (_step < _step_max) {
-            float _scale = 1;//Math.abs(_step_max / 2 - _step) / _step_max / 2;
+            float _scale = (_step + 1) / _step_max;
             float _endX = _startX - strength * _scale;
             float _endY = _startY;
 
@@ -383,9 +391,9 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private int getR2(MotionEvent event, int r, float op_x, float op_y) {
         double d = Math.sqrt((event.getX() - op_x) * (event.getX() - op_x) + (event.getY() - op_y) * (event.getY() - op_y));
         if(event.getX() - op_x < 0) {
-            r = r - (int) (d / 50);
+            r = r - (int) d;
         } else {
-            r = r + (int) (d / 50);
+            r = r + (int) d;
         }
         if(r > r_max) r = r_max;
         if(r < 10) r = 10;

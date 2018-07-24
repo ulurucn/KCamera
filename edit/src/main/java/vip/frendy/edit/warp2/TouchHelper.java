@@ -38,13 +38,13 @@ public class TouchHelper {
         touchCirclePaint.setAntiAlias(true);
         touchCirclePaint.setStyle(Paint.Style.STROKE);
         touchCirclePaint.setStrokeWidth(strokeWidth);
-        touchCirclePaint.setColor(Color.parseColor("#d75372"));
+        touchCirclePaint.setColor(Color.parseColor("#ffffff"));
 
         touchCrossPaint = new Paint();
         touchCrossPaint.setAntiAlias(true);
         touchCrossPaint.setStyle(Paint.Style.STROKE);
         touchCrossPaint.setStrokeWidth(strokeWidth);
-        touchCrossPaint.setColor(Color.parseColor("#d75372"));
+        touchCrossPaint.setColor(Color.parseColor("#ffffff"));
 
         //虚线效果
         DashPathEffect pathEffect = new DashPathEffect(new float[] { 20, 10 }, 1);
@@ -53,7 +53,7 @@ public class TouchHelper {
         touchCirclePaint2.setAntiAlias(true);
         touchCirclePaint2.setStyle(Paint.Style.STROKE);
         touchCirclePaint2.setStrokeWidth(strokeWidth);
-        touchCirclePaint2.setColor(Color.parseColor("#ffffff"));
+        touchCirclePaint2.setColor(Color.parseColor("#d75372"));
         touchCirclePaint2.setPathEffect(pathEffect);
 
         touchLinePaint = new Paint();
@@ -67,7 +67,7 @@ public class TouchHelper {
         touchCrossPaint2.setAntiAlias(true);
         touchCrossPaint2.setStyle(Paint.Style.STROKE);
         touchCrossPaint2.setStrokeWidth(strokeWidth);
-        touchCrossPaint2.setColor(Color.parseColor("#ffffff"));
+        touchCrossPaint2.setColor(Color.parseColor("#d75372"));
     }
 
     public void setTouchCirclePaint(Paint paint) {
@@ -138,6 +138,7 @@ public class TouchHelper {
             case MotionEvent.ACTION_MOVE:
                 touchX = event.getX();
                 touchY = event.getY();
+                invalidate(view);
                 break;
             case MotionEvent.ACTION_UP:
                 showTouchCircle = false;
