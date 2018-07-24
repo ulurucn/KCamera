@@ -567,58 +567,62 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 			return;
 		}
 
-		if(bmMosaicLayer != null) {
-			bmMosaicLayer.recycle();
-		}
-		bmMosaicLayer = Bitmap.createBitmap(mImageWidth, mImageHeight, Config.ARGB_8888);
-
-		Bitmap bmTouchLayer = Bitmap.createBitmap(mImageWidth, mImageHeight, Config.ARGB_8888);
-
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setStyle(Paint.Style.STROKE);
-		paint.setAntiAlias(true);
-		paint.setStrokeJoin(Paint.Join.ROUND);
-		paint.setStrokeCap(Paint.Cap.ROUND);
-		paint.setPathEffect(new CornerPathEffect(10));
-		paint.setStrokeWidth(mBrushWidth);
-		paint.setColor(Color.BLUE);
-
-		Paint paintEraser = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paintEraser.setStyle(Paint.Style.STROKE);
-		paintEraser.setAntiAlias(true);
-		paintEraser.setStrokeJoin(Paint.Join.ROUND);
-		paintEraser.setStrokeCap(Paint.Cap.ROUND);
-		paintEraser.setPathEffect(new CornerPathEffect(10));
-		paintEraser.setStrokeWidth(mBrushWidth);
-		paintEraser.setColor(Color.TRANSPARENT);
-		paintEraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-
-		Canvas canvas = new Canvas(bmTouchLayer);
-
-		for (MosaicPath path : touchPaths) {
-			Path pathTemp = path.drawPath;
-			int drawWidth = path.paintWidth;
-			paint.setStrokeWidth(drawWidth);
-
-			if(path.type == MosaicUtil.MosaicType.MOSAIC) {
-				canvas.drawPath(pathTemp, paint);
-			} else {
-				canvas.drawPath(pathTemp, paintEraser);
+		try {
+			if(bmMosaicLayer != null) {
+				bmMosaicLayer.recycle();
 			}
+			bmMosaicLayer = Bitmap.createBitmap(mImageWidth, mImageHeight, Config.ARGB_8888);
+
+			Bitmap bmTouchLayer = Bitmap.createBitmap(mImageWidth, mImageHeight, Config.ARGB_8888);
+
+			Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setAntiAlias(true);
+			paint.setStrokeJoin(Paint.Join.ROUND);
+			paint.setStrokeCap(Paint.Cap.ROUND);
+			paint.setPathEffect(new CornerPathEffect(10));
+			paint.setStrokeWidth(mBrushWidth);
+			paint.setColor(Color.BLUE);
+
+			Paint paintEraser = new Paint(Paint.ANTI_ALIAS_FLAG);
+			paintEraser.setStyle(Paint.Style.STROKE);
+			paintEraser.setAntiAlias(true);
+			paintEraser.setStrokeJoin(Paint.Join.ROUND);
+			paintEraser.setStrokeCap(Paint.Cap.ROUND);
+			paintEraser.setPathEffect(new CornerPathEffect(10));
+			paintEraser.setStrokeWidth(mBrushWidth);
+			paintEraser.setColor(Color.TRANSPARENT);
+			paintEraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+
+			Canvas canvas = new Canvas(bmTouchLayer);
+
+			for (MosaicPath path : touchPaths) {
+				Path pathTemp = path.drawPath;
+				int drawWidth = path.paintWidth;
+				paint.setStrokeWidth(drawWidth);
+
+				if(path.type == MosaicUtil.MosaicType.MOSAIC) {
+					canvas.drawPath(pathTemp, paint);
+				} else {
+					canvas.drawPath(pathTemp, paintEraser);
+				}
+			}
+
+			canvas.setBitmap(bmMosaicLayer);
+			canvas.drawARGB(0, 0, 0, 0);
+			canvas.drawBitmap(bmCoverLayer, 0, 0, null);
+
+			paint.reset();
+			paint.setAntiAlias(true);
+			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+			canvas.drawBitmap(bmTouchLayer, 0, 0, paint);
+			paint.setXfermode(null);
+			canvas.save();
+
+			bmTouchLayer.recycle();
+		} catch (OutOfMemoryError e) {
+			e.printStackTrace();
 		}
-
-		canvas.setBitmap(bmMosaicLayer);
-		canvas.drawARGB(0, 0, 0, 0);
-		canvas.drawBitmap(bmCoverLayer, 0, 0, null);
-
-		paint.reset();
-		paint.setAntiAlias(true);
-		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-		canvas.drawBitmap(bmTouchLayer, 0, 0, paint);
-		paint.setXfermode(null);
-		canvas.save();
-
-		bmTouchLayer.recycle();
 
 		//更新回调
 		if(mUpdatedListener != null)
