@@ -211,6 +211,10 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
         invalidate();
     }
 
+    public boolean getVisible() {
+        return visible;
+    }
+
     public void setOriginal(boolean original) {
         this.original = original;
         invalidate();

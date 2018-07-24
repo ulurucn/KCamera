@@ -233,6 +233,10 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
         invalidate();
     }
 
+    public boolean getVisible() {
+        return visible;
+    }
+
     public void setOriginal(boolean original) {
         this.original = original;
         invalidate();
