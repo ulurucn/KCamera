@@ -206,8 +206,10 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                     invalidate();
                 } else if(isSelectedOp) {
                     double d = event.getX() - op_x;
-                    op_scale = 1 + (float) d / mCanvasView.getWidth();
-                    invalidate();
+                    if(d != 0) {
+                        op_scale = 1 + (float) d / mCanvasView.getWidth();
+                        invalidate();
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
