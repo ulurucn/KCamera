@@ -39,8 +39,8 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
     private boolean isSelectedOpRight = false;
     private float x_1, y_1;
     private float op_x, op_y;
-    private float op_scale_x = 1;
-    private float op_scale_y = 1;
+    private int op_rate = 5;
+    private float mWidthOval, mHeightOval;
 
     public void initMorpher() {
         if (mCanvasView != null) {
@@ -101,20 +101,11 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
         }
 
         if(mBitmapOval != null && visible && !original) {
-            float width = mBitmapOval.getWidth() * op_scale_x;
-            float height = mBitmapOval.getHeight() * op_scale_y;
-            mOval.left = x_1 - width / 2;
-            mOval.top = y_1 - height / 2;
-            mOval.right = mOval.left + width;
-            mOval.bottom = mOval.top + height;
+            mOval.left = x_1 - mWidthOval / 2;
+            mOval.top = y_1 - mHeightOval / 2;
+            mOval.right = mOval.left + mWidthOval;
+            mOval.bottom = mOval.top + mHeightOval;
             canvas.drawBitmap(mBitmapOval, null, mOval, null);
-        }
-        if(mBitmapOpUp != null && visible && !original) {
-            mRectOpUp.left = mOval.right - (mOval.right - mOval.left) / 2 - mBitmapOpUp.getWidth() / 2;
-            mRectOpUp.top = mOval.top - mBitmapOpUp.getHeight() / 2;
-            mRectOpUp.right = mRectOpUp.left + mBitmapOpUp.getWidth();
-            mRectOpUp.bottom = mRectOpUp.top + mBitmapOpUp.getHeight();
-            canvas.drawBitmap(mBitmapOpUp, null, mRectOpUp, null);
         }
         if(mBitmapOpDown != null && visible && !original) {
             mRectOpDown.left = mOval.right - (mOval.right - mOval.left) / 2 - mBitmapOpDown.getWidth() / 2;
@@ -123,12 +114,12 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
             mRectOpDown.bottom = mRectOpDown.top + mBitmapOpDown.getHeight();
             canvas.drawBitmap(mBitmapOpDown, null, mRectOpDown, null);
         }
-        if(mBitmapOpLeft != null && visible && !original) {
-            mRectOpLeft.left = mOval.left - mBitmapOpLeft.getWidth() / 2;
-            mRectOpLeft.top = mOval.top + (mOval.bottom - mOval.top) / 2 - mBitmapOpLeft.getHeight() / 2;
-            mRectOpLeft.right = mRectOpLeft.left + mBitmapOpLeft.getWidth();
-            mRectOpLeft.bottom = mRectOpLeft.top + mBitmapOpLeft.getHeight();
-            canvas.drawBitmap(mBitmapOpLeft, null, mRectOpLeft, null);
+        if(mBitmapOpUp != null && visible && !original) {
+            mRectOpUp.left = mOval.right - (mOval.right - mOval.left) / 2 - mBitmapOpUp.getWidth() / 2;
+            mRectOpUp.top = mOval.top - mBitmapOpUp.getHeight() / 2;
+            mRectOpUp.right = mRectOpUp.left + mBitmapOpUp.getWidth();
+            mRectOpUp.bottom = mRectOpUp.top + mBitmapOpUp.getHeight();
+            canvas.drawBitmap(mBitmapOpUp, null, mRectOpUp, null);
         }
         if(mBitmapOpRight != null && visible && !original) {
             mRectOpRight.left = mOval.right - mBitmapOpRight.getWidth() / 2;
@@ -136,6 +127,13 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
             mRectOpRight.right = mRectOpRight.left + mBitmapOpRight.getWidth();
             mRectOpRight.bottom = mRectOpRight.top + mBitmapOpRight.getHeight();
             canvas.drawBitmap(mBitmapOpRight, null, mRectOpRight, null);
+        }
+        if(mBitmapOpLeft != null && visible && !original) {
+            mRectOpLeft.left = mOval.left - mBitmapOpLeft.getWidth() / 2;
+            mRectOpLeft.top = mOval.top + (mOval.bottom - mOval.top) / 2 - mBitmapOpLeft.getHeight() / 2;
+            mRectOpLeft.right = mRectOpLeft.left + mBitmapOpLeft.getWidth();
+            mRectOpLeft.bottom = mRectOpLeft.top + mBitmapOpLeft.getHeight();
+            canvas.drawBitmap(mBitmapOpLeft, null, mRectOpLeft, null);
         }
     }
 
@@ -199,21 +197,37 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
                     x_1 = event.getX();
                     y_1 = event.getY();
                     invalidate();
-                } else if(isSelectedOpUp) {
-                    double d = event.getY() - op_y;
-                    op_scale_y = 1 - (float) d / mCanvasView.getHeight();
+                } else if(isSelectedOpUp && mBitmapOval != null) {
+                    double d = (event.getY() - op_y) / op_rate;
+                    mHeightOval = mHeightOval - (float) d;
+
+                    if(mHeightOval >= 2 * mBitmapOval.getHeight())
+                        mHeightOval = 2 * mBitmapOval.getHeight();
+                    if(mHeightOval <= 10) mHeightOval = 10;
                     invalidate();
-                } else if(isSelectedOpDown) {
-                    double d = event.getY() - op_y;
-                    op_scale_y = 1 + (float) d / mCanvasView.getHeight();
+                } else if(isSelectedOpDown && mBitmapOval != null) {
+                    double d = (event.getY() - op_y) / op_rate;
+                    mHeightOval = mHeightOval + (float) d;
+
+                    if(mHeightOval >= 2 * mBitmapOval.getHeight())
+                        mHeightOval = 2 * mBitmapOval.getHeight();
+                    if(mHeightOval <= 10) mHeightOval = 10;
                     invalidate();
-                } else if(isSelectedOpLeft) {
-                    double d = event.getX() - op_x;
-                    op_scale_x = 1 - (float) d / mCanvasView.getWidth();
+                } else if(isSelectedOpLeft && mBitmapOval != null) {
+                    double d = (event.getX() - op_x) / op_rate;
+                    mWidthOval = mWidthOval - (float) d;
+
+                    if(mWidthOval >= 2 * mBitmapOval.getWidth())
+                        mWidthOval = 2 * mBitmapOval.getWidth();
+                    if(mWidthOval <= 10) mWidthOval = 10;
                     invalidate();
-                } else if(isSelectedOpRight) {
-                    double d = event.getX() - op_x;
-                    op_scale_x = 1 + (float) d / mCanvasView.getWidth();
+                } else if(isSelectedOpRight && mBitmapOval != null) {
+                    double d = (event.getX() - op_x) / op_rate;
+                    mWidthOval = mWidthOval + (float) d;
+
+                    if(mWidthOval >= 2 * mBitmapOval.getWidth())
+                        mWidthOval = 2 * mBitmapOval.getWidth();
+                    if(mWidthOval <= 10) mWidthOval = 10;
                     invalidate();
                 }
                 break;
@@ -322,6 +336,10 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
 
     public void setOvalBitmap(Bitmap oval) {
         mBitmapOval = oval;
+        if(mBitmapOval != null) {
+            mWidthOval = mBitmapOval.getWidth();
+            mHeightOval = mBitmapOval.getHeight();
+        }
     }
 
     public void setOpBitmap(Bitmap up, Bitmap down, Bitmap left, Bitmap right) {
@@ -334,6 +352,10 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
     public void setStrength(int strength) {
         toWarpLeft(strength);
         toWarpRight(strength);
+    }
+
+    public void setOpRate(int rate) {
+        op_rate = rate;
     }
 
     private boolean isInArea(float x, float y, RectF rectF, int padding) {
