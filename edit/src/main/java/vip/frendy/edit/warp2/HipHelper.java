@@ -185,6 +185,9 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                     isSelectedOp = true;
                     op_x = event.getX();
                     op_y = event.getY();
+                } else if(!visible) {
+                    visible = true;
+                    invalidate();
                 } else if(isInArea(event.getX(), event.getY(), mOval, 0)) {
                     isSelectedOval = true;
                     isSelectedOp = false;
@@ -234,6 +237,9 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                     isSelectedCircleOp = true;
                     op_x = event.getX();
                     op_y = event.getY();
+                } else if(!visible) {
+                    visible = true;
+                    invalidate();
                 } else if(isInCircle(event.getX(), event.getY(), x_1, y_1, r_1)) {
                     isSelectedCircle = true;
                     isSelectedCircleOp = false;

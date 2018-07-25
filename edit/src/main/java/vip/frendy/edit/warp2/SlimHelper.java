@@ -173,6 +173,9 @@ public class SlimHelper implements CanvasView.OnCanvasChangeListener {
                     isSelectedOpRight = true;
                     op_x = event.getX();
                     op_y = event.getY();
+                } else if(!visible) {
+                    visible = true;
+                    invalidate();
                 } else if(isInArea(event.getX(), event.getY(), mOval, 0)) {
                     isSelectedOval = true;
                     isSelectedOpUp = false;
