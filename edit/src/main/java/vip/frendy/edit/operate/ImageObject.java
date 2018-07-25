@@ -35,25 +35,24 @@ public class ImageObject {
 	protected Bitmap deleteBm;
 	protected Bitmap flipBm;
 	protected Bitmap settingBm;
-	Paint paint = new Paint();
+	protected Paint paint = new Paint();
 
 	private Canvas canvas = null;
 
 	/**
 	 * 构造方法
 	 */
-	public ImageObject() {
+	public ImageObject() {}
 
-	}
-	public ImageObject(String text) {
-
-	}
+	public ImageObject(String text) {}
 
 	/**
 	 * 构造方法
 	 * @param srcBm 源图片
 	 * @param rotateBm 旋转图片
 	 * @param deleteBm	删除图片
+	 * @param flipBm	翻转图片
+	 * @param settingBm	设置图片
 	 */
 	public ImageObject(Bitmap srcBm, Bitmap rotateBm, Bitmap deleteBm, Bitmap flipBm, Bitmap settingBm) {
 		this.srcBm = Bitmap.createBitmap(srcBm.getWidth(), srcBm.getHeight(), Config.ARGB_8888);
@@ -65,8 +64,8 @@ public class ImageObject {
 		this.flipBm = flipBm;
 		this.settingBm = settingBm;
 		paint.setColor(Color.WHITE);
-		paint.setAntiAlias(true);// 去掉边缘锯齿
-		paint.setStrokeWidth(2);// 设置线宽
+		paint.setAntiAlias(true); //去掉边缘锯齿
+		paint.setStrokeWidth(2); //设置线宽
 	}
 
 	/**
@@ -75,7 +74,9 @@ public class ImageObject {
 	 * @param x 图片初始化x坐标
 	 * @param y	图片初始化y坐标
 	 * @param rotateBm	旋转图片
-	 * @param deleteBm 删除图片
+	 * @param deleteBm 	删除图片
+	 * @param flipBm	翻转图片
+	 * @param settingBm	设置图片
 	 */
 	public ImageObject(Bitmap srcBm, int x, int y, Bitmap rotateBm, Bitmap deleteBm,Bitmap flipBm,Bitmap settingBm) {
 		this.srcBm = Bitmap.createBitmap(srcBm.getWidth(), srcBm.getHeight(), Config.ARGB_8888);
@@ -89,31 +90,16 @@ public class ImageObject {
 		this.flipBm = flipBm;
 		this.settingBm = settingBm;
 		paint.setColor(Color.WHITE);
-		paint.setAntiAlias(true);// 去掉边缘锯齿
-		paint.setStrokeWidth(2);// 设置线宽
+		paint.setAntiAlias(true); //去掉边缘锯齿
+		paint.setStrokeWidth(2); //设置线宽
 	}
 
-	int first = 0;// 判断是否第一次
-
 	public void setPoint(Point mPoint) {
-		// if (mPoint.x < getWidth()) {
-		// Log.e("abc", "abc");
-		// mPoint.x = getWidth();
-		// }
-		//
-		// if (mPoint.y < getHeight()) {
-		// mPoint.y = getHeight();
-		// }
-		// this.mPoint = mPoint;
-		// if (first == 0) {
 		setCenter();
-		// first++;
-		// }
 	}
 
 	/**
 	 * 获取显示图片的宽
-	 * @return
 	 */
 	public int getWidth() {
 		if (srcBm != null)
@@ -123,7 +109,6 @@ public class ImageObject {
 	}
 	/**
 	 * 获取显示图片的高
-	 * @return
 	 */
 	public int getHeight() {
 		if (srcBm != null)
@@ -142,9 +127,9 @@ public class ImageObject {
 		int sc = canvas.save();
 		try {
 			canvas.translate(mPoint.x, mPoint.y);
-			canvas.scale((float) mScale, (float) mScale);
+			canvas.scale(mScale, mScale);
 			int sc2 = canvas.save();
-			canvas.rotate((float) mRotation);
+			canvas.rotate(mRotation);
 			canvas.scale((flipHorizontal ? -1 : 1), (flipVertical ? -1 : 1));
 			canvas.drawBitmap(srcBm, -getWidth() / 2, -getHeight() / 2, paint);
 			canvas.restoreToCount(sc2);
@@ -156,7 +141,6 @@ public class ImageObject {
 
 	/**
 	 * 判断点是否在多边形内
-	 * 
 	 * @param pointx
 	 * @param pointy
 	 * @return
@@ -174,8 +158,6 @@ public class ImageObject {
 
 	/**
 	 * 获取矩形图片左上角的点
-	 * 
-	 * @return
 	 */
 	protected PointF getPointLeftTop() {
 		PointF pointF = getPointByRotation(centerRotation - 180);
@@ -184,8 +166,6 @@ public class ImageObject {
 
 	/**
 	 * 获取矩形图片左上角在画布中的点
-	 * 
-	 * @return
 	 */
 	protected PointF getPointLeftTopInCanvas() {
 		PointF pointF = getPointByRotationInCanvas(centerRotation - 180);
@@ -194,8 +174,6 @@ public class ImageObject {
 
 	/**
 	 * 获取矩形图片右上角的点
-	 * 
-	 * @return
 	 */
 	protected PointF getPointRightTop() {
 		PointF pointF = getPointByRotation(-centerRotation);
@@ -204,8 +182,6 @@ public class ImageObject {
 
 	/**
 	 * 获取矩形图片右上角在画布中的点
-	 * 
-	 * @return
 	 */
 	protected PointF getPointRightTopInCanvas() {
 		PointF pointF = getPointByRotationInCanvas(-centerRotation);
@@ -214,8 +190,6 @@ public class ImageObject {
 
 	/**
 	 * 获取矩形图片右下角的点
-	 * 
-	 * @return
 	 */
 	protected PointF getPointRightBottom() {
 		PointF pointF = getPointByRotation(centerRotation);
@@ -224,8 +198,6 @@ public class ImageObject {
 
 	/**
 	 * 获取矩形图片右下角在画布中的点
-	 * 
-	 * @return
 	 */
 	protected PointF getPointRightBottomInCanvas() {
 		PointF pointF = getPointByRotationInCanvas(centerRotation);
@@ -234,8 +206,6 @@ public class ImageObject {
 
 	/**
 	 * 获取矩形图片左下角的点
-	 * 
-	 * @return
 	 */
 	protected PointF getPointLeftBottom() {
 		PointF pointF = getPointByRotation(-centerRotation + 180);
@@ -244,8 +214,6 @@ public class ImageObject {
 
 	/**
 	 * 获取矩形图片左下角在画布中的点
-	 * 
-	 * @return
 	 */
 	protected PointF getPointLeftBottomInCanvas() {
 		PointF pointF = getPointByRotationInCanvas(-centerRotation + 180);
@@ -254,8 +222,6 @@ public class ImageObject {
 
 	/**
 	 * 获取缩放和旋转点
-	 * 
-	 * @return
 	 */
 	protected PointF getResizeAndRotatePoint() {
 		PointF pointF = new PointF();
@@ -271,7 +237,6 @@ public class ImageObject {
 
 	/**
 	 * 判断点击是否在边角按钮上
-	 * 
 	 * @param x 触点的横坐标
 	 * @param y 触点得纵坐标
 	 * @param type 四角的位置
@@ -299,8 +264,7 @@ public class ImageObject {
 			delY = y - (point.y - settingBm.getHeight() / 2);
 		}
 		float diff = (float) Math.sqrt((delX * delX + delY * delY));
-		// float del = rotateBm.getWidth() / 2;
-		if (Math.abs(diff) <= resizeBoxSize) {
+		if(Math.abs(diff) <= resizeBoxSize) {
 			return true;
 		}
 		return false;
@@ -321,9 +285,6 @@ public class ImageObject {
 
 	/**
 	 * 根据旋转角度获取定点坐标
-	 * 
-	 * @param rotation
-	 * @return
 	 */
 	private PointF getPointByRotation(float rotation) {
 		PointF pointF = new PointF();
@@ -351,8 +312,6 @@ public class ImageObject {
 
 	/**
 	 * 绘画选中的图标
-	 * 
-	 * @param canvas
 	 */
 	public void drawIcon(Canvas canvas) {
 		PointF deletePF = getPointLeftTop();
@@ -365,29 +324,28 @@ public class ImageObject {
 
 		PointF flipPF = getPointRightTop();
 		if(flipBm != null) canvas.drawBitmap(flipBm,flipPF.x - flipBm.getWidth() / 2,
-				flipPF.y-flipBm.getHeight() / 2,paint);
+				flipPF.y - flipBm.getHeight() / 2, paint);
 
 		PointF settingPF = getPointLeftBottom();
 		if(settingBm != null) canvas.drawBitmap(settingBm,settingPF.x - settingBm.getWidth() / 2,
-				settingPF.y - settingBm.getHeight() / 2,paint);
+				settingPF.y - settingBm.getHeight() / 2, paint);
 	}
+
 	/**
 	 * 水平翻转方法
-	 *
 	 */
-	public void horizontalFlip(){
+	public void horizontalFlip() {
 		srcBm = BitmapExt.reverseImage(srcBm, -1, 1);
 	}
 
 	/**
 	 * 设置透明度
-	 *
 	 */
-	public void setTransparency(int progress){
+	public void setTransparency(int progress) {
 		int[] argb = new int[_srcBm.getWidth() * _srcBm.getHeight()];
 
-		_srcBm.getPixels(argb, 0, _srcBm.getWidth(), 0, 0,
-				_srcBm.getWidth(), _srcBm.getHeight());// 获得图片的ARGB值
+		//获得图片的ARGB值
+		_srcBm.getPixels(argb, 0, _srcBm.getWidth(), 0, 0, _srcBm.getWidth(), _srcBm.getHeight());
 
 		for (int i = 0; i < argb.length-1; i++) {
 			int a = (argb[i] >> 24) & 0xff;
@@ -396,14 +354,11 @@ public class ImageObject {
 			argb[i] = (a << 24) | (argb[i] & 0x00FFFFFF);
 		}
 
-		srcBm = Bitmap.createBitmap(argb, _srcBm.getWidth(),
-				_srcBm.getHeight(), Config.ARGB_8888);
+		srcBm = Bitmap.createBitmap(argb, _srcBm.getWidth(), _srcBm.getHeight(), Config.ARGB_8888);
 	}
 
 	/**
 	 * get、set方法
-	 * 
-	 * @return
 	 */
 	public boolean isSelected() {
 		return mSelected;
