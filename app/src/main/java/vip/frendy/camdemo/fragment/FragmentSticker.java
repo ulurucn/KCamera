@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -67,6 +68,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     protected void initAction() {
         mRootView.findViewById(R.id.ok).setOnClickListener(this);
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
+        mRootView.findViewById(R.id.show).setOnClickListener(this);
         mRootView.findViewById(R.id.sitcker).setOnClickListener(this);
         mRootView.findViewById(R.id.text).setOnClickListener(this);
         mRootView.findViewById(R.id.seekBar_ok).setOnClickListener(this);
@@ -92,6 +94,17 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             //设置可以添加多个图片
             mOperateView.setMultiAdd(true);
             mOperateView.setPicScale(0.8f);
+            //触摸事件监听
+            mOperateView.setOnOperateViewTouchListener(new OperateView.OnOperateTouchListener() {
+                @Override
+                public boolean onOperateViewTouch(MotionEvent event) {
+                    if(mStickerBar.getVisibility() == View.VISIBLE) {
+                        mStickerBar.setVisibility(View.GONE);
+                        return true;
+                    }
+                    return false;
+                }
+            });
         } else {
             HandlerExt.postDelayToUI(new Runnable() {
                 @Override
@@ -113,13 +126,15 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.st_ornaments5));
         } else if(view.getId() == R.id.text) {
             addText("写死的测试文本");
-        }else if(view.getId() == R.id.seekBar_cancel){
+        } else if(view.getId() == R.id.seekBar_cancel) {
             mOperateView.setStickerTransparency(mDefalutProgress);
             mStickerBar.setVisibility(View.VISIBLE);
             mSettingBar.setVisibility(View.GONE);
-        }else if(view.getId() == R.id.seekBar_ok){
+        } else if(view.getId() == R.id.seekBar_ok) {
             mStickerBar.setVisibility(View.VISIBLE);
             mSettingBar.setVisibility(View.GONE);
+        } else if(view.getId() == R.id.show) {
+            mStickerBar.setVisibility(View.VISIBLE);
         }
     }
 

@@ -38,7 +38,6 @@ public class OperateView extends View {
 
 	/**
 	 * 设置是否可以添加多个图片或者文字对象
-	 * 
 	 * @param isMultiAdd true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
 	 */
 	public void setMultiAdd(boolean isMultiAdd) {
@@ -56,9 +55,7 @@ public class OperateView extends View {
 
 	/**
 	 * 将图片对象添加到View中
-	 * 
-	 * @param imgObj
-	 *            图片对象
+	 * @param imgObj 图片对象
 	 */
 	public void addItem(ImageObject imgObj) {
 		if (imgObj == null) {
@@ -138,8 +135,6 @@ public class OperateView extends View {
 
 	/**
 	 * 多点触控操作
-	 * 
-	 * @param event
 	 */
 	private void handleMultiTouchManipulateEvent(MotionEvent event) {
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -195,8 +190,6 @@ public class OperateView extends View {
 	}
 	/**
 	 * 获取选中的对象ImageObject
-	 * 
-	 * @return
 	 */
 	private ImageObject getSelected() {
 		for (ImageObject ibj : imgLists) {
@@ -210,14 +203,16 @@ public class OperateView extends View {
 	private long selectTime = 0;
 	/**
 	 * 单点触控操作
-	 * 
-	 * @param event
 	 */
 	private void handleSingleTouchManipulateEvent(MotionEvent event) {
 
 		long currentTime = 0;
 		switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN :
+			case MotionEvent.ACTION_DOWN:
+				//拦截触摸事件
+				if(mTouchListener != null && mTouchListener.onOperateViewTouch(event)) {
+					break;
+				}
 
 				mMovedSinceDown = false;
 				mResizeAndRotateSinceDown = false;
@@ -297,10 +292,8 @@ public class OperateView extends View {
 				break;
 
 			case MotionEvent.ACTION_UP :
-
 				mMovedSinceDown = false;
 				mResizeAndRotateSinceDown = false;
-
 				break;
 
 			case MotionEvent.ACTION_MOVE :
@@ -352,8 +345,6 @@ public class OperateView extends View {
 
 	/**
 	 * 循环画图像
-	 * 
-	 * @param canvas
 	 */
 	private void drawImages(Canvas canvas) {
 		for (ImageObject ad : imgLists) {
@@ -374,6 +365,19 @@ public class OperateView extends View {
 
 	public interface MyListener {
 		public void onClick(TextObject tObject);
+	}
+
+	/**
+	 * 监听触摸事件
+	 */
+	private OnOperateTouchListener mTouchListener;
+
+	public void setOnOperateViewTouchListener(OnOperateTouchListener listener) {
+		mTouchListener = listener;
+	}
+
+	public interface OnOperateTouchListener {
+		boolean onOperateViewTouch(MotionEvent event);
 	}
 
 	/**
