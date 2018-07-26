@@ -291,6 +291,18 @@ public class ImageObject {
 		return pointF;
 	}
 
+	/**
+	 * 获取矩形图片边上中点
+	 */
+	private PointF getPonitEdgeCenterByRotation(float rotation, int _r) {
+		float r = _r * mScale / 2;
+		PointF pointF = new PointF();
+		double rot = (mRotation + rotation) * Math.PI / 180;
+		pointF.x = getPoint().x + (float) (r * Math.cos(rot));
+		pointF.y = getPoint().y + (float) (r * Math.sin(rot));
+		return pointF;
+	}
+
 	public PointF getPointByRotationInCanvas(float rotation) {
 		PointF pointF = new PointF();
 		double rot = (mRotation + rotation) * Math.PI / 180;
@@ -338,10 +350,10 @@ public class ImageObject {
 					settingPF.y - settingBm.getHeight() / 2, paint);
 		}
 
-		PointF leftPF = getPointByRotation(centerRotation - 210);
-		PointF topPF = getPointByRotation(centerRotation - 120);
-		PointF rightPF = getPointByRotation(centerRotation - 30);
-		PointF bottomPF = getPointByRotation(centerRotation - 300);
+		PointF leftPF = getPonitEdgeCenterByRotation(centerRotation - 210, srcBm.getWidth());
+		PointF topPF = getPonitEdgeCenterByRotation(centerRotation - 120, srcBm.getHeight());
+		PointF rightPF = getPonitEdgeCenterByRotation(centerRotation - 30, srcBm.getWidth());
+		PointF bottomPF = getPonitEdgeCenterByRotation(centerRotation - 300, srcBm.getHeight());
 
 		if(leftBm != null) {
 			canvas.drawBitmap(leftBm,leftPF.x - leftBm.getWidth() / 2,
