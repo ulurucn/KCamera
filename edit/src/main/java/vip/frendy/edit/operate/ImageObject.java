@@ -338,21 +338,26 @@ public class ImageObject {
 					settingPF.y - settingBm.getHeight() / 2, paint);
 		}
 
+		PointF leftPF = getPointByRotation(centerRotation - 210);
+		PointF topPF = getPointByRotation(centerRotation - 120);
+		PointF rightPF = getPointByRotation(centerRotation - 30);
+		PointF bottomPF = getPointByRotation(centerRotation - 300);
+
 		if(leftBm != null) {
-			canvas.drawBitmap(leftBm,settingPF.x - leftBm.getWidth() / 2,
-					settingPF.y - (settingPF.y - flipPF.y) / 2 - leftBm.getHeight() / 2, paint);
+			canvas.drawBitmap(leftBm,leftPF.x - leftBm.getWidth() / 2,
+					leftPF.y - leftBm.getHeight() / 2, paint);
 		}
 		if(topBm != null) {
-			canvas.drawBitmap(topBm,deletePF.x - (deletePF.x - flipPF.x) / 2 - topBm.getWidth() / 2,
-					deletePF.y - topBm.getHeight() / 2, paint);
+			canvas.drawBitmap(topBm,topPF.x - topBm.getWidth() / 2,
+					topPF.y - topBm.getHeight() / 2, paint);
 		}
 		if(rightBm != null) {
-			canvas.drawBitmap(rightBm,rotatePF.x - rightBm.getWidth() / 2,
-					rotatePF.y - (rotatePF.y - deletePF.y) / 2 - rightBm.getHeight() / 2, paint);
+			canvas.drawBitmap(rightBm,rightPF.x - rightBm.getWidth() / 2,
+					rightPF.y - rightBm.getHeight() / 2, paint);
 		}
 		if(bottomBm != null) {
-			canvas.drawBitmap(bottomBm,rotatePF.x - (rotatePF.x - settingPF.x) / 2 - bottomBm.getWidth() / 2,
-					rotatePF.y - bottomBm.getHeight() / 2, paint);
+			canvas.drawBitmap(bottomBm,bottomPF.x - bottomBm.getWidth() / 2,
+					bottomPF.y - bottomBm.getHeight() / 2, paint);
 		}
 	}
 
