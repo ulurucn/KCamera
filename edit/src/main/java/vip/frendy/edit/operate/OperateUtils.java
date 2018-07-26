@@ -196,34 +196,24 @@ public class OperateUtils {
 	 * @return
 	 */
 	public ImageObject getImageObject(Bitmap srcBmp, OperateView operateView, int quadrant, int x, int y,
-									  int rotateDrawble,int deleteDrawable,int flipDrawable,int settingDrawable ) {
-		Bitmap rotateBm = null,deleteBm = null,flipBm = null,settingBm = null;
+									  int rotateDrawble, int deleteDrawable, int flipDrawable, int settingDrawable,
+									  int leftDrawable, int topDrawable, int rightDrawable, int bottomDrawable) {
+		Bitmap rotateBm = null, deleteBm = null, flipBm = null, settingBm = null;
+		Bitmap leftBm = null, topBm = null, rightBm = null, bottomBm = null;
 
 		if(rotateDrawble != -1) rotateBm = BitmapFactory.decodeResource(activity.getResources(), rotateDrawble);
 		if(deleteDrawable != -1) deleteBm = BitmapFactory.decodeResource(activity.getResources(), deleteDrawable);
-		if(flipDrawable != -1) flipBm = BitmapFactory.decodeResource(activity.getResources(),flipDrawable);
-		if(settingDrawable != -1) settingBm = BitmapFactory.decodeResource(activity.getResources(),settingDrawable);
+		if(flipDrawable != -1) flipBm = BitmapFactory.decodeResource(activity.getResources(), flipDrawable);
+		if(settingDrawable != -1) settingBm = BitmapFactory.decodeResource(activity.getResources(), settingDrawable);
+
+		if(leftDrawable != -1) leftBm = BitmapFactory.decodeResource(activity.getResources(), leftDrawable);
+		if(topDrawable != -1) topBm = BitmapFactory.decodeResource(activity.getResources(), topDrawable);
+		if(rightDrawable != -1) rightBm = BitmapFactory.decodeResource(activity.getResources(), rightDrawable);
+		if(bottomDrawable != -1) bottomBm = BitmapFactory.decodeResource(activity.getResources(), bottomDrawable);
+
 		int width = operateView.getWidth();
 		int height = operateView.getHeight();
-//		int srcWidth = srcBmp.getWidth();
-//		int srcHeight = srcBmp.getHeight();
-//		if (height > width) {
-//			if (srcHeight > srcWidth) {
-//				srcBmp = ImageUtils.ResizeBitmap(srcBmp, height / 3 * srcWidth
-//						/ srcHeight, height / 3);
-//			} else {
-//				srcBmp = ImageUtils.ResizeBitmap(srcBmp, width / 3, width / 3
-//						* srcHeight / srcWidth);
-//			}
-//		} else {
-//			if (srcHeight > srcWidth) {
-//				srcBmp = ImageUtils.ResizeBitmap(srcBmp, height / 2 * srcWidth
-//						/ srcHeight, height / 2);
-//			} else {
-//				srcBmp = ImageUtils.ResizeBitmap(srcBmp, width / 3, width / 3
-//						* srcHeight / srcWidth);
-//			}
-//		}
+
 		switch (quadrant) {
 			case LEFTTOP :
 				break;
@@ -244,7 +234,10 @@ public class OperateUtils {
 			default :
 				break;
 		}
-		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm,flipBm,settingBm);
+
+		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm, flipBm, settingBm);
+		imgObject.setOpBitmap(leftBm, topBm, rightBm, bottomBm);
+
 		Point point = new Point(20, 20);
 		imgObject.setPoint(point);
 		return imgObject;

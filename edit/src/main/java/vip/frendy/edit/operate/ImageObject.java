@@ -29,12 +29,9 @@ public class ImageObject {
 	protected boolean flipHorizontal;
 	protected final int resizeBoxSize = 100;
 	protected boolean isTextObject;
-	protected Bitmap srcBm;
-	protected Bitmap _srcBm;
-	protected Bitmap rotateBm;
-	protected Bitmap deleteBm;
-	protected Bitmap flipBm;
-	protected Bitmap settingBm;
+	protected Bitmap srcBm, _srcBm;
+	protected Bitmap rotateBm, deleteBm, flipBm, settingBm;
+	protected Bitmap leftBm, rightBm, topBm, bottomBm;
 	protected Paint paint = new Paint();
 	protected int mTransparencyProgress = 0;
 
@@ -50,7 +47,7 @@ public class ImageObject {
 	/**
 	 * 构造方法
 	 * @param srcBm 源图片
-	 * @param rotateBm 旋转图片
+	 * @param rotateBm 	旋转图片
 	 * @param deleteBm	删除图片
 	 * @param flipBm	翻转图片
 	 * @param settingBm	设置图片
@@ -93,6 +90,13 @@ public class ImageObject {
 		paint.setColor(Color.WHITE);
 		paint.setAntiAlias(true); //去掉边缘锯齿
 		paint.setStrokeWidth(2); //设置线宽
+	}
+
+	public void setOpBitmap(Bitmap left, Bitmap top, Bitmap right, Bitmap bottom) {
+		leftBm = left;
+		topBm = top;
+		rightBm = right;
+		bottomBm = bottom;
 	}
 
 	public void setPoint(Point mPoint) {
@@ -161,64 +165,56 @@ public class ImageObject {
 	 * 获取矩形图片左上角的点
 	 */
 	protected PointF getPointLeftTop() {
-		PointF pointF = getPointByRotation(centerRotation - 180);
-		return pointF;
+		return getPointByRotation(centerRotation - 180);
 	}
 
 	/**
 	 * 获取矩形图片左上角在画布中的点
 	 */
 	protected PointF getPointLeftTopInCanvas() {
-		PointF pointF = getPointByRotationInCanvas(centerRotation - 180);
-		return pointF;
+		return getPointByRotationInCanvas(centerRotation - 180);
 	}
 
 	/**
 	 * 获取矩形图片右上角的点
 	 */
 	protected PointF getPointRightTop() {
-		PointF pointF = getPointByRotation(-centerRotation);
-		return pointF;
+		return getPointByRotation(-centerRotation);
 	}
 
 	/**
 	 * 获取矩形图片右上角在画布中的点
 	 */
 	protected PointF getPointRightTopInCanvas() {
-		PointF pointF = getPointByRotationInCanvas(-centerRotation);
-		return pointF;
+		return getPointByRotationInCanvas(-centerRotation);
 	}
 
 	/**
 	 * 获取矩形图片右下角的点
 	 */
 	protected PointF getPointRightBottom() {
-		PointF pointF = getPointByRotation(centerRotation);
-		return pointF;
+		return getPointByRotation(centerRotation);
 	}
 
 	/**
 	 * 获取矩形图片右下角在画布中的点
 	 */
 	protected PointF getPointRightBottomInCanvas() {
-		PointF pointF = getPointByRotationInCanvas(centerRotation);
-		return pointF;
+		return getPointByRotationInCanvas(centerRotation);
 	}
 
 	/**
 	 * 获取矩形图片左下角的点
 	 */
 	protected PointF getPointLeftBottom() {
-		PointF pointF = getPointByRotation(-centerRotation + 180);
-		return pointF;
+		return getPointByRotation(-centerRotation + 180);
 	}
 
 	/**
 	 * 获取矩形图片左下角在画布中的点
 	 */
 	protected PointF getPointLeftBottomInCanvas() {
-		PointF pointF = getPointByRotationInCanvas(-centerRotation + 180);
-		return pointF;
+		return getPointByRotationInCanvas(-centerRotation + 180);
 	}
 
 	/**
@@ -316,20 +312,48 @@ public class ImageObject {
 	 */
 	public void drawIcon(Canvas canvas) {
 		PointF deletePF = getPointRightTop();
-		if (deleteBm != null) canvas.drawBitmap(deleteBm, deletePF.x - deleteBm.getWidth() / 2,
-				deletePF.y - deleteBm.getHeight() / 2, paint);
-
 		PointF rotatePF = getPointRightBottom();
-		if(rotateBm != null) canvas.drawBitmap(rotateBm, rotatePF.x - rotateBm.getWidth() / 2,
-				rotatePF.y - rotateBm.getHeight() / 2, paint);
-
 		PointF flipPF = getPointLeftTop();
-		if(flipBm != null) canvas.drawBitmap(flipBm,flipPF.x - flipBm.getWidth() / 2,
-				flipPF.y - flipBm.getHeight() / 2, paint);
-
 		PointF settingPF = getPointLeftBottom();
-		if(settingBm != null) canvas.drawBitmap(settingBm,settingPF.x - settingBm.getWidth() / 2,
-				settingPF.y - settingBm.getHeight() / 2, paint);
+
+		canvas.drawLine(flipPF.x, flipPF.y, deletePF.x, deletePF.y, paint);
+		canvas.drawLine(deletePF.x, deletePF.y, rotatePF.x, rotatePF.y, paint);
+		canvas.drawLine(rotatePF.x, rotatePF.y, settingPF.x, settingPF.y, paint);
+		canvas.drawLine(settingPF.x, settingPF.y, flipPF.x, flipPF.y, paint);
+
+		if (deleteBm != null) {
+			canvas.drawBitmap(deleteBm, deletePF.x - deleteBm.getWidth() / 2,
+					deletePF.y - deleteBm.getHeight() / 2, paint);
+		}
+		if(rotateBm != null) {
+			canvas.drawBitmap(rotateBm, rotatePF.x - rotateBm.getWidth() / 2,
+					rotatePF.y - rotateBm.getHeight() / 2, paint);
+		}
+		if(flipBm != null) {
+			canvas.drawBitmap(flipBm,flipPF.x - flipBm.getWidth() / 2,
+					flipPF.y - flipBm.getHeight() / 2, paint);
+		}
+		if(settingBm != null) {
+			canvas.drawBitmap(settingBm,settingPF.x - settingBm.getWidth() / 2,
+					settingPF.y - settingBm.getHeight() / 2, paint);
+		}
+
+		if(leftBm != null) {
+			canvas.drawBitmap(leftBm,settingPF.x - leftBm.getWidth() / 2,
+					settingPF.y - (settingPF.y - flipPF.y) / 2 - leftBm.getHeight() / 2, paint);
+		}
+		if(topBm != null) {
+			canvas.drawBitmap(topBm,deletePF.x - (deletePF.x - flipPF.x) / 2 - topBm.getWidth() / 2,
+					deletePF.y - topBm.getHeight() / 2, paint);
+		}
+		if(rightBm != null) {
+			canvas.drawBitmap(rightBm,rotatePF.x - rightBm.getWidth() / 2,
+					rotatePF.y - (rotatePF.y - deletePF.y) / 2 - rightBm.getHeight() / 2, paint);
+		}
+		if(bottomBm != null) {
+			canvas.drawBitmap(bottomBm,rotatePF.x - (rotatePF.x - settingPF.x) / 2 - bottomBm.getWidth() / 2,
+					rotatePF.y - bottomBm.getHeight() / 2, paint);
+		}
 	}
 
 	/**
