@@ -38,7 +38,6 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     private OperateUtils mOperateUtils;
     private LinearLayout mSettingBar;
     private LinearLayout mStickerBar;
-    private int mDefalutProgress = 100;
 
     public static FragmentSticker getInstance(Bundle args, IPictureEditListener listener) {
         FragmentSticker fragment = new FragmentSticker();
@@ -127,7 +126,6 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         } else if(view.getId() == R.id.text) {
             addText("写死的测试文本");
         } else if(view.getId() == R.id.seekBar_cancel) {
-            mOperateView.setStickerTransparency(mDefalutProgress);
             mStickerBar.setVisibility(View.VISIBLE);
             mSettingBar.setVisibility(View.GONE);
         } else if(view.getId() == R.id.seekBar_ok) {
@@ -170,12 +168,11 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     public void showSettingBar() {
         mStickerBar.setVisibility(View.GONE);
         mSettingBar.setVisibility(View.VISIBLE);
-        mSeekBar.setProgress(0);
+        mSeekBar.setProgress(mOperateView.getStickerTransparency());
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        progress = (int)(mDefalutProgress-progress);
         mOperateView.setStickerTransparency(progress);
     }
 

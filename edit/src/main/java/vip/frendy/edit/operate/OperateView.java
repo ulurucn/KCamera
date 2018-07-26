@@ -390,4 +390,12 @@ public class OperateView extends View {
 			invalidate();
 		}
 	}
+
+	public int getStickerTransparency() {
+		ImageObject io = getSelected();
+		if (io != null) {
+			return io.getTransparencyProgress();
+		}
+		return 0;
+	}
 }

@@ -36,6 +36,7 @@ public class ImageObject {
 	protected Bitmap flipBm;
 	protected Bitmap settingBm;
 	protected Paint paint = new Paint();
+	protected int mTransparencyProgress = 0;
 
 	private Canvas canvas = null;
 
@@ -314,15 +315,15 @@ public class ImageObject {
 	 * 绘画选中的图标
 	 */
 	public void drawIcon(Canvas canvas) {
-		PointF deletePF = getPointLeftTop();
-		if (deleteBm != null)  canvas.drawBitmap(deleteBm, deletePF.x - deleteBm.getWidth() / 2,
+		PointF deletePF = getPointRightTop();
+		if (deleteBm != null) canvas.drawBitmap(deleteBm, deletePF.x - deleteBm.getWidth() / 2,
 				deletePF.y - deleteBm.getHeight() / 2, paint);
 
 		PointF rotatePF = getPointRightBottom();
-		if(rotateBm != null)  canvas.drawBitmap(rotateBm, rotatePF.x - rotateBm.getWidth() / 2,
+		if(rotateBm != null) canvas.drawBitmap(rotateBm, rotatePF.x - rotateBm.getWidth() / 2,
 				rotatePF.y - rotateBm.getHeight() / 2, paint);
 
-		PointF flipPF = getPointRightTop();
+		PointF flipPF = getPointLeftTop();
 		if(flipBm != null) canvas.drawBitmap(flipBm,flipPF.x - flipBm.getWidth() / 2,
 				flipPF.y - flipBm.getHeight() / 2, paint);
 
@@ -342,6 +343,7 @@ public class ImageObject {
 	 * 设置透明度
 	 */
 	public void setTransparency(int progress) {
+		mTransparencyProgress = progress;
 		int[] argb = new int[_srcBm.getWidth() * _srcBm.getHeight()];
 
 		//获得图片的ARGB值
@@ -349,7 +351,7 @@ public class ImageObject {
 
 		for (int i = 0; i < argb.length-1; i++) {
 			int a = (argb[i] >> 24) & 0xff;
-			a = a * progress / 100;
+			a = a * (100 - progress) / 100;
 
 			argb[i] = (a << 24) | (argb[i] & 0x00FFFFFF);
 		}
@@ -454,5 +456,9 @@ public class ImageObject {
 
 	public boolean isTextObject() {
 		return isTextObject;
+	}
+
+	public int getTransparencyProgress() {
+		return mTransparencyProgress;
 	}
 }
