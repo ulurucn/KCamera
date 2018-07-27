@@ -143,7 +143,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         //无drawable资源则传 -1
         ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, OperateUtils.CENTER, 150, 100,
                 R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
-                -1, -1, -1, -1);
+                R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate);
         mOperateView.addItem(sticker);
     }
 

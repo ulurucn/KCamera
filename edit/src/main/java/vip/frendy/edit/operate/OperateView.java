@@ -27,6 +27,8 @@ public class OperateView extends View {
 	private boolean isMultiAdd;
 	private float picScale = 0.4f;
 	private ISettingListener iSettingListener;
+	//是否开启双指触控
+	private boolean enableMultiTouch = false;
 
 	/**
 	 * 设置水印图片初始化大小
@@ -42,6 +44,10 @@ public class OperateView extends View {
 	 */
 	public void setMultiAdd(boolean isMultiAdd) {
 		this.isMultiAdd = isMultiAdd;
+	}
+
+	public void setEnableMultiTouch(boolean enable) {
+		enableMultiTouch = enable;
 	}
 
 	public OperateView(Context context, Bitmap resizeBmp, ISettingListener iSettingListener) {
@@ -108,10 +114,11 @@ public class OperateView extends View {
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (event.getPointerCount() == 1) {
+		if(event.getPointerCount() == 1) {
 			handleSingleTouchManipulateEvent(event);
 		} else {
-			handleMultiTouchManipulateEvent(event);
+			if(enableMultiTouch)
+				handleMultiTouchManipulateEvent(event);
 		}
 		invalidate();
 

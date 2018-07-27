@@ -221,19 +221,39 @@ public class ImageObject {
 	 * 获取矩形图片边上中点
 	 */
 	protected PointF getPointEdgeLeftCenter() {
-		return getPonitEdgeCenterByRotation(centerRotation - 210, getWidth());
+		PointF top = getPointLeftTop();
+		PointF bottom = getPointLeftBottom();
+		PointF center = new PointF();
+		center.x = (top.x + bottom.x) / 2;
+		center.y = (top.y + bottom.y) / 2;
+		return center;
 	}
 
 	protected PointF getPointEdgeTopCenter() {
-		return getPonitEdgeCenterByRotation(centerRotation - 120, getHeight());
+		PointF left = getPointLeftTop();
+		PointF right = getPointRightTop();
+		PointF center = new PointF();
+		center.x = (left.x + right.x) / 2;
+		center.y = (left.y + right.y) / 2;
+		return center;
 	}
 
 	protected PointF getPointEdgeRightCenter() {
-		return getPonitEdgeCenterByRotation(centerRotation - 30, getWidth());
+		PointF top = getPointRightTop();
+		PointF bottom = getPointRightBottom();
+		PointF center = new PointF();
+		center.x = (top.x + bottom.x) / 2;
+		center.y = (top.y + bottom.y) / 2;
+		return center;
 	}
 
 	protected PointF getPointEdgeBottomCenter() {
-		return getPonitEdgeCenterByRotation(centerRotation - 300, getHeight());
+		PointF left = getPointLeftBottom();
+		PointF right = getPointRightBottom();
+		PointF center = new PointF();
+		center.x = (left.x + right.x) / 2;
+		center.y = (left.y + right.y) / 2;
+		return center;
 	}
 
 	/**
