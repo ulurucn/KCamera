@@ -225,11 +225,7 @@ public class OperateView extends View {
 							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)
 							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)
 							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP)
-                            || io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER)) {
+                            || io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)) {
 						io.setSelected(true);
 						imgLists.remove(i);
 						imgLists.add(io);
@@ -253,11 +249,7 @@ public class OperateView extends View {
 								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)
 								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)
 								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP)
-                                || io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER)) {
+                                || io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)) {
 							io.setSelected(true);
 							imgLists.remove(i);
 							imgLists.add(io);
