@@ -23,7 +23,7 @@ import vip.frendy.base.BitmapExt;
 public class ImageObject {
 	protected Point mPoint = new Point();
 	protected float mRotation;
-	protected float mScale = 1.0f, mScaleX = 1.0f, mScaleY = 1.0f;
+	protected float mScale = 1.0f, mScaleX = 1.0f, mScaleY = 1.0f, mScaleZoom = 1.0f;
 	protected boolean mSelected;
 	protected boolean flipVertical;
 	protected boolean flipHorizontal;
@@ -134,6 +134,7 @@ public class ImageObject {
 			canvas.translate(mPoint.x, mPoint.y);
 			canvas.scale(mScale, mScale);
 			canvas.scale(mScaleX, mScaleY);
+			canvas.scale(mScaleZoom, mScaleZoom);
 			int sc2 = canvas.save();
 			canvas.rotate(mRotation);
 			canvas.scale((flipHorizontal ? -1 : 1), (flipVertical ? -1 : 1));
@@ -330,8 +331,8 @@ public class ImageObject {
 	 * 计算中心点的坐标
 	 */
 	protected void setCenter() {
-		double delX = getWidth() * mScale * mScaleX / 2;
-		double delY = getHeight() * mScale * mScaleY / 2;
+		double delX = getWidth() * mScale * mScaleX * mScaleZoom / 2;
+		double delY = getHeight() * mScale * mScaleY * mScaleZoom / 2;
 		R = (float) Math.sqrt((delX * delX + delY * delY));
 		centerRotation = (float) Math.toDegrees(Math.atan(delY / delX));
 	}
@@ -368,18 +369,26 @@ public class ImageObject {
 	}
 
 	public void setScale(float scale) {
-		if (getWidth() * scale * mScaleX >= resizeBoxSize / 2
-				&& getHeight() * scale * mScaleY >= resizeBoxSize / 2) {
+		if (getWidth() * scale * mScaleX * mScaleZoom >= resizeBoxSize / 2
+				&& getHeight() * scale * mScaleY * mScaleZoom >= resizeBoxSize / 2) {
 			mScale = scale;
 			setCenter();
 		}
 	}
 
 	public void setScale(float scaleX, float scaleY) {
-		if (getWidth() * mScale * scaleX >= resizeBoxSize / 2
-				&& getHeight() * mScale * scaleY >= resizeBoxSize / 2) {
+		if (getWidth() * mScale * scaleX * mScaleZoom >= resizeBoxSize / 2
+				&& getHeight() * mScale * scaleY * mScaleZoom >= resizeBoxSize / 2) {
 			mScaleX = scaleX;
 			mScaleY = scaleY;
+			setCenter();
+		}
+	}
+
+	public void setScaleZoom(float scaleZoom) {
+		if (getWidth() * mScale * mScaleX * scaleZoom >= resizeBoxSize / 2
+				&& getHeight() * mScale * mScaleY * scaleZoom >= resizeBoxSize / 2) {
+			mScaleZoom = scaleZoom;
 			setCenter();
 		}
 	}
@@ -594,6 +603,10 @@ public class ImageObject {
 
 	public float getScaleY() {
 		return mScaleY;
+	}
+
+	public float getScaleZoom() {
+		return mScaleZoom;
 	}
 
 	public void setTextObject(boolean isTextObject) {

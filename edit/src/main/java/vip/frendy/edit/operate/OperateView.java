@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -18,17 +19,33 @@ import vip.frendy.edit.interfaces.ISettingListener;
  * @author jarlen
  * @modified frendy
  */
-public class OperateView extends View {
+public class OperateView extends View implements ScaleGestureDetector.OnScaleGestureListener {
 	private List<ImageObject> imgLists = new ArrayList<ImageObject>();
 	private Rect mCanvasLimits;
 	private Bitmap bgBmp;
 	private Paint paint = new Paint();
 	//true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
 	private boolean isMultiAdd;
-	private float picScale = 0.4f;
+	private float mObjScale = 0.4f;
 	private ISettingListener iSettingListener;
 	//是否开启双指触控
-	private boolean enableMultiTouch = false;
+	public static int TYPE_MULTI_TOUCH_1 = 1;
+	public static int TYPE_MULTI_TOUCH_2 = 2;
+	private int mMultiTouchType = TYPE_MULTI_TOUCH_2;
+
+	/**
+	 * 缩放相关属性
+	 */
+	private ScaleGestureDetector mScaleGestureDetector;
+	private float mScaleFactor = 1.0f;
+	private Rect mInitImageRect;
+	private Rect mImageRect;
+	//触点
+	private float mLastX;
+	private float mLastY;
+	private int lastPointerCount = 0;
+	private boolean isCanDrag;
+
 
 	public OperateView(Context context, Bitmap resizeBmp, ISettingListener iSettingListener) {
 		super(context);
@@ -37,26 +54,29 @@ public class OperateView extends View {
 		int width = bgBmp.getWidth();
 		int height = bgBmp.getHeight();
 		mCanvasLimits = new Rect(0, 0, width, height);
+
+		mImageRect = new Rect();
+		mInitImageRect = new Rect();
+		mScaleGestureDetector = new ScaleGestureDetector(context, this);
 	}
 
 	/**
 	 * 设置水印图片初始化大小
-	 * @param picScale
 	 */
-	public void setPicScale(float picScale) {
-		this.picScale = picScale;
+	public void setObjScale(float scale) {
+		mObjScale = scale;
 	}
 
 	/**
 	 * 设置是否可以添加多个图片或者文字对象
-	 * @param isMultiAdd true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
+	 * true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
 	 */
 	public void setMultiAdd(boolean isMultiAdd) {
 		this.isMultiAdd = isMultiAdd;
 	}
 
-	public void setEnableMultiTouch(boolean enable) {
-		enableMultiTouch = enable;
+	public void setmMultiTouchType(int type) {
+		mMultiTouchType = type;
 	}
 
 	/**
@@ -72,7 +92,7 @@ public class OperateView extends View {
 		}
 		imgObj.setSelected(true);
 		if (!imgObj.isTextObject) {
-			imgObj.setScale(picScale);
+			imgObj.setScale(mObjScale);
 		}
 		ImageObject tempImgObj = null;
 		for (int i = 0; i < imgLists.size(); i++) {
@@ -91,7 +111,7 @@ public class OperateView extends View {
 		super.onDraw(canvas);
 		int sc = canvas.save();
 		canvas.clipRect(mCanvasLimits);
-		canvas.drawBitmap(bgBmp, 0, 0, paint);
+		canvas.drawBitmap(bgBmp, null, mImageRect, paint);
 		drawImages(canvas);
 		canvas.restoreToCount(sc);
 		for (ImageObject ad : imgLists) {
@@ -99,6 +119,23 @@ public class OperateView extends View {
 				ad.drawIcon(canvas);
 			}
 		}
+	}
+
+	/**
+	 * 循环画图像
+	 */
+	private void drawImages(Canvas canvas) {
+		for (ImageObject ad : imgLists) {
+			if (ad != null) {
+				ad.draw(canvas);
+			}
+		}
+	}
+
+	@Override
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+		mImageRect.set(left, top, right, bottom);
+		mInitImageRect.set(left, top, right, bottom);
 	}
 
 	public void save() {
@@ -110,6 +147,15 @@ public class OperateView extends View {
 	}
 
 	/**
+	 * 触摸事件分发
+	 */
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent event) {
+
+		return super.dispatchTouchEvent(event);
+	}
+
+	/**
 	 * 根据触控点重绘View
 	 */
 	@Override
@@ -117,8 +163,10 @@ public class OperateView extends View {
 		if(event.getPointerCount() == 1) {
 			handleSingleTouchManipulateEvent(event);
 		} else {
-			if(enableMultiTouch)
+			if(mMultiTouchType == TYPE_MULTI_TOUCH_1)
 				handleMultiTouchManipulateEvent(event);
+			if(mMultiTouchType == TYPE_MULTI_TOUCH_2 && mScaleGestureDetector != null)
+				mScaleGestureDetector.onTouchEvent(event);
 		}
 		invalidate();
 
@@ -127,6 +175,7 @@ public class OperateView extends View {
 	}
 
 	private boolean mMovedSinceDown = false;
+	private boolean mMovedImageSinceDown = false;
 	private boolean mResizeAndRotateSinceDown = false;
 	private boolean mResizeXSinceDown = false;
 	private boolean mResizeYSinceDown = false;
@@ -197,25 +246,31 @@ public class OperateView extends View {
 				break;
 		}
 	}
-	/**
-	 * 获取选中的对象ImageObject
-	 */
-	private ImageObject getSelected() {
-		for (ImageObject ibj : imgLists) {
-			if (ibj.isSelected()) {
-				return ibj;
-			}
-		}
-		return null;
-	}
 
 	private long selectTime = 0;
 	/**
 	 * 单点触控操作
 	 */
 	private void handleSingleTouchManipulateEvent(MotionEvent event) {
-
 		long currentTime = 0;
+
+		//放大后单指移动图片
+		float pointerX = 0,pointerY = 0;
+		int pointerCount = event.getPointerCount();
+		//计算多个触摸点的平均值
+		for(int i = 0; i < pointerCount; i++){
+			pointerX += event.getX(i);
+			pointerY += event.getY(i);
+		}
+		pointerX = pointerX / pointerCount;
+		pointerY = pointerY / pointerCount;
+		if(lastPointerCount != pointerCount){
+			mLastX = pointerX;
+			mLastY = pointerY;
+			isCanDrag = false;
+			lastPointerCount = pointerCount;
+		}
+
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				//拦截触摸事件
@@ -224,6 +279,7 @@ public class OperateView extends View {
 				}
 
 				mMovedSinceDown = false;
+				mMovedImageSinceDown = false;
 				mResizeAndRotateSinceDown = false;
 				int selectedId = -1;
 
@@ -325,6 +381,9 @@ public class OperateView extends View {
 						mPreviousPos.x = (int) event.getX();
 						mPreviousPos.y = (int) event.getY();
 					}
+				} else if(mMultiTouchType == TYPE_MULTI_TOUCH_2) {
+					//放大后单指移动图片
+					mMovedImageSinceDown = true;
 				}
 				break;
 
@@ -333,11 +392,38 @@ public class OperateView extends View {
 				mResizeAndRotateSinceDown = false;
 				mResizeXSinceDown = false;
 				mResizeYSinceDown = false;
+				//放大后单指移动图片
+				mMovedImageSinceDown = false;
+				lastPointerCount = 0;
 				break;
 
 			case MotionEvent.ACTION_MOVE :
 				io = getSelected();
-				if(io == null) break;
+				//放大后单指移动图片
+				if(io == null && (mMovedImageSinceDown && pointerCount == 1)) {
+					//仅仅在放大的状态，图片才可移动
+					if(mImageRect.width() > mInitImageRect.width()){
+						int dx = (int) (pointerX - mLastX);
+						int dy = (int) (pointerY - mLastY);
+						if(!isCanDrag)
+							isCanDrag = isCanDrag(dx, dy);
+						if(isCanDrag) {
+							if (mImageRect.left + dx > mInitImageRect.left)
+								dx = mInitImageRect.left - mImageRect.left;
+							if (mImageRect.right + dx < mInitImageRect.right)
+								dx = mInitImageRect.right - mImageRect.right;
+							if (mImageRect.top + dy > mInitImageRect.top)
+								dy = mInitImageRect.top - mImageRect.top;
+							if (mImageRect.bottom + dy < mInitImageRect.bottom)
+								dy = mInitImageRect.bottom - mImageRect.bottom;
+							mImageRect.offset(dx, dy);
+						}
+					}
+					mLastX = pointerX;
+					mLastY = pointerY;
+					invalidate();
+					break;
+				}
 				//移动
 				if(mMovedSinceDown) {
 					int curX = (int) event.getX();
@@ -406,14 +492,79 @@ public class OperateView extends View {
 		cancelLongPress();
 	}
 
+	@Override
+	public boolean onScale(ScaleGestureDetector detector) {
+		float scale = detector.getScaleFactor();
+		mScaleFactor *= scale;
+		if(mScaleFactor < 1.0f) mScaleFactor = 1.0f;
+		if(mScaleFactor > 2.0f) mScaleFactor = 2.0f;
+
+		if(mImageRect != null){
+			int addWidth =(int) (mInitImageRect.width() * mScaleFactor) - mImageRect.width ();
+			int addHeight=(int) (mInitImageRect.height() * mScaleFactor) - mImageRect.height();
+			float centerWidthRatio = (detector.getFocusX() - mImageRect.left) / mImageRect.width();
+			float centerHeightRatio = (detector.getFocusY() - mImageRect.left) / mImageRect.height();
+
+			int leftAdd = (int) (addWidth * centerWidthRatio);
+			int topAdd = (int) (addHeight * centerHeightRatio);
+
+			mImageRect.left =  mImageRect.left - leftAdd;
+			mImageRect.right = mImageRect.right + (addWidth - leftAdd);
+			mImageRect.top = mImageRect.top - topAdd;
+			mImageRect.bottom = mImageRect.bottom + (addHeight - topAdd);
+			checkCenterWhenScale();
+			updateObjectScale();
+		}
+
+		invalidate();
+		return true;
+	}
+
+	private void checkCenterWhenScale() {
+		int deltaX = 0;
+		int deltaY = 0;
+		if(mImageRect.left > mInitImageRect.left) {
+			deltaX = mInitImageRect.left - mImageRect.left;
+		}
+		if(mImageRect.right < mInitImageRect.right) {
+			deltaX = mInitImageRect.right - mImageRect.right;
+		}
+		if(mImageRect.top > mInitImageRect.top) {
+			deltaY = mInitImageRect.top - mImageRect.top;
+		}
+		if(mImageRect.bottom < mInitImageRect.bottom) {
+			deltaY = mInitImageRect.bottom - mImageRect.bottom;
+		}
+		mImageRect.offset(deltaX,deltaY);
+	}
+
+	@Override
+	public boolean onScaleBegin(ScaleGestureDetector detector) {
+		return true;
+	}
+
+	@Override
+	public void onScaleEnd(ScaleGestureDetector detector) {}
+
+	private boolean isCanDrag(int dx, int dy) {
+		return Math.sqrt((dx * dx) + (dy * dy)) >= 5.0f;
+	}
+
 	/**
-	 * 循环画图像
+	 * 获取选中的对象ImageObject
 	 */
-	private void drawImages(Canvas canvas) {
-		for (ImageObject ad : imgLists) {
-			if (ad != null) {
-				ad.draw(canvas);
+	private ImageObject getSelected() {
+		for(ImageObject obj : imgLists) {
+			if(obj.isSelected()) {
+				return obj;
 			}
+		}
+		return null;
+	}
+
+	private void updateObjectScale() {
+		for(ImageObject obj : imgLists) {
+			if(obj != null) obj.setScaleZoom(mScaleFactor);
 		}
 	}
 

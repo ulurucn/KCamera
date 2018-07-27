@@ -709,9 +709,9 @@ public class ScaleMosaicView extends ViewGroup implements ScaleGestureDetector.O
 
 		if (mImageRect != null){
 			int addWidth =(int) (mInitImageRect.width() * scaleFactor) - mImageRect.width ();
-			int addHeight=(int) (mInitImageRect.height()*scaleFactor) - mImageRect.height();
-			float centerWidthRatio = (detector.getFocusX()-mImageRect.left)/mImageRect.width();
-			float centerHeightRatio = (detector.getFocusY() - mImageRect.left)/mImageRect.height();
+			int addHeight=(int) (mInitImageRect.height() * scaleFactor) - mImageRect.height();
+			float centerWidthRatio = (detector.getFocusX() - mImageRect.left) / mImageRect.width();
+			float centerHeightRatio = (detector.getFocusY() - mImageRect.left) / mImageRect.height();
 
 			int leftAdd = (int) (addWidth * centerWidthRatio);
 			int topAdd = (int) (addHeight * centerHeightRatio);
