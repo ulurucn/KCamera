@@ -23,7 +23,7 @@ import vip.frendy.base.BitmapExt;
 public class ImageObject {
 	protected Point mPoint = new Point();
 	protected float mRotation;
-	protected float mScale = 1.0f;
+	protected float mScale = 1.0f, mScaleX = 1.0f, mScaleY = 1.0f;
 	protected boolean mSelected;
 	protected boolean flipVertical;
 	protected boolean flipHorizontal;
@@ -133,6 +133,7 @@ public class ImageObject {
 		try {
 			canvas.translate(mPoint.x, mPoint.y);
 			canvas.scale(mScale, mScale);
+			canvas.scale(mScaleX, mScaleY);
 			int sc2 = canvas.save();
 			canvas.rotate(mRotation);
 			canvas.scale((flipHorizontal ? -1 : 1), (flipVertical ? -1 : 1));
@@ -329,8 +330,8 @@ public class ImageObject {
 	 * 计算中心点的坐标
 	 */
 	protected void setCenter() {
-		double delX = getWidth() * mScale / 2;
-		double delY = getHeight() * mScale / 2;
+		double delX = getWidth() * mScale * mScaleX / 2;
+		double delY = getHeight() * mScale * mScaleY / 2;
 		R = (float) Math.sqrt((delX * delX + delY * delY));
 		centerRotation = (float) Math.toDegrees(Math.atan(delY / delX));
 	}
@@ -366,10 +367,19 @@ public class ImageObject {
 		return pointF;
 	}
 
-	public void setScale(float Scale) {
-		if (getWidth() * Scale >= resizeBoxSize / 2
-				&& getHeight() * Scale >= resizeBoxSize / 2) {
-			this.mScale = Scale;
+	public void setScale(float scale) {
+		if (getWidth() * scale * mScaleX >= resizeBoxSize / 2
+				&& getHeight() * scale * mScaleY >= resizeBoxSize / 2) {
+			mScale = scale;
+			setCenter();
+		}
+	}
+
+	public void setScale(float scaleX, float scaleY) {
+		if (getWidth() * mScale * scaleX >= resizeBoxSize / 2
+				&& getHeight() * mScale * scaleY >= resizeBoxSize / 2) {
+			mScaleX = scaleX;
+			mScaleY = scaleY;
 			setCenter();
 		}
 	}
@@ -576,6 +586,14 @@ public class ImageObject {
 
 	public float getScale() {
 		return mScale;
+	}
+
+	public float getScaleX() {
+		return mScaleX;
+	}
+
+	public float getScaleY() {
+		return mScaleY;
 	}
 
 	public void setTextObject(boolean isTextObject) {

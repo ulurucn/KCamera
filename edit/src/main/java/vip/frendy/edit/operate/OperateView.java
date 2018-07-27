@@ -23,12 +23,21 @@ public class OperateView extends View {
 	private Rect mCanvasLimits;
 	private Bitmap bgBmp;
 	private Paint paint = new Paint();
-	// true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
+	//true 代表可以添加多个水印图片（或文字），false 代表只可添加单个水印图片（或文字）
 	private boolean isMultiAdd;
 	private float picScale = 0.4f;
 	private ISettingListener iSettingListener;
 	//是否开启双指触控
 	private boolean enableMultiTouch = false;
+
+	public OperateView(Context context, Bitmap resizeBmp, ISettingListener iSettingListener) {
+		super(context);
+		this.bgBmp = resizeBmp;
+		this.iSettingListener = iSettingListener;
+		int width = bgBmp.getWidth();
+		int height = bgBmp.getHeight();
+		mCanvasLimits = new Rect(0, 0, width, height);
+	}
 
 	/**
 	 * 设置水印图片初始化大小
@@ -48,15 +57,6 @@ public class OperateView extends View {
 
 	public void setEnableMultiTouch(boolean enable) {
 		enableMultiTouch = enable;
-	}
-
-	public OperateView(Context context, Bitmap resizeBmp, ISettingListener iSettingListener) {
-		super(context);
-		this.bgBmp = resizeBmp;
-		this.iSettingListener = iSettingListener;
-		int width = bgBmp.getWidth();
-		int height = bgBmp.getHeight();
-		mCanvasLimits = new Rect(0, 0, width, height);
 	}
 
 	/**
@@ -128,7 +128,8 @@ public class OperateView extends View {
 
 	private boolean mMovedSinceDown = false;
 	private boolean mResizeAndRotateSinceDown = false;
-	private boolean mResizeSinceDown = false;
+	private boolean mResizeXSinceDown = false;
+	private boolean mResizeYSinceDown = false;
 	private float mStartDistance = 0.0f;
 	private float mStartScale = 0.0f;
 	private float mStartRot = 0.0f;
@@ -229,14 +230,14 @@ public class OperateView extends View {
 				for(int i = imgLists.size() - 1; i >= 0; --i) {
 					ImageObject io = imgLists.get(i);
 					if(io.contains(event.getX(), event.getY())
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP)
-                            || io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER)
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER)) {
+							|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM) && io.getRotateBm() != null)
+							|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP) && io.getFlipBm() != null)
+							|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP) && io.getDeleteBm() != null)
+                            || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM) && io.getSettingBm() != null)
+							|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER) && io.getLeftBm() != null)
+							|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER) && io.getTopBm() != null)
+							|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER) && io.getRightBm() != null)
+							|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER) && io.getBottomBm() != null)) {
 						io.setSelected(true);
 						imgLists.remove(i);
 						imgLists.add(io);
@@ -257,14 +258,14 @@ public class OperateView extends View {
 					for(int i = imgLists.size() - 1; i >= 0; --i) {
 						ImageObject io = imgLists.get(i);
 						if (io.contains(event.getX(), event.getY())
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP)
-                                || io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER)
-								|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER)) {
+								|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM) && io.getRotateBm() != null)
+								|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP) && io.getFlipBm() != null)
+								|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP) && io.getDeleteBm() != null)
+								|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM) && io.getSettingBm() != null)
+								|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER) && io.getLeftBm() != null)
+								|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER) && io.getTopBm() != null)
+								|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER) && io.getRightBm() != null)
+								|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER) && io.getBottomBm() != null)) {
 							io.setSelected(true);
 							imgLists.remove(i);
 							imgLists.add(io);
@@ -299,18 +300,26 @@ public class OperateView extends View {
 						io.horizontalFlip();
 					} else if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM) && io.getSettingBm() != null) {
 						iSettingListener.showSettingBar();
-					} else if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER) && io.getLeftBm() != null
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER) && io.getTopBm() != null
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER) && io.getRightBm() != null
-							|| io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER) && io.getBottomBm() != null) {
-						mResizeSinceDown = true;
+					} else if((io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER) && io.getLeftBm() != null)
+							|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER) && io.getRightBm() != null)) {
+						mResizeXSinceDown = true;
 						float x = event.getX();
 						float y = event.getY();
 						float delX = x - io.getPoint().x;
 						float delY = y - io.getPoint().y;
 						diff = (float) Math.sqrt((delX * delX + delY * delY));
 						mStartDistance = diff;
-						mStartScale = io.getScale();
+						mStartScale = io.getScaleX();
+					} else if((io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER) && io.getTopBm() != null)
+							|| (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER) && io.getBottomBm() != null)) {
+						mResizeYSinceDown = true;
+						float x = event.getX();
+						float y = event.getY();
+						float delX = x - io.getPoint().x;
+						float delY = y - io.getPoint().y;
+						diff = (float) Math.sqrt((delX * delX + delY * delY));
+						mStartDistance = diff;
+						mStartScale = io.getScaleY();
 					} else if (io.contains(event.getX(), event.getY())) {
 						mMovedSinceDown = true;
 						mPreviousPos.x = (int) event.getX();
@@ -322,7 +331,8 @@ public class OperateView extends View {
 			case MotionEvent.ACTION_UP :
 				mMovedSinceDown = false;
 				mResizeAndRotateSinceDown = false;
-				mResizeSinceDown = false;
+				mResizeXSinceDown = false;
+				mResizeYSinceDown = false;
 				break;
 
 			case MotionEvent.ACTION_MOVE :
@@ -366,7 +376,7 @@ public class OperateView extends View {
 					}
 				}
 				//拉伸
-				if(mResizeSinceDown) {
+				if(mResizeXSinceDown) {
 					float x = event.getX();
 					float y = event.getY();
 					float delX = x - io.getPoint().x;
@@ -375,7 +385,19 @@ public class OperateView extends View {
 					float scale = diff / mStartDistance;
 					float newscale = mStartScale * scale;
 					if(newscale < 10.0f && newscale > 0.1f) {
-						io.setScale(newscale);
+						io.setScale(newscale, io.getScaleY());
+					}
+				}
+				if(mResizeYSinceDown) {
+					float x = event.getX();
+					float y = event.getY();
+					float delX = x - io.getPoint().x;
+					float delY = y - io.getPoint().y;
+					diff = (float) Math.sqrt((delX * delX + delY * delY));
+					float scale = diff / mStartDistance;
+					float newscale = mStartScale * scale;
+					if(newscale < 10.0f && newscale > 0.1f) {
+						io.setScale(io.getScaleX(), newscale);
 					}
 				}
 				break;
