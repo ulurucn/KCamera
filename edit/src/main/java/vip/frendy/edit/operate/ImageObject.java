@@ -218,6 +218,25 @@ public class ImageObject {
 	}
 
 	/**
+	 * 获取矩形图片边上中点
+	 */
+	protected PointF getPointEdgeLeftCenter() {
+		return getPonitEdgeCenterByRotation(centerRotation - 210, getWidth());
+	}
+
+	protected PointF getPointEdgeTopCenter() {
+		return getPonitEdgeCenterByRotation(centerRotation - 120, getHeight());
+	}
+
+	protected PointF getPointEdgeRightCenter() {
+		return getPonitEdgeCenterByRotation(centerRotation - 30, getWidth());
+	}
+
+	protected PointF getPointEdgeBottomCenter() {
+		return getPonitEdgeCenterByRotation(centerRotation - 300, getHeight());
+	}
+
+	/**
 	 * 获取缩放和旋转点
 	 */
 	protected PointF getResizeAndRotatePoint() {
@@ -243,22 +262,38 @@ public class ImageObject {
 		PointF point = null;
 		float delX = 0;
 		float delY = 0;
-		if (OperateConstants.LEFTTOP == type && deleteBm != null) {
+		if(OperateConstants.LEFTTOP == type && deleteBm != null) {
 			point = getPointLeftTop();
 			delX = x - (point.x - deleteBm.getWidth() / 2);
 			delY = y - (point.y - deleteBm.getHeight() / 2);
-		} else if (OperateConstants.RIGHTBOTTOM == type && rotateBm != null) {
+		} else if(OperateConstants.RIGHTBOTTOM == type && rotateBm != null) {
 			point = getPointRightBottom();
 			delX = x - (point.x + rotateBm.getWidth() / 2);
 			delY = y - (point.y + rotateBm.getHeight() / 2);
-		} else if (OperateConstants.RIGHTTOP == type && flipBm != null){
+		} else if(OperateConstants.RIGHTTOP == type && flipBm != null) {
 			point = getPointRightTop();
 			delX = x - (point.x + flipBm.getWidth() / 2);
 			delY = y - (point.y + flipBm.getHeight() / 2);
-		}else if(OperateConstants.LEFTBOTTOM == type && settingBm != null){
+		} else if(OperateConstants.LEFTBOTTOM == type && settingBm != null) {
 			point = getPointLeftBottom();
 			delX = x - (point.x - settingBm.getWidth() / 2);
 			delY = y - (point.y - settingBm.getHeight() / 2);
+		} else if(OperateConstants.LEFTCENTER == type && leftBm != null) {
+			point = getPointEdgeLeftCenter();
+			delX = x - (point.x - leftBm.getWidth() / 2);
+			delY = y - (point.y - leftBm.getHeight() / 2);
+		} else if(OperateConstants.TOPCENTER == type && topBm != null) {
+			point = getPointEdgeTopCenter();
+			delX = x - (point.x - topBm.getWidth() / 2);
+			delY = y - (point.y - topBm.getHeight() / 2);
+		} else if(OperateConstants.RIGHTCENTER == type && rightBm != null) {
+			point = getPointEdgeRightCenter();
+			delX = x - (point.x - rightBm.getWidth() / 2);
+			delY = y - (point.y - rightBm.getHeight() / 2);
+		} else if(OperateConstants.BOTTOMCENTER == type && bottomBm != null) {
+			point = getPointEdgeBottomCenter();
+			delX = x - (point.x - bottomBm.getWidth() / 2);
+			delY = y - (point.y - bottomBm.getHeight() / 2);
 		}
 		float diff = (float) Math.sqrt((delX * delX + delY * delY));
 		if(Math.abs(diff) <= resizeBoxSize) {
@@ -333,7 +368,7 @@ public class ImageObject {
 		canvas.drawLine(rotatePF.x, rotatePF.y, settingPF.x, settingPF.y, paint);
 		canvas.drawLine(settingPF.x, settingPF.y, flipPF.x, flipPF.y, paint);
 
-		if (deleteBm != null) {
+		if(deleteBm != null) {
 			canvas.drawBitmap(deleteBm, deletePF.x - deleteBm.getWidth() / 2,
 					deletePF.y - deleteBm.getHeight() / 2, paint);
 		}
@@ -350,10 +385,10 @@ public class ImageObject {
 					settingPF.y - settingBm.getHeight() / 2, paint);
 		}
 
-		PointF leftPF = getPonitEdgeCenterByRotation(centerRotation - 210, srcBm.getWidth());
-		PointF topPF = getPonitEdgeCenterByRotation(centerRotation - 120, srcBm.getHeight());
-		PointF rightPF = getPonitEdgeCenterByRotation(centerRotation - 30, srcBm.getWidth());
-		PointF bottomPF = getPonitEdgeCenterByRotation(centerRotation - 300, srcBm.getHeight());
+		PointF leftPF = getPointEdgeLeftCenter();
+		PointF topPF = getPointEdgeTopCenter();
+		PointF rightPF = getPointEdgeRightCenter();
+		PointF bottomPF = getPointEdgeBottomCenter();
 
 		if(leftBm != null) {
 			canvas.drawBitmap(leftBm,leftPF.x - leftBm.getWidth() / 2,
@@ -465,6 +500,38 @@ public class ImageObject {
 
 	public void setSettingBm(Bitmap settingBm){
 		this.settingBm = settingBm;
+	}
+
+	public Bitmap getLeftBm() {
+		return leftBm;
+	}
+
+	public void setLeftBm(Bitmap bitmap) {
+		leftBm = bitmap;
+	}
+
+	public Bitmap getTopBm() {
+		return topBm;
+	}
+
+	public void setTopBm(Bitmap bitmap) {
+		topBm = bitmap;
+	}
+
+	public Bitmap getRightBm() {
+		return rightBm;
+	}
+
+	public void setRightBm(Bitmap bitmap) {
+		rightBm = bitmap;
+	}
+
+	public Bitmap getBottomBm() {
+		return bottomBm;
+	}
+
+	public void setBottomBm(Bitmap bitmap) {
+		bottomBm = bitmap;
 	}
 
 	public Point getPosition() {
