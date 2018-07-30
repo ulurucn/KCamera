@@ -114,9 +114,12 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         canvas.drawBitmap(bgBmp, null, mImageRect, paint);
         drawImages(canvas);
         canvas.restoreToCount(sc);
-        for (ImageObject ad : imgLists) {
-            if (ad != null && ad.isSelected()) {
+        for(ImageObject ad : imgLists) {
+            if(ad != null && ad.isSelected()) {
                 ad.drawIcon(canvas);
+                ad.setSelectedDrawed(true);
+            } else if(ad != null) {
+                ad.setSelectedDrawed(false);
             }
         }
     }
@@ -324,7 +327,7 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                 }
 
                 ImageObject io = getSelected();
-                if(io != null) {
+                if(io != null && io.isSelectedDrawed()) {
                     if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP) && io.getDeleteBm() != null) {
                         imgLists.remove(io);
                     } else if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM) && io.getRotateBm() != null) {

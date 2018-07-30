@@ -24,7 +24,7 @@ public class ImageObject {
 	protected Point mPoint = new Point();
 	protected float mRotation;
 	protected float mScale = 1.0f, mScaleX = 1.0f, mScaleY = 1.0f, mScaleZoom = 1.0f;
-	protected boolean mSelected;
+	protected boolean mSelected, mSelectedDrawed = false;
 	protected boolean flipVertical;
 	protected boolean flipHorizontal;
 	protected final int resizeBoxSize = 100;
@@ -483,6 +483,14 @@ public class ImageObject {
 
 	public void setSelected(boolean Selected) {
 		this.mSelected = Selected;
+	}
+
+	public boolean isSelectedDrawed() {
+		return mSelectedDrawed;
+	}
+
+	public void setSelectedDrawed(boolean drawed) {
+		mSelectedDrawed = drawed;
 	}
 
 	public boolean isFlipVertical() {
