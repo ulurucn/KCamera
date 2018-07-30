@@ -21,6 +21,7 @@ import vip.frendy.base.BitmapExt;
  * @modified frendy
  */
 public class ImageObject {
+	public String tag;
 	protected Point mPoint = new Point();
 	protected float mRotation;
 	protected float mScale = 1.0f, mScaleX = 1.0f, mScaleY = 1.0f, mScaleZoom = 1.0f;

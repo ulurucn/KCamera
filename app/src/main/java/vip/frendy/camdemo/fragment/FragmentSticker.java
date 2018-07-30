@@ -106,7 +106,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
                     return false;
                 }
                 @Override
-                public void onOperateViewAction(int type) {
+                public void onOperateViewAction(int type, String tag) {
                     if(OperateView.ACTION_DELETE == type) {
                         Log.e("sticker", "** delete sticker");
                     } else {

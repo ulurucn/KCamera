@@ -340,7 +340,7 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                     if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP) && io.getDeleteBm() != null) {
                         imgLists.remove(io);
                         if(mTouchListener != null)
-                            mTouchListener.onOperateViewAction(ACTION_DELETE);
+                            mTouchListener.onOperateViewAction(ACTION_DELETE, io.tag);
                     } else if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM) && io.getRotateBm() != null) {
                         mResizeAndRotateSinceDown = true;
                         float x = event.getX();
@@ -353,15 +353,15 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                         mStartScale = io.getScale();
                         mStartRot = io.getRotation();
                         if(mTouchListener != null)
-                            mTouchListener.onOperateViewAction(ACTION_ROTATE_AND_RESIZE);
+                            mTouchListener.onOperateViewAction(ACTION_ROTATE_AND_RESIZE, io.tag);
                     } else if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP) && io.getFlipBm() != null) {
                         io.horizontalFlip();
                         if(mTouchListener != null)
-                            mTouchListener.onOperateViewAction(ACTION_FLIP);
+                            mTouchListener.onOperateViewAction(ACTION_FLIP, io.tag);
                     } else if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM) && io.getSettingBm() != null) {
                         iSettingListener.showSettingBar();
                         if(mTouchListener != null)
-                            mTouchListener.onOperateViewAction(ACTION_SETTING);
+                            mTouchListener.onOperateViewAction(ACTION_SETTING, io.tag);
                     } else if((io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER) && io.getLeftBm() != null)
                             || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER) && io.getRightBm() != null)) {
                         mResizeXSinceDown = true;
@@ -373,7 +373,7 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                         mStartDistance = diff;
                         mStartScale = io.getScaleX();
                         if(mTouchListener != null)
-                            mTouchListener.onOperateViewAction(ACTION_RESIZE_LR);
+                            mTouchListener.onOperateViewAction(ACTION_RESIZE_LR, io.tag);
                     } else if((io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER) && io.getTopBm() != null)
                             || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER) && io.getBottomBm() != null)) {
                         mResizeYSinceDown = true;
@@ -385,7 +385,7 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                         mStartDistance = diff;
                         mStartScale = io.getScaleY();
                         if(mTouchListener != null)
-                            mTouchListener.onOperateViewAction(ACTION_RESIZE_TB);
+                            mTouchListener.onOperateViewAction(ACTION_RESIZE_TB, io.tag);
                     } else if (io.contains(event.getX(), event.getY())) {
                         mMovedSinceDown = true;
                         mPreviousPos.x = (int) event.getX();
@@ -649,7 +649,7 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
     public interface OnOperateTouchListener {
         boolean onOperateViewTouch(MotionEvent event);
         //监听操作
-        void onOperateViewAction(int type);
+        void onOperateViewAction(int type, String tag);
     }
 
     /**
