@@ -168,7 +168,7 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
             if(mMultiTouchType == TYPE_MULTI_TOUCH_2 && mScaleGestureDetector != null)
                 mScaleGestureDetector.onTouchEvent(event);
         }
-        if(mMultiTouchType == TYPE_MULTI_TOUCH_2) {
+        if(mMultiTouchType == TYPE_MULTI_TOUCH_2 && !isInObjectArea(event)) {
             //放大后移动图片
             handlerScaleGesture(event);
         }
@@ -211,7 +211,6 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                 float delY = (y2 - y1);
                 diff = (float) Math.sqrt((delX * delX + delY * delY));
                 mStartDistance = diff;
-                // float q = (delX / delY);
                 mPrevRot = (float) Math.toDegrees(Math.atan2(delX, delY));
                 for (ImageObject io : imgLists) {
                     if (io.isSelected()) {
@@ -390,13 +389,11 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                     mPreviousPos.x = curX;
                     mPreviousPos.y = curY;
                     Point p = io.getPosition();
-                    int x = p.x + diffX;
-                    int y = p.y + diffY;
                     if (p.x + diffX >= mCanvasLimits.left
                             && p.x + diffX <= mCanvasLimits.right
                             && p.y + diffY >= mCanvasLimits.top
                             && p.y + diffY <= mCanvasLimits.bottom)
-                        io.moveBy((int) (diffX), (int) (diffY));
+                        io.moveBy(diffX, diffY);
                 }
                 //旋转和缩放
                 if(mResizeAndRotateSinceDown) {
@@ -467,7 +464,7 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         }
 
         ImageObject io = getSelected();
-        if(io == null && mMultiTouchType == TYPE_MULTI_TOUCH_2) {
+        if(io == null && mMultiTouchType == TYPE_MULTI_TOUCH_2 && event.getAction() == MotionEvent.ACTION_DOWN) {
             mMovedImageSinceDown = true;
         }
 
@@ -511,7 +508,7 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         float scale = detector.getScaleFactor();
         mScaleFactor *= scale;
         if(mScaleFactor < 1.0f) mScaleFactor = 1.0f;
-        if(mScaleFactor > 2.0f) mScaleFactor = 2.0f;
+        if(mScaleFactor > 3.0f) mScaleFactor = 3.0f;
 
         if(mImageRect != null){
             int addWidth =(int) (mInitImageRect.width() * mScaleFactor) - mImageRect.width ();
@@ -586,6 +583,24 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         for(ImageObject obj : imgLists) {
             obj.moveBy(x, y);
         }
+    }
+
+    private boolean isInObjectArea(MotionEvent event) {
+        for(int i = imgLists.size() - 1; i >= 0; --i) {
+            ImageObject io = imgLists.get(i);
+            if(io.contains(event.getX(), event.getY())
+                    || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM) && io.getRotateBm() != null)
+                    || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP) && io.getFlipBm() != null)
+                    || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP) && io.getDeleteBm() != null)
+                    || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM) && io.getSettingBm() != null)
+                    || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER) && io.getLeftBm() != null)
+                    || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER) && io.getTopBm() != null)
+                    || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER) && io.getRightBm() != null)
+                    || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER) && io.getBottomBm() != null)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
