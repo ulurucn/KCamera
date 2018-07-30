@@ -467,39 +467,34 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         if(io == null && mMultiTouchType == TYPE_MULTI_TOUCH_2 && event.getAction() == MotionEvent.ACTION_DOWN) {
             mMovedImageSinceDown = true;
         }
-
-        if(mMovedImageSinceDown) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_MOVE:
-                    //仅仅在放大的状态，图片才可移动
-                    if(mImageRect.width() > mInitImageRect.width()){
-                        int dx = (int) (pointerX - mLastX);
-                        int dy = (int) (pointerY - mLastY);
-                        if(!isCanDrag)
-                            isCanDrag = isCanDrag(dx, dy);
-                        if(isCanDrag) {
-                            if (mImageRect.left + dx > mInitImageRect.left)
-                                dx = mInitImageRect.left - mImageRect.left;
-                            if (mImageRect.right + dx < mInitImageRect.right)
-                                dx = mInitImageRect.right - mImageRect.right;
-                            if (mImageRect.top + dy > mInitImageRect.top)
-                                dy = mInitImageRect.top - mImageRect.top;
-                            if (mImageRect.bottom + dy < mInitImageRect.bottom)
-                                dy = mInitImageRect.bottom - mImageRect.bottom;
-                            mImageRect.offset(dx, dy);
-                            //更新贴纸位置
-                            updateObjectPosition(dx, dy);
-                        }
-                    }
-                    mLastX = pointerX;
-                    mLastY = pointerY;
-                    invalidate();
-                    break;
-                case MotionEvent.ACTION_UP:
-                    mMovedImageSinceDown = false;
-                    lastPointerCount = 0;
-                    break;
+        if(mMovedImageSinceDown && event.getAction() == MotionEvent.ACTION_MOVE) {
+            //仅仅在放大的状态，图片才可移动
+            if(mImageRect.width() > mInitImageRect.width()){
+                int dx = (int) (pointerX - mLastX);
+                int dy = (int) (pointerY - mLastY);
+                if(!isCanDrag)
+                    isCanDrag = isCanDrag(dx, dy);
+                if(isCanDrag) {
+                    if (mImageRect.left + dx > mInitImageRect.left)
+                        dx = mInitImageRect.left - mImageRect.left;
+                    if (mImageRect.right + dx < mInitImageRect.right)
+                        dx = mInitImageRect.right - mImageRect.right;
+                    if (mImageRect.top + dy > mInitImageRect.top)
+                        dy = mInitImageRect.top - mImageRect.top;
+                    if (mImageRect.bottom + dy < mInitImageRect.bottom)
+                        dy = mInitImageRect.bottom - mImageRect.bottom;
+                    mImageRect.offset(dx, dy);
+                    //更新贴纸位置
+                    updateObjectPosition(dx, dy);
+                }
             }
+            mLastX = pointerX;
+            mLastY = pointerY;
+            invalidate();
+        }
+        if(event.getAction() == MotionEvent.ACTION_UP) {
+            mMovedImageSinceDown = false;
+            lastPointerCount = 0;
         }
     }
 
@@ -546,7 +541,9 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         if(mImageRect.bottom < mInitImageRect.bottom) {
             deltaY = mInitImageRect.bottom - mImageRect.bottom;
         }
-        mImageRect.offset(deltaX,deltaY);
+        mImageRect.offset(deltaX, deltaY);
+        //更新贴纸位置
+        updateObjectPosition(deltaX, deltaY);
     }
 
     @Override
