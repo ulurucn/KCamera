@@ -46,6 +46,15 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
     private int lastPointerCount = 0;
     private boolean isCanDrag;
 
+    /**
+     * 操作类型
+     */
+    public static int ACTION_DELETE = 0;
+    public static int ACTION_FLIP = 1;
+    public static int ACTION_SETTING = 2;
+    public static int ACTION_ROTATE_AND_RESIZE = 3;
+    public static int ACTION_RESIZE_LR = 4;
+    public static int ACTION_RESIZE_TB = 5;
 
     public OperateView(Context context, Bitmap resizeBmp, ISettingListener iSettingListener) {
         super(context);
@@ -330,6 +339,8 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                 if(io != null && io.isSelectedDrawed()) {
                     if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTTOP) && io.getDeleteBm() != null) {
                         imgLists.remove(io);
+                        if(mTouchListener != null)
+                            mTouchListener.onOperateViewAction(ACTION_DELETE);
                     } else if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTBOTTOM) && io.getRotateBm() != null) {
                         mResizeAndRotateSinceDown = true;
                         float x = event.getX();
@@ -341,10 +352,16 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                         mPrevRot = (float) Math.toDegrees(Math.atan2(delX, delY));
                         mStartScale = io.getScale();
                         mStartRot = io.getRotation();
+                        if(mTouchListener != null)
+                            mTouchListener.onOperateViewAction(ACTION_ROTATE_AND_RESIZE);
                     } else if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTTOP) && io.getFlipBm() != null) {
                         io.horizontalFlip();
+                        if(mTouchListener != null)
+                            mTouchListener.onOperateViewAction(ACTION_FLIP);
                     } else if(io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTBOTTOM) && io.getSettingBm() != null) {
                         iSettingListener.showSettingBar();
+                        if(mTouchListener != null)
+                            mTouchListener.onOperateViewAction(ACTION_SETTING);
                     } else if((io.pointOnCorner(event.getX(), event.getY(), OperateConstants.LEFTCENTER) && io.getLeftBm() != null)
                             || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.RIGHTCENTER) && io.getRightBm() != null)) {
                         mResizeXSinceDown = true;
@@ -355,6 +372,8 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                         diff = (float) Math.sqrt((delX * delX + delY * delY));
                         mStartDistance = diff;
                         mStartScale = io.getScaleX();
+                        if(mTouchListener != null)
+                            mTouchListener.onOperateViewAction(ACTION_RESIZE_LR);
                     } else if((io.pointOnCorner(event.getX(), event.getY(), OperateConstants.TOPCENTER) && io.getTopBm() != null)
                             || (io.pointOnCorner(event.getX(), event.getY(), OperateConstants.BOTTOMCENTER) && io.getBottomBm() != null)) {
                         mResizeYSinceDown = true;
@@ -365,6 +384,8 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
                         diff = (float) Math.sqrt((delX * delX + delY * delY));
                         mStartDistance = diff;
                         mStartScale = io.getScaleY();
+                        if(mTouchListener != null)
+                            mTouchListener.onOperateViewAction(ACTION_RESIZE_TB);
                     } else if (io.contains(event.getX(), event.getY())) {
                         mMovedSinceDown = true;
                         mPreviousPos.x = (int) event.getX();
@@ -627,6 +648,8 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
 
     public interface OnOperateTouchListener {
         boolean onOperateViewTouch(MotionEvent event);
+        //监听操作
+        void onOperateViewAction(int type);
     }
 
     /**

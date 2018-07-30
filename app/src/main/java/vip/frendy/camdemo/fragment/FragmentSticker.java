@@ -3,6 +3,7 @@ package vip.frendy.camdemo.fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -103,6 +104,14 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
                         return true;
                     }
                     return false;
+                }
+                @Override
+                public void onOperateViewAction(int type) {
+                    if(OperateView.ACTION_DELETE == type) {
+                        Log.e("sticker", "** delete sticker");
+                    } else {
+                        Log.e("sticker", "** action sticker : " + type);
+                    }
                 }
             });
         } else {
