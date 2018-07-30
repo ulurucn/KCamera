@@ -310,12 +310,12 @@ public class ImageObject {
 			delY = y - (point.y - topBm.getHeight() / 2);
 		} else if(OperateConstants.RIGHTCENTER == type && rightBm != null) {
 			point = getPointEdgeRightCenter();
-			delX = x - (point.x - rightBm.getWidth() / 2);
-			delY = y - (point.y - rightBm.getHeight() / 2);
+			delX = x - (point.x + rightBm.getWidth() / 2);
+			delY = y - (point.y + rightBm.getHeight() / 2);
 		} else if(OperateConstants.BOTTOMCENTER == type && bottomBm != null) {
 			point = getPointEdgeBottomCenter();
-			delX = x - (point.x - bottomBm.getWidth() / 2);
-			delY = y - (point.y - bottomBm.getHeight() / 2);
+			delX = x - (point.x + bottomBm.getWidth() / 2);
+			delY = y - (point.y + bottomBm.getHeight() / 2);
 		}
 		float diff = (float) Math.sqrt((delX * delX + delY * delY));
 		if(Math.abs(diff) <= resizeBoxSize) {
