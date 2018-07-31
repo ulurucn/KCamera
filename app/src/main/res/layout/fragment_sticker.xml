@@ -7,7 +7,7 @@
     <LinearLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="vertical">
     </LinearLayout>
@@ -24,6 +24,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="玩坏了"/>
+
+        <Button
+            android:id="@+id/sitcker2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="吊坠"/>
+
+        <Button
+            android:id="@+id/sitcker3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="耳朵"/>
 
         <Button
             android:id="@+id/text"
@@ -87,5 +99,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="cancel"/>
+
+        <Button
+            android:id="@+id/show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="show"/>
     </LinearLayout>
 </FrameLayout>
