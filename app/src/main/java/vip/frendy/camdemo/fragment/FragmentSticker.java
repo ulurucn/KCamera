@@ -71,6 +71,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         mRootView.findViewById(R.id.show).setOnClickListener(this);
         mRootView.findViewById(R.id.sitcker).setOnClickListener(this);
         mRootView.findViewById(R.id.sitcker2).setOnClickListener(this);
+        mRootView.findViewById(R.id.sitcker3).setOnClickListener(this);
         mRootView.findViewById(R.id.text).setOnClickListener(this);
         mRootView.findViewById(R.id.seekBar_ok).setOnClickListener(this);
         mRootView.findViewById(R.id.seekBar_cancel).setOnClickListener(this);
@@ -135,6 +136,8 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.st_ornaments5));
         } else if(view.getId() == R.id.sitcker2) {
             addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.earring8));
+        } else if(view.getId() == R.id.sitcker3) {
+            addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.face4));
         } else if(view.getId() == R.id.text) {
             addText("写死的测试文本");
         } else if(view.getId() == R.id.seekBar_cancel) {
@@ -153,6 +156,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, OperateUtils.CENTER, 150, 100,
                 R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
                 R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate);
+        sticker.resizeBoxSize = 60;
         mOperateView.addItem(sticker);
     }
 

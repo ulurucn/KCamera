@@ -32,6 +32,12 @@
             android:text="吊坠"/>
 
         <Button
+            android:id="@+id/sitcker3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="耳朵"/>
+
+        <Button
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
