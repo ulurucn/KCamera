@@ -22,13 +22,14 @@ import vip.frendy.base.BitmapExt;
  */
 public class ImageObject {
 	public String tag;
+	public int resizeBoxSize = 100;
+
 	protected Point mPoint = new Point();
 	protected float mRotation;
 	protected float mScale = 1.0f, mScaleX = 1.0f, mScaleY = 1.0f, mScaleZoom = 1.0f;
 	protected boolean mSelected, mSelectedDrawed = false;
 	protected boolean flipVertical;
 	protected boolean flipHorizontal;
-	protected final int resizeBoxSize = 100;
 	protected boolean isTextObject;
 	protected Bitmap srcBm, _srcBm;
 	protected Bitmap rotateBm, deleteBm, flipBm, settingBm;
