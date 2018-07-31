@@ -288,36 +288,36 @@ public class ImageObject {
 		float delY = 0;
 		if(OperateConstants.LEFTTOP == type && deleteBm != null) {
 			point = getPointLeftTop();
-			delX = x - (point.x - deleteBm.getWidth() / 2);
-			delY = y - (point.y - deleteBm.getHeight() / 2);
+			delX = x - (point.x);
+			delY = y - (point.y);
 		} else if(OperateConstants.RIGHTBOTTOM == type && rotateBm != null) {
 			point = getPointRightBottom();
-			delX = x - (point.x + rotateBm.getWidth() / 2);
-			delY = y - (point.y + rotateBm.getHeight() / 2);
+			delX = x - (point.x);
+			delY = y - (point.y);
 		} else if(OperateConstants.RIGHTTOP == type && flipBm != null) {
 			point = getPointRightTop();
-			delX = x - (point.x + flipBm.getWidth() / 2);
-			delY = y - (point.y + flipBm.getHeight() / 2);
+			delX = x - (point.x);
+			delY = y - (point.y);
 		} else if(OperateConstants.LEFTBOTTOM == type && settingBm != null) {
 			point = getPointLeftBottom();
-			delX = x - (point.x - settingBm.getWidth() / 2);
-			delY = y - (point.y - settingBm.getHeight() / 2);
+			delX = x - (point.x);
+			delY = y - (point.y);
 		} else if(OperateConstants.LEFTCENTER == type && leftBm != null) {
 			point = getPointEdgeLeftCenter();
-			delX = x - (point.x - leftBm.getWidth() / 2);
-			delY = y - (point.y - leftBm.getHeight() / 2);
+			delX = x - (point.x);
+			delY = y - (point.y);
 		} else if(OperateConstants.TOPCENTER == type && topBm != null) {
 			point = getPointEdgeTopCenter();
-			delX = x - (point.x - topBm.getWidth() / 2);
-			delY = y - (point.y - topBm.getHeight() / 2);
+			delX = x - (point.x);
+			delY = y - (point.y);
 		} else if(OperateConstants.RIGHTCENTER == type && rightBm != null) {
 			point = getPointEdgeRightCenter();
-			delX = x - (point.x + rightBm.getWidth() / 2);
-			delY = y - (point.y + rightBm.getHeight() / 2);
+			delX = x - (point.x);
+			delY = y - (point.y);
 		} else if(OperateConstants.BOTTOMCENTER == type && bottomBm != null) {
 			point = getPointEdgeBottomCenter();
-			delX = x - (point.x + bottomBm.getWidth() / 2);
-			delY = y - (point.y + bottomBm.getHeight() / 2);
+			delX = x - (point.x);
+			delY = y - (point.y);
 		}
 		float diff = (float) Math.sqrt((delX * delX + delY * delY));
 		if(Math.abs(diff) <= resizeBoxSize) {
