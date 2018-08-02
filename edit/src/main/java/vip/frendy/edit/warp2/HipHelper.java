@@ -35,7 +35,8 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
     private boolean isSelectedOp = false;
     private float x_1, y_1;
     private float op_x, op_y;
-    private float op_scale = 1;
+    private int op_rate = 5;
+    private float mWidthOval, mHeightOval;
 
     private int mStrength = 0;
     private int r_max = 300;
@@ -128,12 +129,10 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
         }
 
         if(mBitmapOval != null && visible && !original) {
-            float width = mBitmapOval.getWidth() * op_scale;
-            float height = mBitmapOval.getHeight() * op_scale;
-            mOval.left = x_1 - width / 2;
-            mOval.top = y_1 - height / 2;
-            mOval.right = mOval.left + width;
-            mOval.bottom = mOval.top + height;
+            mOval.left = x_1 - mWidthOval / 2;
+            mOval.top = y_1 - mHeightOval / 2;
+            mOval.right = mOval.left + mWidthOval;
+            mOval.bottom = mOval.top + mHeightOval;
             canvas.drawBitmap(mBitmapOval, null, mOval, null);
         }
         if(mBitmapOp != null && visible && !original) {
@@ -186,6 +185,9 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                     isSelectedOp = true;
                     op_x = event.getX();
                     op_y = event.getY();
+                } else if(!visible) {
+                    visible = true;
+                    invalidate();
                 } else if(isInArea(event.getX(), event.getY(), mOval, 0)) {
                     isSelectedOval = true;
                     isSelectedOp = false;
@@ -204,10 +206,20 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                     x_1 = event.getX();
                     y_1 = event.getY();
                     invalidate();
-                } else if(isSelectedOp) {
-                    double d = event.getX() - op_x;
+                } else if(isSelectedOp && mBitmapOval != null) {
+                    double d = (event.getX() - op_x) / op_rate;
                     if(d != 0) {
-                        op_scale = 1 + (float) d / mCanvasView.getWidth();
+                        mWidthOval = mWidthOval + (float) d;
+                        mHeightOval = mHeightOval + (float) d * mBitmapOval.getHeight() / mBitmapOval.getWidth();
+
+                        if(mWidthOval >= 2 * mBitmapOval.getWidth()) {
+                            mWidthOval = 2 * mBitmapOval.getWidth();
+                            mHeightOval = 2 * mBitmapOval.getHeight();
+                        }
+                        if(mWidthOval <= 10) {
+                            mWidthOval = 10;
+                            mHeightOval = 10 * mBitmapOval.getHeight() / mBitmapOval.getWidth();
+                        }
                         invalidate();
                     }
                 }
@@ -225,6 +237,9 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
                     isSelectedCircleOp = true;
                     op_x = event.getX();
                     op_y = event.getY();
+                } else if(!visible) {
+                    visible = true;
+                    invalidate();
                 } else if(isInCircle(event.getX(), event.getY(), x_1, y_1, r_1)) {
                     isSelectedCircle = true;
                     isSelectedCircleOp = false;
@@ -276,6 +291,10 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
 
     public boolean getOriginal() {
         return original;
+    }
+
+    public void setOpRate(int rate) {
+        op_rate = rate;
     }
 
     //作用范围半径
@@ -354,6 +373,10 @@ public class HipHelper implements CanvasView.OnCanvasChangeListener {
 
     public void setOvalBitmap(Bitmap oval) {
         mBitmapOval = oval;
+        if(mBitmapOval != null) {
+            mWidthOval = mBitmapOval.getWidth();
+            mHeightOval = mBitmapOval.getHeight();
+        }
     }
 
     public void setOpBitmap(Bitmap op) {

@@ -3,7 +3,9 @@ package vip.frendy.camdemo.fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -37,7 +39,6 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     private OperateUtils mOperateUtils;
     private LinearLayout mSettingBar;
     private LinearLayout mStickerBar;
-    private int mDefalutProgress = 100;
 
     public static FragmentSticker getInstance(Bundle args, IPictureEditListener listener) {
         FragmentSticker fragment = new FragmentSticker();
@@ -67,7 +68,10 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     protected void initAction() {
         mRootView.findViewById(R.id.ok).setOnClickListener(this);
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
+        mRootView.findViewById(R.id.show).setOnClickListener(this);
         mRootView.findViewById(R.id.sitcker).setOnClickListener(this);
+        mRootView.findViewById(R.id.sitcker2).setOnClickListener(this);
+        mRootView.findViewById(R.id.sitcker3).setOnClickListener(this);
         mRootView.findViewById(R.id.text).setOnClickListener(this);
         mRootView.findViewById(R.id.seekBar_ok).setOnClickListener(this);
         mRootView.findViewById(R.id.seekBar_cancel).setOnClickListener(this);
@@ -91,7 +95,26 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             mContent.addView(mOperateView);
             //设置可以添加多个图片
             mOperateView.setMultiAdd(true);
-            mOperateView.setPicScale(0.8f);
+            mOperateView.setObjScale(0.8f);
+            //触摸事件监听
+            mOperateView.setOnOperateViewTouchListener(new OperateView.OnOperateTouchListener() {
+                @Override
+                public boolean onOperateViewTouch(MotionEvent event) {
+                    if(mStickerBar.getVisibility() == View.VISIBLE) {
+                        mStickerBar.setVisibility(View.GONE);
+                        return true;
+                    }
+                    return false;
+                }
+                @Override
+                public void onOperateViewAction(int type, String tag) {
+                    if(OperateView.ACTION_DELETE == type) {
+                        Log.e("sticker", "** delete sticker");
+                    } else {
+                        Log.e("sticker", "** action sticker : " + type);
+                    }
+                }
+            });
         } else {
             HandlerExt.postDelayToUI(new Runnable() {
                 @Override
@@ -111,22 +134,29 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.sitcker) {
             addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.st_ornaments5));
+        } else if(view.getId() == R.id.sitcker2) {
+            addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.earring8));
+        } else if(view.getId() == R.id.sitcker3) {
+            addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.face4));
         } else if(view.getId() == R.id.text) {
             addText("写死的测试文本");
-        }else if(view.getId() == R.id.seekBar_cancel){
-            mOperateView.setStickerTransparency(mDefalutProgress);
+        } else if(view.getId() == R.id.seekBar_cancel) {
             mStickerBar.setVisibility(View.VISIBLE);
             mSettingBar.setVisibility(View.GONE);
-        }else if(view.getId() == R.id.seekBar_ok){
+        } else if(view.getId() == R.id.seekBar_ok) {
             mStickerBar.setVisibility(View.VISIBLE);
             mSettingBar.setVisibility(View.GONE);
+        } else if(view.getId() == R.id.show) {
+            mStickerBar.setVisibility(View.VISIBLE);
         }
     }
 
     private void addSticker(Bitmap bitmap) {
         //无drawable资源则传 -1
-        ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, 5, 150, 100,
-                R.drawable.rotate,R.drawable.delete,R.drawable.flip,R.drawable.setting);
+        ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, OperateUtils.CENTER, 150, 100,
+                R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
+                R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate);
+        sticker.resizeBoxSize = 60;
         mOperateView.addItem(sticker);
     }
 
@@ -155,12 +185,11 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     public void showSettingBar() {
         mStickerBar.setVisibility(View.GONE);
         mSettingBar.setVisibility(View.VISIBLE);
-        mSeekBar.setProgress(0);
+        mSeekBar.setProgress(mOperateView.getStickerTransparency());
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        progress = (int)(mDefalutProgress-progress);
         mOperateView.setStickerTransparency(progress);
     }
 

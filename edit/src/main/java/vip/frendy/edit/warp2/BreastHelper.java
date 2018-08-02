@@ -138,6 +138,9 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
                     isSelectedOp2 = true;
                     op_x = event.getX();
                     op_y = event.getY();
+                } else if(!visible) {
+                    visible = true;
+                    invalidate();
                 } else if(isInCircle(event.getX(), event.getY(), x_1, y_1, r_1)) {
                     x_1 = event.getX();
                     y_1 = event.getY();
