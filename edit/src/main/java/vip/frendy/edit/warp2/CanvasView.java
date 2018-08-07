@@ -76,14 +76,14 @@ public class CanvasView extends FrameLayout {
         int boundingY = ((ViewGroup) this.getParent()).getHeight();
 
         int width = 0;
-
+        int height = 0;
         try {
             width = bitmap.getWidth();
+            height = bitmap.getHeight();
         } catch (NullPointerException e) {
             throw new NoSuchElementException("Can't find bitmap on given view/drawable");
         }
-
-        int height = bitmap.getHeight();
+        if(width == 0 || height == 0 || boundingX <= 1 || boundingY <= 1) return bitmap;
         //int bounding = dpToPx(250);
 
         // Determine how much to scale: the dimension requiring less scaling is
@@ -91,36 +91,43 @@ public class CanvasView extends FrameLayout {
         float xScale = ((float) boundingX) / width;
         float yScale = ((float) boundingY) / height;
         float scale = (xScale <= yScale) ? xScale : yScale;
+        if(scale == 0) scale = 1f;
 
         // Create a matrix for the scaling and add the scaling data
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
 
-        // Create a new bitmap and convert it to a format understood by the ImageView
-        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-        width = scaledBitmap.getWidth(); // re-use
-        height = scaledBitmap.getHeight(); // re-use
-        BitmapDrawable result = new BitmapDrawable(scaledBitmap);
+        try {
+            // Create a new bitmap and convert it to a format understood by the ImageView
+            Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+            width = scaledBitmap.getWidth(); // re-use
+            height = scaledBitmap.getHeight(); // re-use
+            BitmapDrawable result = new BitmapDrawable(scaledBitmap);
 
-        //get old coordinates
-        int lastX = getLeft();
-        int lastY = getTop();
+            //get old coordinates
+            int lastX = getLeft();
+            int lastY = getTop();
 
-        // Apply the scaled bitmap
-        this.setBackground(result);
+            // Apply the scaled bitmap
+            this.setBackground(result);
 
-        // Now change ImageView's dimensions to match the scaled image
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) this.getLayoutParams();
-        params.width = width;
-        params.height = height;
-        this.setLayoutParams(params);
-        this.setLeft(lastX);
-        this.setTop(lastY);
-        if(forRecycle) {
-            bitmap.recycle();
+            // Now change ImageView's dimensions to match the scaled image
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) this.getLayoutParams();
+            params.width = width;
+            params.height = height;
+            this.setLayoutParams(params);
+            this.setLeft(lastX);
+            this.setTop(lastY);
+            if(forRecycle) {
+                bitmap.recycle();
+            }
+
+            return scaledBitmap;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return bitmap;
         }
-
-        return scaledBitmap;
     }
 
     public Bitmap generateBitmap() {
