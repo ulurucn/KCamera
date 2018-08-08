@@ -122,6 +122,10 @@ public class GPUImage {
         mGlSurfaceView.requestRender();
     }
 
+    public void attachGLSurfaceView(final GLSurfaceView view) {
+        mGlSurfaceView = view;
+    }
+
     /**
      * Sets the background color
      *
