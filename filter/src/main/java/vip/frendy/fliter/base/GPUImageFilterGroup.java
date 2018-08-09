@@ -183,8 +183,7 @@ public class GPUImageFilterGroup extends GPUImageFilter {
      */
     @SuppressLint("WrongCall")
     @Override
-    public int onDrawFrame(final int textureId, final FloatBuffer cubeBuffer,
-                       final FloatBuffer textureBuffer) {
+    public int onDrawFrame(final int textureId, final FloatBuffer cubeBuffer, final FloatBuffer textureBuffer) {
         runPendingOnDrawTasks();
         if (!isInitialized() || mFrameBuffers == null || mFrameBufferTextures == null) {
             return OpenGlUtils.NOT_INIT;
@@ -193,6 +192,8 @@ public class GPUImageFilterGroup extends GPUImageFilter {
             int size = mMergedFilters.size();
             int previousTexture = textureId;
             for (int i = 0; i < size; i++) {
+                if (mFrameBuffers.length <= i) return OpenGlUtils.NOT_INIT;
+
                 GPUImageFilter filter = mMergedFilters.get(i);
                 boolean isNotLast = i < size - 1;
                 if (isNotLast) {

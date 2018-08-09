@@ -49,33 +49,32 @@ import static vip.frendy.fliter.utils.TextureRotationUtil.TEXTURE_NO_ROTATION;
 @TargetApi(11)
 public class GPUImageRenderer implements Renderer, PreviewCallback {
     public static final int NO_IMAGE = -1;
-
-    private GPUImageFilter mFilter;
-
     public final Object mSurfaceChangedWaiter = new Object();
 
-    private int mGLTextureId = NO_IMAGE;
-    private SurfaceTexture mSurfaceTexture = null;
-    private final FloatBuffer mGLCubeBuffer;
-    private final FloatBuffer mGLTextureBuffer;
-    private IntBuffer mGLRgbBuffer;
+    protected GPUImageFilter mFilter;
 
-    private int mOutputWidth;
-    private int mOutputHeight;
-    private int mImageWidth;
-    private int mImageHeight;
-    private int mAddedPadding;
+    protected int mGLTextureId = NO_IMAGE;
+    protected SurfaceTexture mSurfaceTexture = null;
+    protected final FloatBuffer mGLCubeBuffer;
+    protected final FloatBuffer mGLTextureBuffer;
+    protected IntBuffer mGLRgbBuffer;
 
-    private final Queue<Runnable> mRunOnDraw;
-    private final Queue<Runnable> mRunOnDrawEnd;
-    private Rotation mRotation;
-    private boolean mFlipHorizontal;
-    private boolean mFlipVertical;
-    private GPUImage.ScaleType mScaleType = GPUImage.ScaleType.CENTER_CROP;
+    protected int mOutputWidth;
+    protected int mOutputHeight;
+    protected int mImageWidth;
+    protected int mImageHeight;
+    protected int mAddedPadding;
 
-    private float mBackgroundRed = 0;
-    private float mBackgroundGreen = 0;
-    private float mBackgroundBlue = 0;
+    protected final Queue<Runnable> mRunOnDraw;
+    protected final Queue<Runnable> mRunOnDrawEnd;
+    protected Rotation mRotation;
+    protected boolean mFlipHorizontal;
+    protected boolean mFlipVertical;
+    protected GPUImage.ScaleType mScaleType = GPUImage.ScaleType.CENTER_CROP;
+
+    protected float mBackgroundRed = 0;
+    protected float mBackgroundGreen = 0;
+    protected float mBackgroundBlue = 0;
 
     public GPUImageRenderer(final GPUImageFilter filter) {
         mFilter = filter;
