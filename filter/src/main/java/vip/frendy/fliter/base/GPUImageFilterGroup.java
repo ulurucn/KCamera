@@ -210,7 +210,8 @@ public class GPUImageFilterGroup extends GPUImageFilter {
 
                 if (isNotLast) {
                     GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-                    previousTexture = mFrameBufferTextures[i];
+                    if(mFrameBufferTextures.length > i)
+                        previousTexture = mFrameBufferTextures[i];
                 }
             }
             return OpenGlUtils.ON_DRAWN;
