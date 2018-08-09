@@ -192,12 +192,11 @@ public class GPUImageFilterGroup extends GPUImageFilter {
             int size = mMergedFilters.size();
             int previousTexture = textureId;
             for (int i = 0; i < size; i++) {
-                if (mFrameBuffers.length <= i) return OpenGlUtils.NOT_INIT;
-
                 GPUImageFilter filter = mMergedFilters.get(i);
                 boolean isNotLast = i < size - 1;
                 if (isNotLast) {
-                    GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBuffers[i]);
+                    if(mFrameBuffers.length > i)
+                        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBuffers[i]);
                     GLES20.glClearColor(0, 0, 0, 0);
                 }
 
