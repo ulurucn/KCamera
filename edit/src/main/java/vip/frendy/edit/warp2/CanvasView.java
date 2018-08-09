@@ -126,6 +126,11 @@ public class CanvasView extends FrameLayout {
 
         } catch (Exception e) {
             e.printStackTrace();
+            // Apply the original bitmap
+            if(this.getBackground() == null) {
+                this.setBackground(new BitmapDrawable(bitmap));
+            }
+            // return original bitmap
             return bitmap;
         }
     }
