@@ -53,7 +53,7 @@ import vip.frendy.fliter.utils.Rotation;
  */
 public class GPUImage {
     private final Context mContext;
-    private final GPUImageRenderer mRenderer;
+    private GPUImageRenderer mRenderer;
     private GLSurfaceView mGlSurfaceView;
     private GPUImageFilter mFilter;
     private Bitmap mCurrentBitmap;
@@ -65,13 +65,30 @@ public class GPUImage {
      * @param context the context
      */
     public GPUImage(final Context context) {
-        if (!supportsOpenGLES2(context)) {
+        if(!supportsOpenGLES2(context)) {
             throw new IllegalStateException("OpenGL ES 2.0 is not supported on this phone.");
         }
 
         mContext = context;
         mFilter = new GPUImageFilter();
         mRenderer = new GPUImageRenderer(mFilter);
+    }
+
+    public GPUImage(final Context context, boolean isInitRender) {
+        if(!supportsOpenGLES2(context)) {
+            throw new IllegalStateException("OpenGL ES 2.0 is not supported on this phone.");
+        }
+
+        mContext = context;
+        if(isInitRender) {
+            mFilter = new GPUImageFilter();
+            mRenderer = new GPUImageRenderer(mFilter);
+        }
+    }
+
+    public void setRender(GPUImageRenderer render, GPUImageFilter filter) {
+        mFilter = filter;
+        mRenderer = render;
     }
 
     /**
@@ -94,6 +111,8 @@ public class GPUImage {
      * @param view the GLSurfaceView
      */
     public void setGLSurfaceView(final GLSurfaceView view) {
+        if(mRenderer == null) return;
+
         mGlSurfaceView = view;
         mGlSurfaceView.setEGLContextClientVersion(2);
         mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -101,6 +120,10 @@ public class GPUImage {
         mGlSurfaceView.setRenderer(mRenderer);
         mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         mGlSurfaceView.requestRender();
+    }
+
+    public void attachGLSurfaceView(final GLSurfaceView view) {
+        mGlSurfaceView = view;
     }
 
     /**
@@ -111,7 +134,8 @@ public class GPUImage {
      * @param blue red color value
      */
     public void setBackgroundColor(float red, float green, float blue) {
-        mRenderer.setBackgroundColor(red, green, blue);
+        if(mRenderer != null)
+            mRenderer.setBackgroundColor(red, green, blue);
     }
 
     /**
@@ -141,6 +165,8 @@ public class GPUImage {
      * @param flipVertical if the image should be flipped vertically
      */
     public void setUpCamera(final Camera camera, final int degrees, final boolean flipHorizontal, final boolean flipVertical) {
+        if(mRenderer == null) return;
+
         mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
             setUpCameraGingerbread(camera);
@@ -165,7 +191,8 @@ public class GPUImage {
 
     @TargetApi(11)
     private void setUpCameraGingerbread(final Camera camera) {
-        mRenderer.setUpSurfaceTexture(camera);
+        if(mRenderer != null)
+            mRenderer.setUpSurfaceTexture(camera);
     }
 
     /**
@@ -175,6 +202,8 @@ public class GPUImage {
      * @param filter the new filter
      */
     public void setFilter(final GPUImageFilter filter) {
+        if(mRenderer == null) return;
+
         mFilter = filter;
         mRenderer.setFilter(mFilter);
         requestRender();
@@ -186,6 +215,8 @@ public class GPUImage {
      * @param bitmap the new image
      */
     public void setImage(final Bitmap bitmap) {
+        if(mRenderer == null) return;
+
         mCurrentBitmap = bitmap;
         mRenderer.setImageBitmap(bitmap, false);
         requestRender();
@@ -198,6 +229,8 @@ public class GPUImage {
      * @param scaleType The new ScaleType
      */
     public void setScaleType(ScaleType scaleType) {
+        if(mRenderer == null) return;
+
         mScaleType = scaleType;
         mRenderer.setScaleType(scaleType);
         mRenderer.deleteImage();
@@ -211,7 +244,8 @@ public class GPUImage {
      * @param rotation new rotation
      */
     public void setRotation(Rotation rotation) {
-        mRenderer.setRotation(rotation);
+        if(mRenderer != null)
+            mRenderer.setRotation(rotation);
     }
 
     /**
@@ -220,13 +254,16 @@ public class GPUImage {
      * @param rotation new rotation
      */
     public void setRotation(Rotation rotation, boolean flipHorizontal, boolean flipVertical) {
-        mRenderer.setRotation(rotation, flipHorizontal, flipVertical);
+        if(mRenderer != null)
+            mRenderer.setRotation(rotation, flipHorizontal, flipVertical);
     }
 
     /**
      * Deletes the current image.
      */
     public void deleteImage() {
+        if(mRenderer == null) return;
+
         mRenderer.deleteImage();
         mCurrentBitmap = null;
         requestRender();
@@ -281,6 +318,8 @@ public class GPUImage {
      * @return the bitmap with filter applied
      */
     public Bitmap getBitmapWithFilterApplied(final Bitmap bitmap) {
+        if(mRenderer == null) return null;
+
         if (mGlSurfaceView != null) {
             mRenderer.deleteImage();
             mRenderer.runOnDraw(new Runnable() {
@@ -391,7 +430,8 @@ public class GPUImage {
      * @param runnable The runnable to be run on the OpenGL thread.
      */
     void runOnGLThread(Runnable runnable) {
-        mRenderer.runOnDrawEnd(runnable);
+        if(mRenderer != null)
+            mRenderer.runOnDrawEnd(runnable);
     }
 
     private int getOutputWidth() {
