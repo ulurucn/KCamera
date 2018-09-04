@@ -50,7 +50,7 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
     }
 
     public void initMorpher() {
-        if (mCanvasView != null) {
+        if (mCanvasView != null && mCanvasView.getBackground() != null) {
             mCanvasView.setFocusable(true);
             mBitmapSrc = ((BitmapDrawable) mCanvasView.getBackground()).getBitmap();
             mBitmap = mBitmapSrc;
