@@ -183,10 +183,14 @@ public class OpenGlUtils {
 			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
 			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 			// Load the bitmap into the bound texture.
-			GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 
-			// Recycle the bitmap, since its data has been loaded into OpenGL.
-			bitmap.recycle();
+			// fix bug bitmap is null
+			if (bitmap != null) {
+				GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+
+				// Recycle the bitmap, since its data has been loaded into OpenGL.
+				bitmap.recycle();
+			}
 		}
 
 		if (textureHandle[0] == 0){
