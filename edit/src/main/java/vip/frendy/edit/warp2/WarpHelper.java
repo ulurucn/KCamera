@@ -33,9 +33,24 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
     private TouchHelper mTouchHelper;
     private float startX, startY;
 
+    //作用范围半径
+    private int r = 150;
+
+    //曲面形变的比率
+    private int ratio = 1;
+
     private OnWarpCanvasDrawListener mOnWarpCanvasDrawListener;
 
     public void initMorpher() {
+        initMorpher(60, 150, 1);
+    }
+
+    /*
+     @param touchR 触摸点的圆圈半径
+     @param activeR 作用的半径
+     @param ratio 形变的比率 1/ratio
+     */
+    public void initMorpher(int touchR, int activeR, int ratio) {
         if (mCanvasView != null) {
             mCanvasView.setFocusable(true);
 
@@ -59,7 +74,9 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
             mMotions.add(new MorphMatrix(mMorphMatrix));
 
             // 触点
-            mTouchHelper = new TouchHelper();
+            mTouchHelper = new TouchHelper(touchR);
+            this.r = activeR;
+            this.ratio = ratio;
         }
     }
 
@@ -130,8 +147,7 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
         morphMatrix.getVerts()[index * 2 + 1] = y;
     }
 
-    //作用范围半径
-    private int r = 150;
+
     private void warp(float startX, float startY, float endX, float endY) {
         //计算拖动距离
         float ddPull = (endX - startX) * (endX - startX) + (endY - startY) * (endY - startY);
@@ -153,6 +169,7 @@ public class WarpHelper implements CanvasView.OnCanvasChangeListener {
             if (d < r) {
                 //变形系数，扭曲度
                 double e = (r * r - dd) * (r * r - dd) / ((r * r - dd + dPull * dPull) * (r * r - dd + dPull * dPull));
+                e = e / ratio;
                 double pullX = e * (endX - startX);
                 double pullY = e * (endY - startY);
                 verts[i] = (float) (orig[i] + pullX);

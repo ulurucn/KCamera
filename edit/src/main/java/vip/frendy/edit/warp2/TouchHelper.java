@@ -32,8 +32,10 @@ public class TouchHelper {
     private Path pathCross1 = new Path();
     private Path pathCross2 = new Path();
 
-    public TouchHelper() {
+    public TouchHelper(int touchCircleR) {
         //触点
+
+        this.touchCircleR = touchCircleR;
         touchCirclePaint = new Paint();
         touchCirclePaint.setAntiAlias(true);
         touchCirclePaint.setStyle(Paint.Style.STROKE);

@@ -82,7 +82,7 @@ public class FragmentShape extends BaseFragment implements View.OnClickListener,
                         }
                         mBreastHelper.attachCanvasView(mPic);
                         mBreastHelper.setOpBitmap(bitmapOp1, bitmapOp2);
-                        mBreastHelper.initMorpher();
+                        mBreastHelper.initMorpher(80, 40, -100);
                         mPic.isBaseDrawingEnabled(false);
 
                         //设置初始化值
