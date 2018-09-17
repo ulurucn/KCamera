@@ -522,6 +522,7 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
         ColorfulPath lastPath = touchPaths.get(touchPaths.size() - 1);
         touchPaths.remove(lastPath);
         cachePaths.add(lastPath);
+        updatePathColor();
         invalidate();
     }
 
@@ -532,6 +533,8 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
         ColorfulPath lastPath = cachePaths.get(cachePaths.size() - 1);
         touchPaths.add(lastPath);
         cachePaths.remove(lastPath);
+
+        updatePathColor();
         invalidate();
     }
 
@@ -562,6 +565,19 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
 
     public void setWidth(int width) {
         this.mColorWidth = width;
+    }
+
+    public Bitmap getColorBitmap() {
+        if (bmColorfulLayer == null) {
+            return null;
+        } else {
+            Bitmap bitmap = Bitmap.createBitmap(this.mImageWidth, this.mImageHeight, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawBitmap(bmBaseLayer, 0.0F, 0.0F, (Paint)null);
+            canvas.drawBitmap(bmColorfulLayer, 0.0F, 0.0F, (Paint)null);
+            canvas.save();
+            return bitmap;
+        }
     }
 
     /**
