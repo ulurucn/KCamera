@@ -20,7 +20,7 @@ import vip.frendy.edit.mosaic.ScaleMosaicView;
  * Created by frendy on 2018/4/12.
  */
 
-public class FragmentColorful extends BaseFragment implements View.OnClickListener {
+public class FragmentColorful extends BaseFragment implements View.OnClickListener, ColorfulView.OnPathColorUpdatedListener {
     public static String PIC_PATH = "pic_path";
 
     private String imgPath;
@@ -73,6 +73,8 @@ public class FragmentColorful extends BaseFragment implements View.OnClickListen
         //mPic.setMosaicResource(bitmapSrc);
         //mPic.setMosaicBrushWidth(10);
         mPic.setTouchCircleR(20 + 40);
+
+        mPic.setOnPathColorUpdatedListener(this);
     }
 
     @Override
@@ -125,5 +127,15 @@ public class FragmentColorful extends BaseFragment implements View.OnClickListen
             bitmap.recycle();
             bitmap = null;
         }
+    }
+
+    @Override
+    public void OnPathColorUpdated() {
+        Log.i("color", "OnPathColorUpdated");
+    }
+
+    @Override
+    public void OnPathEraserApplyed() {
+
     }
 }

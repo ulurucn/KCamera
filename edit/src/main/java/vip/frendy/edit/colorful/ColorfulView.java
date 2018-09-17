@@ -349,6 +349,7 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
 
         mColorPaint.setColor(color);
         mColorPaint.setMaskFilter(bmf);
+        mEraserPaint.setMaskFilter(bmf);
 
         for (ColorfulPath path : touchPaths) {
             Path pathTemp = path.drawPath;
@@ -521,6 +522,7 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
         ColorfulPath lastPath = touchPaths.get(touchPaths.size() - 1);
         touchPaths.remove(lastPath);
         cachePaths.add(lastPath);
+        invalidate();
     }
 
     public void forward() {
@@ -530,6 +532,7 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
         ColorfulPath lastPath = cachePaths.get(cachePaths.size() - 1);
         touchPaths.add(lastPath);
         cachePaths.remove(lastPath);
+        invalidate();
     }
 
     public boolean canBackward() {
@@ -552,6 +555,13 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
 
     public void showTouchCircle(boolean state) {
         this.showTouchCircle = state;
+        this.touchX = (float)(this.getWidth() / 2);
+        this.touchY = (float)(this.getHeight() / 2);
+        invalidate();
+    }
+
+    public void setWidth(int width) {
+        this.mColorWidth = width;
     }
 
     /**
