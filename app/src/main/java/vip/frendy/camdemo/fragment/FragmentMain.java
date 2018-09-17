@@ -62,6 +62,7 @@ public class FragmentMain extends BaseFragment implements View.OnClickListener {
         mRootView.findViewById(R.id.shape).setOnClickListener(this);
         mRootView.findViewById(R.id.hip).setOnClickListener(this);
         mRootView.findViewById(R.id.slim).setOnClickListener(this);
+        mRootView.findViewById(R.id.color).setOnClickListener(this);
 
         //图片处理
         mPictureHelper = new PictureHelper(getActivity());
@@ -76,7 +77,7 @@ public class FragmentMain extends BaseFragment implements View.OnClickListener {
         } else if(view.getId() == R.id.enhance || view.getId() == R.id.filter || view.getId() == R.id.rotate
                 || view.getId() == R.id.crop || view.getId() == R.id.sticker || view.getId() == R.id.frame
                 || view.getId() == R.id.mosaic || view.getId() == R.id.warp || view.getId() == R.id.warp2
-                || view.getId() == R.id.shape || view.getId() == R.id.hip || view.getId() == R.id.slim) {
+                || view.getId() == R.id.shape || view.getId() == R.id.hip || view.getId() == R.id.slim || view.getId() == R.id.color) {
             Bundle args = new Bundle();
             args.putString(FragmentEnhance.PIC_PATH, mPicturePath);
             if(mRouter != null) mRouter.onRouteTo(view.getId(), args);

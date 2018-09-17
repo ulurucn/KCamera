@@ -33,6 +33,18 @@
             android:layout_height="wrap_content"
             android:text="compare"/>
 
+        <Button
+            android:id="@+id/undo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="undo"/>
+
+        <Button
+            android:id="@+id/redo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="redo"/>
+
         <SeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
