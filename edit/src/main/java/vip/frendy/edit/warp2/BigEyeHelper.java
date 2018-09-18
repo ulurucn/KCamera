@@ -153,7 +153,7 @@ public class BigEyeHelper implements CanvasView.OnCanvasChangeListener {
     public void redo() {
         if (touchPoints != null && cachedPoints != null) {
             if (cachedPoints.size() > 0) {
-                Point lastPath = cachedPoints.get(touchPoints.size() - 1);
+                Point lastPath = cachedPoints.get(cachedPoints.size() - 1);
                 touchPoints.add(lastPath);
                 cachedPoints.remove(lastPath);
                 invalidate();
