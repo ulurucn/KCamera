@@ -130,7 +130,7 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
         mColorPaint.setStrokeCap(Paint.Cap.ROUND);
         mColorPaint.setPathEffect(new CornerPathEffect(10));
         mColorPaint.setStrokeWidth(mColorWidth);
-        mColorPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
+        mColorPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_ATOP));
 
         mEraserPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mEraserPaint.setStyle(Paint.Style.STROKE);
