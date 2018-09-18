@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by frendy on 2018/7/10.
+ * Edit by zero on 2018/9/18
  */
 
 public class BigEyeHelper implements CanvasView.OnCanvasChangeListener {
@@ -33,7 +34,7 @@ public class BigEyeHelper implements CanvasView.OnCanvasChangeListener {
 
     private int mStrength = 10;
 
-    private int radius = 100;
+    private int radius = 50;
 
     public BigEyeHelper() {
     }
@@ -73,14 +74,15 @@ public class BigEyeHelper implements CanvasView.OnCanvasChangeListener {
     public void onDraw(Canvas canvas) {
         if (!original) {
             if (mStrength != 0) {
-                Log.i("eye", "draw eyes strength : " + mStrength);
-                mBitmap = ShapeUtils.enlarge(mBitmapSrc, touchPoints, radius, mStrength);
+                mBitmap = mBitmapSrc;
 
-//                mBitmap = mBitmapSrc;
-//
-//                for (Point point : touchPoints) {
-//                    mBitmap = ShapeUtils.enlarge(mBitmap, point.x, point.y, radius, mStrength);
-//                }
+                for (Point point : touchPoints) {
+                    mBitmap = ShapeUtils.enlarge(mBitmap, point.x, point.y, radius, mStrength);
+                }
+
+                if (onCanvasChangeListener != null) {
+                    onCanvasChangeListener.onChange();
+                }
             }
             canvas.drawBitmap(mBitmap, 0, 0, null);
         } else {
@@ -190,5 +192,15 @@ public class BigEyeHelper implements CanvasView.OnCanvasChangeListener {
         int x;
         int y;
     }
+
+    public interface OnCanvasChangeListener {
+        void onChange();
+    }
+
+    public void setCanvasChangeLister(OnCanvasChangeListener onCanvasChangeListener) {
+        this.onCanvasChangeListener = onCanvasChangeListener;
+    }
+
+    private OnCanvasChangeListener onCanvasChangeListener;
 }
 

@@ -19,7 +19,7 @@ import vip.frendy.edit.warp2.CanvasView;
  * Created by frendy on 2018/4/12.
  */
 
-public class FragmentBigEye extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class FragmentBigEye extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,BigEyeHelper.OnCanvasChangeListener{
     public static String PIC_PATH = "pic_path";
 
     private String imgPath;
@@ -91,10 +91,14 @@ public class FragmentBigEye extends BaseFragment implements View.OnClickListener
 
                         //设置初始化值
                         mSeekbar.setProgress(50);
+
+                        mBreastHelper.setCanvasChangeLister(FragmentBigEye.this);
                     }
                 }, 100);
             }
         });
+
+
     }
 
     @Override
@@ -148,5 +152,10 @@ public class FragmentBigEye extends BaseFragment implements View.OnClickListener
             bitmap.recycle();
             bitmap = null;
         }
+    }
+
+    @Override
+    public void onChange() {
+        Log.i("eye", "big eye change");
     }
 }
