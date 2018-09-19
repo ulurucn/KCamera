@@ -563,7 +563,11 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
 
     public Bitmap getColorBitmap() {
         if (bmColorfulLayer == null) {
-            return null;
+            Bitmap bitmap = Bitmap.createBitmap(this.mImageWidth, this.mImageHeight, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawBitmap(bmBaseLayer, 0.0F, 0.0F, (Paint)null);
+            canvas.save();
+            return bitmap;
         } else {
             Bitmap bitmap = Bitmap.createBitmap(this.mImageWidth, this.mImageHeight, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
