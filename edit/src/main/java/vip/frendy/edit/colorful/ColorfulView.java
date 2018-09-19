@@ -160,8 +160,6 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
 
-        Log.i("color", "onScale");
-
         float scale = detector.getScaleFactor();
         scaleFactor *= scale;
         if (scaleFactor < 1.0f){
@@ -215,7 +213,6 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
 
     public boolean dispatchTouchEvent(MotionEvent event) {
 
-        Log.i("color", "dispatchTouchEvent");
         super.dispatchTouchEvent(event);
 
         float pointerX = 0,pointerY = 0;
@@ -241,7 +238,6 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
             lastPointerCount = pointerCount;
         }
         if(isMultiPointer){
-            Log.i("color", "dispatchTouchEvent isMultiPointer");
             switch (event.getAction()){
                 case MotionEvent.ACTION_MOVE:
                     if (pointerCount == 1)
@@ -294,8 +290,6 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
 
     private void onPathEvent(MotionEvent event, int x, int y) {
 
-        Log.i("color", "onPathEvent");
-
         if(mImageWidth <= 0 || mImageHeight <= 0) {
             return;
         }
@@ -312,7 +306,7 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
             touchPath = new ColorfulPath();
             touchPath.drawPath = new Path();
             touchPath.drawPath.moveTo(x, y);
-            touchPath.paintWidth = mColorWidth;
+            touchPath.paintWidth = (int) (mColorWidth / scaleFactor);
             touchPath.type = mType;
 
             if(event.getPointerCount() <= 1) {
