@@ -75,6 +75,8 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
 
     private int mPadding = 0;
 
+    private boolean enable;
+
     private ColorfulUtils.Type mType = ColorfulUtils.Type.COLOR; //画板类型
 
     private Bitmap bmBaseLayer;//原图
@@ -337,6 +339,10 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
             return;
         }
 
+        if (!enable) {
+            return;
+        }
+
         bmColorfulLayer = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(bmColorfulLayer);
@@ -595,6 +601,10 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
 
         invalidate();
 
+    }
+
+    public void setPaintEnable(Boolean enable) {
+        this.enable = enable;
     }
 
     /**
