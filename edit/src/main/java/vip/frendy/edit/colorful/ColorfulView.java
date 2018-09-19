@@ -574,6 +574,25 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
         }
     }
 
+    public void clearColorPath() {
+
+        if (touchPaths != null) {
+            touchPaths.clear();
+        }
+
+        if (cachePaths != null) {
+            cachePaths.clear();
+        }
+
+        if (bmColorfulLayer != null) {
+            bmColorfulLayer.recycle();
+            bmColorfulLayer = null;
+        }
+
+        invalidate();
+
+    }
+
     /**
      * 设置画板更新监听
      * @param listener
