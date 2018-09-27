@@ -95,7 +95,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             mContent.addView(mOperateView);
             //设置可以添加多个图片
             mOperateView.setMultiAdd(true);
-            mOperateView.setObjScale(0.8f);
+            mOperateView.setObjScale(0.5f);
             //触摸事件监听
             mOperateView.setOnOperateViewTouchListener(new OperateView.OnOperateTouchListener() {
                 @Override
@@ -163,7 +163,9 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
 
     private void addSticker(Bitmap bitmap) {
 
-        if (mOperateView.getImgLists().size() > 0) {
+        //默认会有两张贴纸
+        if (mOperateView.getImgLists().size() > 0 && mOperateView.getImgLists().size() == 2) {
+
             mOperateView.getImgLists().get(0).setSrcBm(bitmap);
 
             Bitmap reBitmap = BitmapExt.reverseImage(bitmap, -1, 1);
@@ -174,16 +176,16 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         } else {
 
             //无drawable资源则传 -1
-            ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, OperateUtils.LEFTTOP, 150, 100,
+            ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, OperateUtils.CENTERLEFT, 150, 100,
                     R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
-                    R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate);
+                    R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, 2);
             sticker.resizeBoxSize = 60;
 
             Bitmap reBitmap = BitmapExt.reverseImage(bitmap, -1, 1);
 
-            ImageObject resticker = mOperateUtils.getImageObject(reBitmap, mOperateView, OperateUtils.RIGHTTOP, 150, 100,
+            ImageObject resticker = mOperateUtils.getImageObject(reBitmap, mOperateView, OperateUtils.CENTERRIGHT, 150, 100,
                     R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
-                    R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate);
+                    R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, 2);
             resticker.resizeBoxSize = 60;
 
             mOperateView.addItem(sticker);
