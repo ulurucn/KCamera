@@ -13,13 +13,14 @@ import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
 import vip.frendy.edit.warp2.BigEyeHelper;
 import vip.frendy.edit.warp2.BreastHelper;
+import vip.frendy.edit.warp2.Canvas2View;
 import vip.frendy.edit.warp2.CanvasView;
 
 /**
  * Created by frendy on 2018/4/12.
  */
 
-public class FragmentBigEye extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,BigEyeHelper.OnCanvasChangeListener{
+public class FragmentBigEye extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, Canvas2View.OnCanvasUpdatedListener{
     public static String PIC_PATH = "pic_path";
 
     private String imgPath;
@@ -27,7 +28,7 @@ public class FragmentBigEye extends BaseFragment implements View.OnClickListener
 
     private IPictureEditListener mListener;
 
-    private CanvasView mPic;
+    private Canvas2View mPic;
     private Bitmap bitmap;
     private BigEyeHelper mBreastHelper;
     private SeekBar mSeekbar;
@@ -71,28 +72,33 @@ public class FragmentBigEye extends BaseFragment implements View.OnClickListener
         bitmapSrc = BitmapFactory.decodeFile(imgPath);
         bitmap = bitmapSrc;
 
+        mPic.setBackgroundResource(imgPath);
+
+        mPic.setOnCanvasUpdatedListener(FragmentBigEye.this);
+
 
         //显示图片
         mPic.post(new Runnable() {
             @Override
             public void run() {
-                mPic.scaleToImage(bitmap);
+                //mPic.scaleToImage(bitmap);
+                mPic.setBackgroundResource(imgPath);
 
                 mPic.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(mBreastHelper == null) {
-                            mBreastHelper = new BigEyeHelper();
-                        }
-                        mBreastHelper.attachCanvasView(mPic);
+//                        if(mBreastHelper == null) {
+//                            mBreastHelper = new BigEyeHelper();
+//                        }
+                        //mBreastHelper.attachCanvasView(mPic);
                         //mBreastHelper.setOpBitmap(null, null);
-                        mBreastHelper.initMorpher(80, 40, -100);
-                        mPic.isBaseDrawingEnabled(false);
+                        //mBreastHelper.initMorpher(80, 40, -100);
+                        //mPic.isBaseDrawingEnabled(false);
 
                         //设置初始化值
-                        mSeekbar.setProgress(50);
+                        //mSeekbar.setProgress(50);
 
-                        mBreastHelper.setCanvasChangeLister(FragmentBigEye.this);
+                        //mBreastHelper.setCanvasChangeLister(FragmentBigEye.this);
                     }
                 }, 100);
             }
@@ -104,7 +110,7 @@ public class FragmentBigEye extends BaseFragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.ok) {
-            Common.writeImage(mPic.generateBitmap(), imgPath, 100);
+            Common.writeImage(mPic.getColorBitmap(), imgPath, 100);
             if(mListener != null) mListener.onPictureEditApply(0, imgPath);
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
@@ -155,7 +161,12 @@ public class FragmentBigEye extends BaseFragment implements View.OnClickListener
     }
 
     @Override
-    public void onChange() {
-        Log.i("eye", "big eye change");
+    public void OnCanvasUpdated() {
+
+    }
+
+    @Override
+    public void OnEraserApplyed() {
+
     }
 }

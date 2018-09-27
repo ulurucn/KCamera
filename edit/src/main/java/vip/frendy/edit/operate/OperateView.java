@@ -686,4 +686,8 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         }
         return 0;
     }
+
+    public List<ImageObject> getImgLists() {
+        return imgLists;
+    }
 }

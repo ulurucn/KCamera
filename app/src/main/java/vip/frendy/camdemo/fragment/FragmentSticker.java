@@ -135,7 +135,15 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.sitcker) {
-            addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.st_ornaments5));
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.st_ornaments5);
+
+            //Bitmap reBitmap = BitmapExt.reverseImage(bitmap, -1 , 1);
+
+            addSticker(bitmap);
+
+            //addSticker(reBitmap);
+
         } else if(view.getId() == R.id.sitcker2) {
             addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.earring8));
         } else if(view.getId() == R.id.sitcker3) {
@@ -154,12 +162,33 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     }
 
     private void addSticker(Bitmap bitmap) {
-        //无drawable资源则传 -1
-        ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, OperateUtils.CENTER, 150, 100,
-                R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
-                R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate);
-        sticker.resizeBoxSize = 60;
-        mOperateView.addItem(sticker);
+
+        if (mOperateView.getImgLists().size() > 0) {
+            mOperateView.getImgLists().get(0).setSrcBm(bitmap);
+
+            Bitmap reBitmap = BitmapExt.reverseImage(bitmap, -1, 1);
+
+            mOperateView.getImgLists().get(1).setSrcBm(reBitmap);
+
+            mOperateView.invalidate();
+        } else {
+
+            //无drawable资源则传 -1
+            ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, OperateUtils.LEFTTOP, 150, 100,
+                    R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
+                    R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate);
+            sticker.resizeBoxSize = 60;
+
+            Bitmap reBitmap = BitmapExt.reverseImage(bitmap, -1, 1);
+
+            ImageObject resticker = mOperateUtils.getImageObject(reBitmap, mOperateView, OperateUtils.RIGHTTOP, 150, 100,
+                    R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
+                    R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate);
+            resticker.resizeBoxSize = 60;
+
+            mOperateView.addItem(sticker);
+            mOperateView.addItem(resticker);
+        }
     }
 
     private void addText(String text) {
