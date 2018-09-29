@@ -517,6 +517,7 @@ public class ImageObject {
 
 	public void setSrcBm(Bitmap srcBm) {
 		this.srcBm = srcBm;
+		_srcBm = Bitmap.createBitmap(srcBm);
 	}
 
 	public Bitmap getRotateBm() {
