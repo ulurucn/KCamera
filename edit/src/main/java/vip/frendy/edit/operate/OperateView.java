@@ -587,7 +587,6 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        getCurrentPosition();
         return true;
     }
 
@@ -613,12 +612,6 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
     private void updateObjectScale() {
         for(ImageObject obj : imgLists) {
             if(obj != null) obj.setScaleZoom(mScaleFactor);
-        }
-    }
-
-    private void getCurrentPosition() {
-        for (ImageObject obj : imgLists) {
-            if(obj != null) obj.getCurrentPosition();
         }
     }
 

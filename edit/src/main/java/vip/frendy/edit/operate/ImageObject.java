@@ -89,6 +89,8 @@ public class ImageObject {
 		canvas.drawBitmap(srcBm, 0, 0, paint);
 		mPoint.x = x;
 		mPoint.y = y;
+		positionX = x;
+		positionY = y;
 		this.rotateBm = rotateBm;
 		this.deleteBm = deleteBm;
 		this.flipBm = flipBm;
