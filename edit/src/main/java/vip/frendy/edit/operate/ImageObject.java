@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,9 @@ public class ImageObject {
 	protected int mTransparencyProgress = 0;
 
 	private Canvas canvas = null;
+
+	private int positionX;
+	private int positionY;
 
 	/**
 	 * 构造方法
@@ -128,6 +132,17 @@ public class ImageObject {
 		mPoint.x += x;
 		mPoint.y += y;
 		setCenter();
+	}
+
+	public void moveBy(int left, int top, float scale) {
+		mPoint.x = (int)(left + positionX* scale);
+		mPoint.y = (int)(top + positionY* scale);
+		setCenter();
+	}
+
+	public void getCurrentPosition() {
+		positionX = mPoint.x;
+		positionY = mPoint.y;
 	}
 
 	public void draw(Canvas canvas) {

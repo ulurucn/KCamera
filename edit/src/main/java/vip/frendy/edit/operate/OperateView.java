@@ -582,11 +582,12 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         }
         mImageRect.offset(deltaX, deltaY);
         //更新贴纸位置
-        updateObjectPosition(deltaX, deltaY);
+        updateObjectPositionScale(mImageRect.left, mImageRect.top, mScaleFactor);
     }
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
+        getCurrentPosition();
         return true;
     }
 
@@ -615,9 +616,21 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         }
     }
 
+    private void getCurrentPosition() {
+        for (ImageObject obj : imgLists) {
+            if(obj != null) obj.getCurrentPosition();
+        }
+    }
+
     private void updateObjectPosition(int x, int y) {
         for(ImageObject obj : imgLists) {
             obj.moveBy(x, y);
+        }
+    }
+
+    private void updateObjectPositionScale(int x, int y, float scale) {
+        for(ImageObject obj : imgLists) {
+            obj.moveBy(x, y, scale);
         }
     }
 
