@@ -587,11 +587,14 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
+        getCurrentPosition();
         return true;
     }
 
     @Override
-    public void onScaleEnd(ScaleGestureDetector detector) {}
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        setLastScale();
+    }
 
     private boolean isCanDrag(int dx, int dy) {
         return Math.sqrt((dx * dx) + (dy * dy)) >= 5.0f;
@@ -614,6 +617,19 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
             if(obj != null) obj.setScaleZoom(mScaleFactor);
         }
     }
+
+    private void getCurrentPosition() {
+        for (ImageObject obj : imgLists) {
+            if (obj != null) obj.getCurrentPosition(mImageRect.left, mImageRect.top);
+        }
+    }
+
+    private void setLastScale() {
+        for (ImageObject obj : imgLists) {
+            if (obj != null) obj.setLastScale(mScaleFactor);
+        }
+    }
+
 
     private void updateObjectPosition(int x, int y) {
         for(ImageObject obj : imgLists) {

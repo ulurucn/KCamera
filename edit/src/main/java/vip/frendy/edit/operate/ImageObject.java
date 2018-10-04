@@ -43,6 +43,8 @@ public class ImageObject {
 	private int positionX;
 	private int positionY;
 
+	private float lastScale = 1;
+
 	/**
 	 * 构造方法
 	 */
@@ -137,14 +139,18 @@ public class ImageObject {
 	}
 
 	public void moveBy(int left, int top, float scale) {
-		mPoint.x = (int)(left + positionX* scale);
-		mPoint.y = (int)(top + positionY* scale);
+		mPoint.x = (int)(left + positionX * scale);
+		mPoint.y = (int)(top + positionY * scale);
 		setCenter();
 	}
 
-	public void getCurrentPosition() {
-		positionX = mPoint.x;
-		positionY = mPoint.y;
+	public void getCurrentPosition(int left, int top) {
+		positionX = (int) ((mPoint.x - left)/lastScale);
+		positionY = (int) ((mPoint.y - top)/lastScale);
+	}
+
+	public void setLastScale(float scale) {
+		this.lastScale = scale;
 	}
 
 	public void draw(Canvas canvas) {
