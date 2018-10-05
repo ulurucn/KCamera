@@ -115,11 +115,11 @@ public class FragmentBigEye extends BaseFragment implements View.OnClickListener
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.compare) {
-            mBreastHelper.setOriginal(!mBreastHelper.getOriginal());
+            mPic.setOriginal(!mPic.getOriginal());
         } else if (view.getId() == R.id.redo) {
-            mBreastHelper.redo();
+            mPic.redo();
         } else if (view.getId() == R.id.undo) {
-            mBreastHelper.undo();
+            mPic.undo();
         }
     }
 

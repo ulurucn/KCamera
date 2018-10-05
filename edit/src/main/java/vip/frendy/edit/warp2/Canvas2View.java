@@ -308,6 +308,10 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
                 for (Point point : touchPoints) {
                     mBitmap = ShapeUtils.enlarge(mBitmap, point.x, point.y, radius, mStrength);
                 }
+
+                if (mUpdatedListener != null) {
+                    mUpdatedListener.OnCanvasUpdated();
+                }
             }
             canvas.drawBitmap(mBitmap, null, mImageRect, null);
         } else {
