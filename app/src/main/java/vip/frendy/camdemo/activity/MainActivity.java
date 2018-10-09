@@ -20,6 +20,7 @@ import vip.frendy.camdemo.fragment.FragmentShape;
 import vip.frendy.camdemo.fragment.FragmentShapeHip;
 import vip.frendy.camdemo.fragment.FragmentShapeSlim;
 import vip.frendy.camdemo.fragment.FragmentSticker;
+import vip.frendy.camdemo.fragment.FragmentThinFace;
 import vip.frendy.camdemo.fragment.FragmentWarp;
 import vip.frendy.camdemo.fragment.FragmentWarp2;
 import vip.frendy.edit.interfaces.IPictureEditListener;
@@ -103,6 +104,8 @@ public class MainActivity extends BaseFragmentActivity implements FragmentMain.I
             switchFragment(R.id.content_fragment, FragmentShapeSlim.getInstance(args, this));
         } else if (id == R.id.color) {
             switchFragment(R.id.content_fragment, FragmentColorful.getInstance(args, this));
+        } else if (id == R.id.face) {
+            switchFragment(R.id.content_fragment, FragmentThinFace.getInstance(args, this));
         }
     }
 

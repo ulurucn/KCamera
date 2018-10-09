@@ -2,32 +2,22 @@ package vip.frendy.edit.warp2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.CornerPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.NoSuchElementException;
 
-import vip.frendy.edit.colorful.ColorfulPath;
-import vip.frendy.edit.colorful.ColorfulUtils;
-
-public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnScaleGestureListener{
+public class ThinFaceView extends ViewGroup implements ScaleGestureDetector.OnScaleGestureListener{
 
     private Context mContext;
 
@@ -62,60 +52,50 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
 
     private int mPadding = 0;
 
-    private boolean enable;
-
-    private ColorfulUtils.Type mType = ColorfulUtils.Type.COLOR; //画板类型
-
-    private Bitmap bmBaseLayer;//原图
-    private Bitmap bmCoverLayer;//橡皮擦
-    private Bitmap bmColorfulLayer;//颜色
-
-
-    //触点圈圈半径
-    private int touchCircleR = 80;
-    //触点圈圈
-    private Paint touchCirclePaint;
-
-    //是否显示触点圈圈
-    private boolean enableTouchCircle = true;
-    private boolean showTouchCircle = false;
-    private float touchX, touchY;
-
-    private int color = 0x602a5caa;
-
-    private BlurMaskFilter bmf;
+    private boolean scaling = false;
 
     private OnCanvasUpdatedListener mUpdatedListener;
 
-    private Bitmap mBitmapSrc, mBitmap;
-    private CanvasView mCanvasView;
-    private boolean attached = false;
+    private BitmapDrawable mBitmap, mBitmapSrc;
     private boolean original = false;
 
+    private Bitmap defaultBitmap;
 
-    private int touch_x, touch_y;
+    private static final int WIDTH = 9;
+    private static final int HEIGHT = 9;
+    private static final int COUNT = (WIDTH + 1) * (HEIGHT + 1);
 
-    private List<Point> touchPoints = new ArrayList<>();
+    private MorphMatrix mMorphMatrix = new MorphMatrix(COUNT * 2);
+    private final Matrix mMatrix = new Matrix();
+    private final Matrix mInverse = new Matrix();
 
-    private List<Point> cachedPoints = new ArrayList<>();
+    private ArrayList<MorphMatrix> mMotions = new ArrayList<>();
+    private ArrayList<MorphMatrix> mUndoneMotions = new ArrayList<>();
 
-    private int mStrength = 10;
 
-    private int radius = 30;
+    // 触点
+    private TouchHelper mTouchHelper;
+    private float startX, startY;
 
-    public Canvas2View(Context context) {
+    //作用范围半径
+    private int r = 150;
+
+    //曲面形变的比率
+    private int ratio = 1;
+
+    public ThinFaceView(Context context) {
         super(context);
         this.mContext = context;
         initDrawView();
     }
 
-    public Canvas2View(Context context, @Nullable AttributeSet attrs) {
+    public ThinFaceView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
         initDrawView();
     }
 
-    public Canvas2View(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ThinFaceView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.mContext = context;
         initDrawView();
@@ -128,6 +108,41 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
         setWillNotDraw(false);
 
         mScaleGestureDetector = new ScaleGestureDetector(mContext, this);
+    }
+
+    /*
+     @param touchR 触摸点的圆圈半径
+     @param activeR 作用的半径
+     @param ratio 形变的比率 1/ratio
+     */
+    public void initMorpher(int touchR, int activeR, int ratio) {
+        mBitmap = (BitmapDrawable) getBackground();
+        float w = getWidth();
+        float h = getHeight();
+
+        // Constructing mesh
+        int index = 0;
+        for (int y = 0; y <= HEIGHT; y++) {
+            float fy = h * y / HEIGHT;
+            for (int x = 0; x <= WIDTH; x++) {
+                float fx = w * x / WIDTH;
+                setXY(mMorphMatrix, index, fx, fy);
+                index += 1;
+            }
+        }
+        mBitmapSrc = mBitmap;
+
+        mImageHeight = mBitmap.getBitmap().getHeight();
+        mImageWidth = mBitmap.getBitmap().getWidth();
+
+        mMatrix.invert(mInverse);
+        mMotions.add(new MorphMatrix(mMorphMatrix));
+
+        // 触点
+        mTouchHelper = new TouchHelper(touchR);
+        this.r = activeR;
+        this.ratio = ratio;
+
     }
 
 
@@ -183,6 +198,7 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
+        scaling = true;
         return true;
     }
 
@@ -246,8 +262,6 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
             return true;
         }
 
-        //Log.i("eye", "x: " + touch_x + " y : " + touch_y + " dispatch");
-
         //防误触
         if(!isCanDrawPath){
             if(lastCheckDrawTime == 0) {
@@ -285,7 +299,6 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
         int imageRight = imageLeft + realWidth;
         int imageBottom = imageTop + realHeight;
 
-        Log.i("eye", "layout, left: " + imageLeft + " top: " + imageTop + " right: " + imageRight + " bottom: " + imageBottom);
         mImageRect.set(imageLeft, imageTop, imageRight, imageBottom);
         mInitImageRect.set(imageLeft,imageTop,imageRight,imageBottom);
 
@@ -293,29 +306,38 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
-
+        scaling = false;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (!original) {
-            if (mStrength != 0) {
+        if (original) {
+            canvas.drawBitmap(mBitmapSrc.getBitmap(), null, mImageRect, null);
+        } else {
 
-                mBitmap = mBitmapSrc;
+            if (mBitmap != null) {
 
-                for (Point point : touchPoints) {
-                    mBitmap = ShapeUtils.enlarge(mBitmap, point.x, point.y, radius, mStrength);
+                Canvas c = new Canvas(defaultBitmap);
+                c.concat(mMatrix);
+                canvas.concat(mMatrix);
+
+                canvas.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
+                        null, 0, null);
+                c.drawBitmapMesh(mBitmap.getBitmap(), WIDTH, HEIGHT, mMorphMatrix.getVerts(), 0,
+                        null, 0, null);
+                if (scaleFactor != 1.0f) {
+                    canvas.drawBitmap(defaultBitmap, null, mImageRect, null);
                 }
 
                 if (mUpdatedListener != null) {
                     mUpdatedListener.OnCanvasUpdated();
                 }
             }
-            canvas.drawBitmap(mBitmap, null, mImageRect, null);
-        } else {
-            canvas.drawBitmap(bmBaseLayer, null, mImageRect, null);
+            // 触点
+            if (mTouchHelper != null && !scaling)
+                mTouchHelper.onDraw(canvas);
         }
 
     }
@@ -323,112 +345,37 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if(mScaleGestureDetector != null)
+        if(mScaleGestureDetector != null) {
             mScaleGestureDetector.onTouchEvent(event);
+        }
+
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
+                mUndoneMotions.clear();
+                startX = event.getX();
+                startY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                touch_x = (int)event.getX();
-                touch_y = (int)event.getY();
-
-                Point point = new Point();
-
+                mMotions.add(new MorphMatrix(mMorphMatrix));
                 float ratio = (mImageRect.right - mImageRect.left) / (float) mImageWidth;
-                point.x = (int) ((touch_x - mImageRect.left) / ratio);
-                point.y = (int) ((touch_y - mImageRect.top) / ratio);
 
-                Log.i("eye", "x: " + touch_x + " y : " + touch_y);
-
-                touchPoints.add(point);
-
-                invalidate();
+                warp((startX - mImageRect.left) / ratio,
+                        (startY - mImageRect.top) / ratio,
+                        (event.getX() - mImageRect.left) / ratio,
+                        (event.getY() - mImageRect.top) / ratio);
                 break;
+
         }
-        return true;
-    }
-
-    public void setBackgroundResource(String imgPath) {
-        File file = new File(imgPath);
-        if (file == null || !file.exists()) {
-            //Log.w(TAG, "setSrcPath invalid file path " + imgPath);
-            return;
+        // 触点
+        if(mTouchHelper != null && !scaling) {
+            mTouchHelper.onTouchEvent(this, event);
         }
-
-        //reset();
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
-        mImageWidth = bitmap.getWidth();
-        mImageHeight = bitmap.getHeight();
-        bmBaseLayer = bitmap;
-        mBitmapSrc = bitmap;
-        requestLayout();
-        invalidate();
-    }
-
-
-    public boolean reset() {
-        this.mImageWidth = 0;
-        this.mImageHeight = 0;
-        if(bmCoverLayer != null) {
-            bmCoverLayer.recycle();
-            bmCoverLayer = null;
-        }
-        if(bmBaseLayer != null) {
-            bmBaseLayer.recycle();
-            bmBaseLayer = null;
-        }
-        if(bmColorfulLayer != null) {
-            bmColorfulLayer.recycle();
-            bmColorfulLayer = null;
-        }
-
 
         return true;
     }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if(bmCoverLayer != null) {
-            bmCoverLayer.recycle();
-            bmCoverLayer = null;
-        }
-        if(bmBaseLayer != null) {
-            bmBaseLayer.recycle();
-            bmBaseLayer = null;
-        }
-        if(bmColorfulLayer != null) {
-            bmColorfulLayer.recycle();
-            bmColorfulLayer = null;
-        }
-    }
-
-    public Bitmap getColorBitmap() {
-        if (bmColorfulLayer == null) {
-            Bitmap bitmap = Bitmap.createBitmap(this.mImageWidth, this.mImageHeight, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawBitmap(bmBaseLayer, 0.0F, 0.0F, (Paint)null);
-            canvas.save();
-            return bitmap;
-        } else {
-            Bitmap bitmap = Bitmap.createBitmap(this.mImageWidth, this.mImageHeight, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawBitmap(bmBaseLayer, 0.0F, 0.0F, (Paint)null);
-            canvas.drawBitmap(bmColorfulLayer, 0.0F, 0.0F, (Paint)null);
-            canvas.save();
-            return bitmap;
-        }
-    }
-
-    class Point {
-        int x;
-        int y;
-    }
-
 
     /**
      * 设置画板更新监听
@@ -443,9 +390,36 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
         void OnEraserApplyed();
     }
 
+    private static class MorphMatrix {
+        private float[] verts;
+
+        public MorphMatrix(MorphMatrix morphMatrix) {
+            this.verts = new float[morphMatrix.verts.length];
+            System.arraycopy(morphMatrix.verts, 0, this.verts, 0, morphMatrix.verts.length);
+        }
+
+        public MorphMatrix(final int size) {
+            verts = new float[size];
+        }
+
+        public float[] getVerts() {
+            return verts;
+        }
+
+        public void set(MorphMatrix morphMatrix) {
+            System.arraycopy(morphMatrix.verts, 0, this.verts, 0, morphMatrix.verts.length);
+        }
+    }
 
     public void setOriginal(boolean original) {
         this.original = original;
+//        if(mMotions.size() > 0) {
+//            if(!original) {
+//                mMorphMatrix = mMotions.get(mMotions.size() - 1);
+//            } else {
+//                mMorphMatrix = mMotions.get(0);
+//            }
+//        }
         invalidate();
     }
 
@@ -453,50 +427,162 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
         return original;
     }
 
-    public void redo() {
-        if (touchPoints != null && cachedPoints != null) {
-            if (cachedPoints.size() > 0) {
-                Point lastPath = cachedPoints.get(cachedPoints.size() - 1);
-                touchPoints.add(lastPath);
-                cachedPoints.remove(lastPath);
-                invalidate();
-            }
-        }
-    }
 
+    /*
+     * Handling Undo click
+     * */
     public void undo() {
-        if (touchPoints != null && cachedPoints != null) {
-            if (touchPoints.size() > 0) {
-                Point lastPath = touchPoints.get(touchPoints.size() - 1);
-                touchPoints.remove(lastPath);
-                cachedPoints.add(lastPath);
-                invalidate();
+        if (mMotions.size() > 1) {
+            mMorphMatrix.set(mMotions.get(mMotions.size() - 2));
+            mUndoneMotions.add(mMotions.remove(mMotions.size() - 1));
+            invalidate();
+        }
+    }
+
+    public boolean isUndoActive() {
+        return mMotions.size() > 1;
+    }
+
+    /*
+     * Handling Redo click
+     * */
+    public void redo() {
+        if (mUndoneMotions.size() > 0) {
+            mMorphMatrix.set(mUndoneMotions.remove(mUndoneMotions.size() - 1));
+            mMotions.add(new MorphMatrix(mMorphMatrix));
+            invalidate();
+        }
+    }
+
+    public boolean isRedoActive() {
+        return mUndoneMotions.size() > 0;
+    }
+
+    private static void setXY(MorphMatrix morphMatrix, int index, float x, float y) {
+        morphMatrix.getVerts()[index * 2] = x;
+        morphMatrix.getVerts()[index * 2 + 1] = y;
+    }
+
+
+    private void warp(float startX, float startY, float endX, float endY) {
+        //计算拖动距离
+        float ddPull = (endX - startX) * (endX - startX) + (endY - startY) * (endY - startY);
+        float dPull = (float) Math.sqrt(ddPull);
+        //文献中提到的算法，并不能很好的实现拖动距离 MC 越大变形效果越明显的功能，下面这行代码则是我对该算法的优化
+        //dPull = screenWidth - dPull >= 0.0001f ? screenWidth - dPull : 0.0001f;
+
+        float[] orig = mMorphMatrix.getVerts();
+        float[] verts = mMorphMatrix.getVerts();
+
+        for (int i = 0; i < COUNT * 2; i += 2) {
+            //计算每个坐标点与触摸点之间的距离
+            float dx = orig[i] - startX;
+            float dy = orig[i + 1] - startY;
+            float dd = dx * dx + dy * dy;
+            float d = (float) Math.sqrt(dd);
+
+            //文献中提到的算法同样不能实现只有圆形选区内的图像才进行变形的功能，这里需要做一个距离的判断
+            if (d < r) {
+                //变形系数，扭曲度
+                double e = (r * r - dd) * (r * r - dd) / ((r * r - dd + dPull * dPull) * (r * r - dd + dPull * dPull));
+                e = e / ratio;
+                double pullX = e * (endX - startX);
+                double pullY = e * (endY - startY);
+                verts[i] = (float) (orig[i] + pullX);
+                verts[i + 1] = (float) (orig[i + 1] + pullY);
             }
         }
+        invalidate();
     }
 
-    public boolean canBackward() {
-        if (this.touchPoints != null && this.cachedPoints != null) {
-            return this.touchPoints.size() > 0;
-        } else {
-            return false;
+    public Bitmap scaleToImage(Bitmap bitmap) {
+        boolean forRecycle = false;
+        if (bitmap == null) {
+            forRecycle = true;
+            bitmap = ((BitmapDrawable) this.getBackground()).getBitmap();
+        }
+
+        // Get current dimensions AND the desired bounding box
+        int boundingX = ((ViewGroup) this.getParent()).getWidth();
+        int boundingY = ((ViewGroup) this.getParent()).getHeight();
+
+        int width = 0;
+        int height = 0;
+        try {
+            width = bitmap.getWidth();
+            height = bitmap.getHeight();
+        } catch (NullPointerException e) {
+            throw new NoSuchElementException("Can't find bitmap on given view/drawable");
+        }
+        if(width == 0 || height == 0 || boundingX <= 1 || boundingY <= 1) return bitmap;
+        //int bounding = dpToPx(250);
+
+        // Determine how much to scale: the dimension requiring less scaling is
+        // closer to the its side.
+        float xScale = ((float) boundingX) / width;
+        float yScale = ((float) boundingY) / height;
+        float scale = (xScale <= yScale) ? xScale : yScale;
+        if(scale == 0) scale = 1f;
+
+        // Create a matrix for the scaling and add the scaling data
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+
+        try {
+            // Create a new bitmap and convert it to a format understood by the ImageView
+            Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+            width = scaledBitmap.getWidth(); // re-use
+            height = scaledBitmap.getHeight(); // re-use
+            BitmapDrawable result = new BitmapDrawable(scaledBitmap);
+
+            mImageWidth = width;
+            mImageHeight = height;
+
+            defaultBitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+
+            //get old coordinates
+            int lastX = getLeft();
+            int lastY = getTop();
+
+            // Apply the scaled bitmap
+            this.setBackground(result);
+
+            // Now change ImageView's dimensions to match the scaled image
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) this.getLayoutParams();
+            params.width = width;
+            params.height = height;
+            this.setLayoutParams(params);
+            this.setLeft(lastX);
+            this.setTop(lastY);
+            if(forRecycle) {
+                bitmap.recycle();
+            }
+
+            return scaledBitmap;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Apply the original bitmap
+            if(this.getBackground() == null) {
+                this.setBackground(new BitmapDrawable(bitmap));
+            }
+            // return original bitmap
+            return bitmap;
         }
     }
 
-    public boolean canForward() {
-        if (this.touchPoints != null && this.cachedPoints != null) {
-            return this.cachedPoints.size() > 0;
+    public Bitmap generateBitmap() {
+
+        Bitmap bitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        if (scaleFactor != 1.0f) {
+            canvas.drawBitmap(defaultBitmap, 0.0F, 0.0F, (Paint)null);
+            canvas.save();
         } else {
-            return false;
+            draw(canvas);
         }
-    }
-
-    public void setStrength(int strength) {
-        this.mStrength = strength;
-    }
-
-    public void setRadius(int radius) {
-        this.radius = radius;
+        return bitmap;
     }
 
 

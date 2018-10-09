@@ -166,6 +166,14 @@
                 android:layout_weight="1"
                 android:padding="2dp"
                 android:text="color"/>
+
+            <Button
+                android:id="@+id/face"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="face"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

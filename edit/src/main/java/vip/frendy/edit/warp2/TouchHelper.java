@@ -6,6 +6,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.MotionEvent;
+import android.view.View;
 
 /**
  * Created by frendy on 2018/7/17.
@@ -149,9 +150,31 @@ public class TouchHelper {
         }
     }
 
-    public void invalidate(CanvasView view) {
+    public void invalidate(View view) {
         if (view != null) {
             view.invalidate();
+        }
+    }
+
+    public void onTouchEvent(View view, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startX = event.getX();
+                startY = event.getY();
+                touchX = event.getX();
+                touchY = event.getY();
+                showTouchCircle = true;
+                invalidate(view);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                touchX = event.getX();
+                touchY = event.getY();
+                invalidate(view);
+                break;
+            case MotionEvent.ACTION_UP:
+                showTouchCircle = false;
+                invalidate(view);
+                break;
         }
     }
 }

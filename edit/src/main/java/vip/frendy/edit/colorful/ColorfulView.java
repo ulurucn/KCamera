@@ -343,13 +343,21 @@ public class ColorfulView extends ViewGroup implements ScaleGestureDetector.OnSc
             return;
         }
 
-        bmColorfulLayer = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+        if (bmColorfulLayer != null) {
+            bmColorfulLayer.recycle();
+        }
 
-        Canvas canvas = new Canvas(bmColorfulLayer);
+        try {
+            bmColorfulLayer = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+        } catch (OutOfMemoryError error) {
+            return;
+        }
 
         mColorPaint.setColor(color);
         mColorPaint.setMaskFilter(bmf);
         mEraserPaint.setMaskFilter(bmf);
+
+        Canvas canvas = new Canvas(bmColorfulLayer);
 
         for (ColorfulPath path : touchPaths) {
             Path pathTemp = path.drawPath;

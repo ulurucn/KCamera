@@ -110,7 +110,7 @@ public class FragmentBigEye extends BaseFragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.ok) {
-            Common.writeImage(mPic.getColorBitmap(), imgPath, 100);
+            Common.writeImage(mPic.generateBitmap(), imgPath, 100);
             if(mListener != null) mListener.onPictureEditApply(0, imgPath);
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);

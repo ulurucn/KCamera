@@ -64,31 +64,11 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
 
     private boolean enable;
 
-    private ColorfulUtils.Type mType = ColorfulUtils.Type.COLOR; //画板类型
-
     private Bitmap bmBaseLayer;//原图
-    private Bitmap bmCoverLayer;//橡皮擦
-    private Bitmap bmColorfulLayer;//颜色
-
-
-    //触点圈圈半径
-    private int touchCircleR = 80;
-    //触点圈圈
-    private Paint touchCirclePaint;
-
-    //是否显示触点圈圈
-    private boolean enableTouchCircle = true;
-    private boolean showTouchCircle = false;
-    private float touchX, touchY;
-
-    private int color = 0x602a5caa;
-
-    private BlurMaskFilter bmf;
 
     private OnCanvasUpdatedListener mUpdatedListener;
 
     private Bitmap mBitmapSrc, mBitmap;
-    private CanvasView mCanvasView;
     private boolean attached = false;
     private boolean original = false;
 
@@ -373,54 +353,19 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
     public boolean reset() {
         this.mImageWidth = 0;
         this.mImageHeight = 0;
-        if(bmCoverLayer != null) {
-            bmCoverLayer.recycle();
-            bmCoverLayer = null;
-        }
         if(bmBaseLayer != null) {
             bmBaseLayer.recycle();
             bmBaseLayer = null;
         }
-        if(bmColorfulLayer != null) {
-            bmColorfulLayer.recycle();
-            bmColorfulLayer = null;
-        }
-
-
         return true;
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if(bmCoverLayer != null) {
-            bmCoverLayer.recycle();
-            bmCoverLayer = null;
-        }
         if(bmBaseLayer != null) {
             bmBaseLayer.recycle();
             bmBaseLayer = null;
-        }
-        if(bmColorfulLayer != null) {
-            bmColorfulLayer.recycle();
-            bmColorfulLayer = null;
-        }
-    }
-
-    public Bitmap getColorBitmap() {
-        if (bmColorfulLayer == null) {
-            Bitmap bitmap = Bitmap.createBitmap(this.mImageWidth, this.mImageHeight, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawBitmap(bmBaseLayer, 0.0F, 0.0F, (Paint)null);
-            canvas.save();
-            return bitmap;
-        } else {
-            Bitmap bitmap = Bitmap.createBitmap(this.mImageWidth, this.mImageHeight, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawBitmap(bmBaseLayer, 0.0F, 0.0F, (Paint)null);
-            canvas.drawBitmap(bmColorfulLayer, 0.0F, 0.0F, (Paint)null);
-            canvas.save();
-            return bitmap;
         }
     }
 
@@ -498,6 +443,16 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
     public void setRadius(int radius) {
         this.radius = radius;
     }
+
+    public Bitmap generateBitmap() {
+        Bitmap bitmap = Bitmap.createBitmap(this.mImageWidth, this.mImageHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawBitmap(mBitmap, 0.0F, 0.0F, (Paint)null);
+        canvas.save();
+        return bitmap;
+    }
+
+
 
 
 }
