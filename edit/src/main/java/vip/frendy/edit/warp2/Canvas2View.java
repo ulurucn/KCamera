@@ -71,6 +71,7 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
     private Bitmap mBitmapSrc, mBitmap;
     private boolean attached = false;
     private boolean original = false;
+    private boolean drawNoting = false;
 
 
     private int touch_x, touch_y;
@@ -280,6 +281,10 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if (drawNoting) {
+            return;
+        }
+
         if (!original) {
             if (mStrength != 0) {
 
@@ -359,7 +364,6 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
             bmBaseLayer.recycle();
             bmBaseLayer = null;
         }
-        invalidate();
         return true;
     }
 
@@ -453,6 +457,10 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
         canvas.drawBitmap(mBitmap, 0.0F, 0.0F, (Paint)null);
         canvas.save();
         return bitmap;
+    }
+
+    public void drawNothing(boolean state) {
+        this.drawNoting = state;
     }
 
 
