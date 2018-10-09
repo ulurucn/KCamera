@@ -282,6 +282,9 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
         super.onDraw(canvas);
 
         if (drawNoting) {
+            if (bmBaseLayer != null) {
+                canvas.drawBitmap(bmBaseLayer, null, mInitImageRect, null);
+            }
             return;
         }
 
