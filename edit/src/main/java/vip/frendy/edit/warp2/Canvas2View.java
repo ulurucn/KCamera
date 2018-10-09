@@ -461,6 +461,7 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
 
     public void drawNothing(boolean state) {
         this.drawNoting = state;
+        invalidate();
     }
 
 
