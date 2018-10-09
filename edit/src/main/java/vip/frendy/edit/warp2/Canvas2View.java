@@ -295,7 +295,9 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
             }
             canvas.drawBitmap(mBitmap, null, mImageRect, null);
         } else {
-            canvas.drawBitmap(bmBaseLayer, null, mImageRect, null);
+            if (bmBaseLayer != null) {
+                canvas.drawBitmap(bmBaseLayer, null, mImageRect, null);
+            }
         }
 
     }
@@ -357,6 +359,7 @@ public class Canvas2View extends ViewGroup implements ScaleGestureDetector.OnSca
             bmBaseLayer.recycle();
             bmBaseLayer = null;
         }
+        invalidate();
         return true;
     }
 
