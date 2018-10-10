@@ -56,6 +56,8 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
     public static int ACTION_RESIZE_LR = 4;
     public static int ACTION_RESIZE_TB = 5;
 
+    private boolean ENABLE = true;
+
     public OperateView(Context context, Bitmap resizeBmp, ISettingListener iSettingListener) {
         super(context);
         this.bgBmp = resizeBmp;
@@ -164,7 +166,11 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
 
-        return super.dispatchTouchEvent(event);
+        if (ENABLE) {
+            return super.dispatchTouchEvent(event);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -718,5 +724,9 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
 
     public List<ImageObject> getImgLists() {
         return imgLists;
+    }
+
+    public void setEnable(boolean able) {
+        this.ENABLE = able;
     }
 }
