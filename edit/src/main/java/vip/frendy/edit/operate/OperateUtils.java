@@ -225,6 +225,8 @@ public class OperateUtils {
 		int width = operateView.getWidth();
 		int height = operateView.getHeight();
 
+		int position = -1;
+
 		switch (quadrant) {
 			case LEFTTOP :
 				break;
@@ -245,16 +247,23 @@ public class OperateUtils {
 			case CENTERLEFT :
 				x = width/2 - srcBmp.getWidth()/2/scale - 20;
 				y = height / 2;
+				position = 0;
 				break;
 			case CENTERRIGHT:
 				x = width/2 + srcBmp.getWidth()/2/scale + 20;
 				y = height / 2;
+				position = 1;
 				break;
 			default :
 				break;
 		}
 
-		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm, flipBm, settingBm);
+		ImageObject imgObject;
+		if (position == -1) {
+			imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm, flipBm, settingBm);
+		} else {
+			imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm, flipBm, settingBm, position);
+		}
 		imgObject.setOpBitmap(leftBm, topBm, rightBm, bottomBm);
 
 		Point point = new Point(20, 20);

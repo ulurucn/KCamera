@@ -167,11 +167,19 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         //默认会有两张贴纸
         if (mOperateView.getImgLists().size() > 0 && mOperateView.getImgLists().size() == 2) {
 
-            mOperateView.getImgLists().get(0).setSrcBm(bitmap);
-
             Bitmap reBitmap = BitmapExt.reverseImage(bitmap, -1, 1);
 
-            mOperateView.getImgLists().get(1).setSrcBm(reBitmap);
+            if (mOperateView.getImgLists().get(0).getLocation() == 0) {
+                mOperateView.getImgLists().get(0).setSrcBm(reBitmap);
+            } else {
+                mOperateView.getImgLists().get(0).setSrcBm(bitmap);
+            }
+
+            if (mOperateView.getImgLists().get(1).getLocation() == 0) {
+                mOperateView.getImgLists().get(1).setSrcBm(reBitmap);
+            } else {
+                mOperateView.getImgLists().get(1).setSrcBm(bitmap);
+            }
 
             mOperateView.invalidate();
             mOperateView.setAllStickerTransparency(currentProgress);
