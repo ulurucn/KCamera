@@ -701,6 +701,13 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         }
     }
 
+    public void setAllStickerTransparency(int progress) {
+        for(ImageObject obj : imgLists) {
+            obj.setTransparency(progress);
+            invalidate();
+        }
+    }
+
     public int getStickerTransparency() {
         ImageObject io = getSelected();
         if (io != null) {

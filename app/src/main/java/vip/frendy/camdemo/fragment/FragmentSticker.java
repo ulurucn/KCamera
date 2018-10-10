@@ -39,6 +39,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     private OperateUtils mOperateUtils;
     private LinearLayout mSettingBar;
     private LinearLayout mStickerBar;
+    private int currentProgress = 0;
 
     public static FragmentSticker getInstance(Bundle args, IPictureEditListener listener) {
         FragmentSticker fragment = new FragmentSticker();
@@ -173,6 +174,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             mOperateView.getImgLists().get(1).setSrcBm(reBitmap);
 
             mOperateView.invalidate();
+            mOperateView.setAllStickerTransparency(currentProgress);
         } else {
 
             //无drawable资源则传 -1
@@ -223,7 +225,9 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        mOperateView.setStickerTransparency(progress);
+        //mOperateView.setStickerTransparency(progress);
+        currentProgress = progress;
+        mOperateView.setAllStickerTransparency(progress);
     }
 
     @Override
