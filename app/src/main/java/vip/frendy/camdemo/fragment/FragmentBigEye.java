@@ -3,6 +3,7 @@ package vip.frendy.camdemo.fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 
@@ -10,14 +11,16 @@ import vip.frendy.base.BitmapExt;
 import vip.frendy.camdemo.R;
 import vip.frendy.edit.common.Common;
 import vip.frendy.edit.interfaces.IPictureEditListener;
+import vip.frendy.edit.warp2.BigEyeHelper;
+import vip.frendy.edit.warp2.BreastHelper;
+import vip.frendy.edit.warp2.Canvas2View;
 import vip.frendy.edit.warp2.CanvasView;
-import vip.frendy.edit.warp2.SlimHelper;
 
 /**
  * Created by frendy on 2018/4/12.
  */
 
-public class FragmentShapeSlim extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class FragmentBigEye extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, Canvas2View.OnCanvasUpdatedListener{
     public static String PIC_PATH = "pic_path";
 
     private String imgPath;
@@ -25,13 +28,14 @@ public class FragmentShapeSlim extends BaseFragment implements View.OnClickListe
 
     private IPictureEditListener mListener;
 
-    private CanvasView mPic;
-    private Bitmap bitmap, bitmapOval, bitmapOpUp, bitmapOpDown, bitmapOpLeft, bitmapOpRight;
-    private SlimHelper mSlimHelper;
+    private Canvas2View mPic;
+    private Bitmap bitmap;
+    private BigEyeHelper mBreastHelper;
     private SeekBar mSeekbar;
+    private boolean isShowOp = false;
 
-    public static FragmentShapeSlim getInstance(Bundle args, IPictureEditListener listener) {
-        FragmentShapeSlim fragment = new FragmentShapeSlim();
+    public static FragmentBigEye getInstance(Bundle args, IPictureEditListener listener) {
+        FragmentBigEye fragment = new FragmentBigEye();
         fragment.setArguments(args);
         fragment.setPictureEditListener(listener);
         return fragment;
@@ -43,7 +47,7 @@ public class FragmentShapeSlim extends BaseFragment implements View.OnClickListe
 
     @Override
     protected int getFragmentLayoutResId() {
-        return R.layout.fragment_shape;
+        return R.layout.fragment_eye;
     }
 
     @Override
@@ -57,6 +61,10 @@ public class FragmentShapeSlim extends BaseFragment implements View.OnClickListe
         mRootView.findViewById(R.id.ok).setOnClickListener(this);
         mRootView.findViewById(R.id.cancel).setOnClickListener(this);
         mRootView.findViewById(R.id.compare).setOnClickListener(this);
+
+
+        mRootView.findViewById(R.id.redo).setOnClickListener(this);
+        mRootView.findViewById(R.id.undo).setOnClickListener(this);
         mSeekbar.setOnSeekBarChangeListener(this);
         mSeekbar.setMax(100);
 
@@ -64,36 +72,39 @@ public class FragmentShapeSlim extends BaseFragment implements View.OnClickListe
         bitmapSrc = BitmapFactory.decodeFile(imgPath);
         bitmap = bitmapSrc;
 
-        bitmapOpUp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_edit_shape_op_up);
-        bitmapOpDown = BitmapExt.rotateImage(bitmapOpUp, 180);
-        bitmapOpLeft = BitmapExt.rotateImage(bitmapOpUp, -90);
-        bitmapOpRight = BitmapExt.rotateImage(bitmapOpUp, 90);
-        bitmapOval = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_edit_shape_slim);
+        mPic.setBackgroundResource(imgPath);
+
+        mPic.setOnCanvasUpdatedListener(FragmentBigEye.this);
+
 
         //显示图片
         mPic.post(new Runnable() {
             @Override
             public void run() {
-                mPic.scaleToImage(bitmap);
+                //mPic.scaleToImage(bitmap);
+                mPic.setBackgroundResource(imgPath);
 
                 mPic.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(mSlimHelper == null) {
-                            mSlimHelper = new SlimHelper();
-                        }
-                        mSlimHelper.attachCanvasView(mPic);
-                        mSlimHelper.setOpBitmap(bitmapOpUp, bitmapOpDown, bitmapOpLeft, bitmapOpRight);
-                        mSlimHelper.setOvalBitmap(bitmapOval);
-                        mSlimHelper.initMorpher();
-                        mPic.isBaseDrawingEnabled(false);
+//                        if(mBreastHelper == null) {
+//                            mBreastHelper = new BigEyeHelper();
+//                        }
+                        //mBreastHelper.attachCanvasView(mPic);
+                        //mBreastHelper.setOpBitmap(null, null);
+                        //mBreastHelper.initMorpher(80, 40, -100);
+                        //mPic.isBaseDrawingEnabled(false);
 
                         //设置初始化值
-                        mSeekbar.setProgress(50);
+                        //mSeekbar.setProgress(50);
+
+                        //mBreastHelper.setCanvasChangeLister(FragmentBigEye.this);
                     }
                 }, 100);
             }
         });
+
+
     }
 
     @Override
@@ -104,22 +115,33 @@ public class FragmentShapeSlim extends BaseFragment implements View.OnClickListe
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.compare) {
-            mSlimHelper.setOriginal(!mSlimHelper.getOriginal());
+            mPic.setOriginal(!mPic.getOriginal());
+        } else if (view.getId() == R.id.redo) {
+            mPic.redo();
+        } else if (view.getId() == R.id.undo) {
+            mPic.undo();
         }
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if (mSlimHelper != null) {
-            mSlimHelper.setStrength(progress - 50);
+        //Log.i("eye", "current progress is " + progress);
+        if (mBreastHelper != null) {
+            //mBreastHelper.setStrength(progress - 50);
         }
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        //isShowOp = mBreastHelper.getVisible();
+        //mBreastHelper.setVisible(false);
+    }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {}
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        //mBreastHelper.setVisible(isShowOp);
+        //isShowOp = false;
+    }
 
     @Override
     public void onDestroy() {
@@ -136,25 +158,15 @@ public class FragmentShapeSlim extends BaseFragment implements View.OnClickListe
             bitmap.recycle();
             bitmap = null;
         }
-        if(bitmapOval != null) {
-            bitmapOval.recycle();
-            bitmapOval = null;
-        }
-        if(bitmapOpUp != null) {
-            bitmapOpUp.recycle();
-            bitmapOpUp = null;
-        }
-        if(bitmapOpDown != null) {
-            bitmapOpDown.recycle();
-            bitmapOpDown = null;
-        }
-        if(bitmapOpLeft != null) {
-            bitmapOpLeft.recycle();
-            bitmapOpLeft = null;
-        }
-        if(bitmapOpRight != null) {
-            bitmapOpRight.recycle();
-            bitmapOpRight = null;
-        }
+    }
+
+    @Override
+    public void OnCanvasUpdated() {
+
+    }
+
+    @Override
+    public void OnEraserApplyed() {
+
     }
 }

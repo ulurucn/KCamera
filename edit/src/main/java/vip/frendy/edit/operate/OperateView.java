@@ -56,6 +56,8 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
     public static int ACTION_RESIZE_LR = 4;
     public static int ACTION_RESIZE_TB = 5;
 
+    private boolean ENABLE = true;
+
     public OperateView(Context context, Bitmap resizeBmp, ISettingListener iSettingListener) {
         super(context);
         this.bgBmp = resizeBmp;
@@ -164,7 +166,11 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
 
-        return super.dispatchTouchEvent(event);
+        if (ENABLE) {
+            return super.dispatchTouchEvent(event);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -582,16 +588,19 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         }
         mImageRect.offset(deltaX, deltaY);
         //更新贴纸位置
-        updateObjectPosition(deltaX, deltaY);
+        updateObjectPositionScale(mImageRect.left, mImageRect.top, mScaleFactor);
     }
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
+        getCurrentPosition();
         return true;
     }
 
     @Override
-    public void onScaleEnd(ScaleGestureDetector detector) {}
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        setLastScale();
+    }
 
     private boolean isCanDrag(int dx, int dy) {
         return Math.sqrt((dx * dx) + (dy * dy)) >= 5.0f;
@@ -615,9 +624,28 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         }
     }
 
+    private void getCurrentPosition() {
+        for (ImageObject obj : imgLists) {
+            if (obj != null) obj.getCurrentPosition(mImageRect.left, mImageRect.top);
+        }
+    }
+
+    private void setLastScale() {
+        for (ImageObject obj : imgLists) {
+            if (obj != null) obj.setLastScale(mScaleFactor);
+        }
+    }
+
+
     private void updateObjectPosition(int x, int y) {
         for(ImageObject obj : imgLists) {
             obj.moveBy(x, y);
+        }
+    }
+
+    private void updateObjectPositionScale(int x, int y, float scale) {
+        for(ImageObject obj : imgLists) {
+            obj.moveBy(x, y, scale);
         }
     }
 
@@ -679,11 +707,26 @@ public class OperateView extends View implements ScaleGestureDetector.OnScaleGes
         }
     }
 
+    public void setAllStickerTransparency(int progress) {
+        for(ImageObject obj : imgLists) {
+            obj.setTransparency(progress);
+            invalidate();
+        }
+    }
+
     public int getStickerTransparency() {
         ImageObject io = getSelected();
         if (io != null) {
             return io.getTransparencyProgress();
         }
         return 0;
+    }
+
+    public List<ImageObject> getImgLists() {
+        return imgLists;
+    }
+
+    public void setEnable(boolean able) {
+        this.ENABLE = able;
     }
 }

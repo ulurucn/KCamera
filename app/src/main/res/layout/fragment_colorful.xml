@@ -7,8 +7,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <vip.frendy.edit.warp2.CanvasView
+        <vip.frendy.edit.colorful.ColorfulView
             android:id="@+id/pic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,27 +18,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <Button
-            android:id="@+id/type"
+            android:id="@+id/eraser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="type"/>
+            android:text="er"/>
 
         <Button
-            android:id="@+id/compare"
+            android:id="@+id/color1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="compare"/>
+            android:text="c1"/>
 
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/color2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:max="50"
-            android:padding="16dp"/>
+            android:text="c2"/>
 
+        <Button
+            android:id="@+id/color3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="c3"/>
+
+
+        <Button
+            android:id="@+id/forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="fw"/>
+
+        <Button
+            android:id="@+id/backward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="bw"/>
     </LinearLayout>
 
     <LinearLayout

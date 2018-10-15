@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,18 @@ public class ImageObject {
 	protected Paint paint = new Paint();
 	protected int mTransparencyProgress = 0;
 
+	private static int LEFT = 0;
+    private static int RIGHT = 1;
+
+	private int location = RIGHT;
+
+
 	private Canvas canvas = null;
+
+	private int positionX;
+	private int positionY;
+
+	private float lastScale = 1;
 
 	/**
 	 * 构造方法
@@ -85,6 +97,8 @@ public class ImageObject {
 		canvas.drawBitmap(srcBm, 0, 0, paint);
 		mPoint.x = x;
 		mPoint.y = y;
+		positionX = x;
+		positionY = y;
 		this.rotateBm = rotateBm;
 		this.deleteBm = deleteBm;
 		this.flipBm = flipBm;
@@ -93,6 +107,25 @@ public class ImageObject {
 		paint.setAntiAlias(true); //去掉边缘锯齿
 		paint.setStrokeWidth(2); //设置线宽
 	}
+
+    public ImageObject(Bitmap srcBm, int x, int y, Bitmap rotateBm, Bitmap deleteBm,Bitmap flipBm,Bitmap settingBm, int position) {
+        this.srcBm = Bitmap.createBitmap(srcBm.getWidth(), srcBm.getHeight(), Config.ARGB_8888);
+        _srcBm = Bitmap.createBitmap(srcBm);
+        canvas = new Canvas(this.srcBm);
+        canvas.drawBitmap(srcBm, 0, 0, paint);
+        mPoint.x = x;
+        mPoint.y = y;
+        positionX = x;
+        positionY = y;
+        this.rotateBm = rotateBm;
+        this.deleteBm = deleteBm;
+        this.flipBm = flipBm;
+        this.settingBm = settingBm;
+        paint.setColor(Color.WHITE);
+        paint.setAntiAlias(true); //去掉边缘锯齿
+        paint.setStrokeWidth(2); //设置线宽
+        this.location = position;
+    }
 
 	public void setOpBitmap(Bitmap left, Bitmap top, Bitmap right, Bitmap bottom) {
 		leftBm = left;
@@ -128,6 +161,21 @@ public class ImageObject {
 		mPoint.x += x;
 		mPoint.y += y;
 		setCenter();
+	}
+
+	public void moveBy(int left, int top, float scale) {
+		mPoint.x = (int)(left + positionX * scale);
+		mPoint.y = (int)(top + positionY * scale);
+		setCenter();
+	}
+
+	public void getCurrentPosition(int left, int top) {
+		positionX = (int) ((mPoint.x - left)/lastScale);
+		positionY = (int) ((mPoint.y - top)/lastScale);
+	}
+
+	public void setLastScale(float scale) {
+		this.lastScale = scale;
 	}
 
 	public void draw(Canvas canvas) {
@@ -517,6 +565,7 @@ public class ImageObject {
 
 	public void setSrcBm(Bitmap srcBm) {
 		this.srcBm = srcBm;
+		_srcBm = Bitmap.createBitmap(srcBm);
 	}
 
 	public Bitmap getRotateBm() {
@@ -630,4 +679,8 @@ public class ImageObject {
 	public int getTransparencyProgress() {
 		return mTransparencyProgress;
 	}
+
+	public int getLocation() {
+	    return location;
+    }
 }
