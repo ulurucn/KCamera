@@ -109,7 +109,9 @@ public class FragmentShapeHip extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        mHipHelper.setStrength(progress - 50);
+        if (mHipHelper != null) {
+            mHipHelper.setStrength(progress - 50);
+        }
     }
 
     @Override

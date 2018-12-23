@@ -26,6 +26,8 @@ public class OperateUtils {
 	public static final int LEFTBOTTOM = 3;
 	public static final int RIGHTBOTTOM = 4;
 	public static final int CENTER = 5;
+	public static final int CENTERLEFT = 6;
+	public static final int CENTERRIGHT = 7;
 
 	public OperateUtils(Activity activity) {
 		this.activity = activity;
@@ -190,7 +192,7 @@ public class OperateUtils {
 	 * 
 	 * @param srcBmp 被操作的图片
 	 * @param operateView 容器View对象
-	 * @param quadrant 需要图片显示的区域 （1、左上方，2、右上方，3、左下方，4、右下方，5、中心）
+	 * @param quadrant 需要图片显示的区域 （1、左上方，2、右上方，3、左下方，4、右下方，5、中心, 6、中间偏左，7，中间偏右）
 	 * @param x 离边界x坐标
 	 * @param y 离边界y坐标
 	 * @return
@@ -198,6 +200,15 @@ public class OperateUtils {
 	public ImageObject getImageObject(Bitmap srcBmp, OperateView operateView, int quadrant, int x, int y,
 									  int rotateDrawble, int deleteDrawable, int flipDrawable, int settingDrawable,
 									  int leftDrawable, int topDrawable, int rightDrawable, int bottomDrawable) {
+		return getImageObject(srcBmp, operateView, quadrant, x, y, rotateDrawble, deleteDrawable, flipDrawable, settingDrawable,
+				leftDrawable, topDrawable, rightDrawable, bottomDrawable, 1);
+	}
+
+
+	public ImageObject getImageObject(Bitmap srcBmp, OperateView operateView, int quadrant, int x, int y,
+									  int rotateDrawble, int deleteDrawable, int flipDrawable, int settingDrawable,
+									  int leftDrawable, int topDrawable, int rightDrawable, int bottomDrawable, int scale) {
+
 		Bitmap rotateBm = null, deleteBm = null, flipBm = null, settingBm = null;
 		Bitmap leftBm = null, topBm = null, rightBm = null, bottomBm = null;
 
@@ -213,6 +224,8 @@ public class OperateUtils {
 
 		int width = operateView.getWidth();
 		int height = operateView.getHeight();
+
+		int position = -1;
 
 		switch (quadrant) {
 			case LEFTTOP :
@@ -231,11 +244,26 @@ public class OperateUtils {
 				x = width / 2;
 				y = height / 2;
 				break;
+			case CENTERLEFT :
+				x = width/2 - srcBmp.getWidth()/2/scale - 20;
+				y = height / 2;
+				position = 0;
+				break;
+			case CENTERRIGHT:
+				x = width/2 + srcBmp.getWidth()/2/scale + 20;
+				y = height / 2;
+				position = 1;
+				break;
 			default :
 				break;
 		}
 
-		ImageObject imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm, flipBm, settingBm);
+		ImageObject imgObject;
+		if (position == -1) {
+			imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm, flipBm, settingBm);
+		} else {
+			imgObject = new ImageObject(srcBmp, x, y, rotateBm, deleteBm, flipBm, settingBm, position);
+		}
 		imgObject.setOpBitmap(leftBm, topBm, rightBm, bottomBm);
 
 		Point point = new Point(20, 20);

@@ -50,15 +50,26 @@ public class BreastHelper implements CanvasView.OnCanvasChangeListener {
     }
 
     public void initMorpher() {
-        if (mCanvasView != null) {
+        initMorpher(100, 0, 0);
+    }
+
+    /*
+     @param radius 视图圆圈的半径
+     @param distance 视图圆圈的距离
+     @param yPosition 视图圆圈的y轴上的调整距离，yPosition > 0 偏下，  yPosition < 0 偏上
+     */
+    public void initMorpher(int radius, int distance, int yPosition) {
+        if (mCanvasView != null && mCanvasView.getBackground() != null) {
             mCanvasView.setFocusable(true);
             mBitmapSrc = ((BitmapDrawable) mCanvasView.getBackground()).getBitmap();
             mBitmap = mBitmapSrc;
 
-            x_1 = mCanvasView.getWidth() / 2 - r_1;
-            y_1 = mCanvasView.getHeight() / 2;
-            x_2 = mCanvasView.getWidth() / 2 + r_2;
-            y_2 = mCanvasView.getHeight() / 2;
+            this.r_1 = this.r_2 = radius;
+
+            x_1 = mCanvasView.getWidth() / 2 - r_1 - distance/2;
+            y_1 = mCanvasView.getHeight() / 2 + yPosition;
+            x_2 = mCanvasView.getWidth() / 2 + r_2 + distance/2;
+            y_2 = mCanvasView.getHeight() / 2 + yPosition;
             invalidate();
         }
     }

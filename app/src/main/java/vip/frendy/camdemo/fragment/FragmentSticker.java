@@ -39,6 +39,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     private OperateUtils mOperateUtils;
     private LinearLayout mSettingBar;
     private LinearLayout mStickerBar;
+    private int currentProgress = 0;
 
     public static FragmentSticker getInstance(Bundle args, IPictureEditListener listener) {
         FragmentSticker fragment = new FragmentSticker();
@@ -95,7 +96,7 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
             mContent.addView(mOperateView);
             //设置可以添加多个图片
             mOperateView.setMultiAdd(true);
-            mOperateView.setObjScale(0.8f);
+            mOperateView.setObjScale(0.5f);
             //触摸事件监听
             mOperateView.setOnOperateViewTouchListener(new OperateView.OnOperateTouchListener() {
                 @Override
@@ -135,7 +136,15 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
         } else if(view.getId() == R.id.cancel) {
             if(mListener != null) mListener.onPictureEditCancel(0);
         } else if(view.getId() == R.id.sitcker) {
-            addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.st_ornaments5));
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.st_ornaments5);
+
+            //Bitmap reBitmap = BitmapExt.reverseImage(bitmap, -1 , 1);
+
+            addSticker(bitmap);
+
+            //addSticker(reBitmap);
+
         } else if(view.getId() == R.id.sitcker2) {
             addSticker(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.earring8));
         } else if(view.getId() == R.id.sitcker3) {
@@ -154,12 +163,44 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
     }
 
     private void addSticker(Bitmap bitmap) {
-        //无drawable资源则传 -1
-        ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, OperateUtils.CENTER, 150, 100,
-                R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
-                R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate);
-        sticker.resizeBoxSize = 60;
-        mOperateView.addItem(sticker);
+
+        //默认会有两张贴纸
+        if (mOperateView.getImgLists().size() > 0 && mOperateView.getImgLists().size() == 2) {
+
+            Bitmap reBitmap = BitmapExt.reverseImage(bitmap, -1, 1);
+
+            if (mOperateView.getImgLists().get(0).getLocation() == 0) {
+                mOperateView.getImgLists().get(0).setSrcBm(reBitmap);
+            } else {
+                mOperateView.getImgLists().get(0).setSrcBm(bitmap);
+            }
+
+            if (mOperateView.getImgLists().get(1).getLocation() == 0) {
+                mOperateView.getImgLists().get(1).setSrcBm(reBitmap);
+            } else {
+                mOperateView.getImgLists().get(1).setSrcBm(bitmap);
+            }
+
+            mOperateView.invalidate();
+            mOperateView.setAllStickerTransparency(currentProgress);
+        } else {
+
+            //无drawable资源则传 -1
+            ImageObject sticker = mOperateUtils.getImageObject(bitmap, mOperateView, OperateUtils.CENTERLEFT, 150, 100,
+                    R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
+                    R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, 2);
+            sticker.resizeBoxSize = 60;
+
+            Bitmap reBitmap = BitmapExt.reverseImage(bitmap, -1, 1);
+
+            ImageObject resticker = mOperateUtils.getImageObject(reBitmap, mOperateView, OperateUtils.CENTERRIGHT, 150, 100,
+                    R.drawable.rotate, R.drawable.delete, R.drawable.flip, R.drawable.setting,
+                    R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, R.drawable.rotate, 2);
+            resticker.resizeBoxSize = 60;
+
+            mOperateView.addItem(sticker);
+            mOperateView.addItem(resticker);
+        }
     }
 
     private void addText(String text) {
@@ -192,7 +233,9 @@ public class FragmentSticker extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        mOperateView.setStickerTransparency(progress);
+        //mOperateView.setStickerTransparency(progress);
+        currentProgress = progress;
+        mOperateView.setAllStickerTransparency(progress);
     }
 
     @Override
