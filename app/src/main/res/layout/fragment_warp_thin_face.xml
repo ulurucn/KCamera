@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <vip.frendy.edit.warp2.CanvasView
+        <vip.frendy.edit.warp2.ThinFaceView
             android:id="@+id/pic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,27 +19,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <Button
-            android:id="@+id/type"
+            android:id="@+id/forward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="type"/>
+            android:text="forward"/>
+
+        <Button
+            android:id="@+id/backward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="backward"/>
 
         <Button
             android:id="@+id/compare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="compare"/>
-
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="50"
-            android:padding="16dp"/>
-
     </LinearLayout>
 
     <LinearLayout
